@@ -37,3 +37,16 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# unnamed chunk files
+# *unnamed-chunk*.png
+
+# automatically generated files
+# *_files/*
+
+# GESIS Panel Data
+*ZA5667*
+*.rds
+
+# geospatial data
+**/session_specific_data/*

@@ -1,0 +1,172 @@
+---
+title: 'Exercise 1 Data Wrangling - Solutions'
+# title: 'Exercise 1 Data Wrangling'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+output:
+  # unilur::tutorial_html: default
+  unilur::tutorial_html_solution: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(
+  clues = list(box.title = "Clues",
+               box.body = list(fill = "#fff9dc", colour = "black"),
+               box.header = list(fill = "#ffec8b", colour = "black"),
+               box.icon = "fa-search",
+               box.collapse = TRUE)
+)
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+As in the presentation, we will use data from the [Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany](https://www.gesis.org/gesis-panel/coronavirus-outbreak/public-use-file-puf) for this exercise. You should (have) download(ed) the dataset in `.csv` format in a folder caller `data` within the folder containing the materials for this workshop. Also remember that it is helpful to consult the [codebook for the dataset](https://dbk.gesis.org/dbksearch/download.asp?id=67378).
+
+That being sad, let's get wrangling...
+
+...but before we can do that, we need to load the `tidyverse` package(s) and import the data.
+
+```{r read-data, message = F}
+library(tidyverse)
+
+gesis_panel_corona <- read_csv2("../data/ZA5667_v1-1-0.csv")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Let's first check how many rows and columns the dataset has. 
+```
+
+```{block, opts.label = "clues"}
+You can use separate functions for printing the number of rows and the number of columns or one function that prints both.
+```
+
+```{r first-exercise, solution = TRUE}
+nrow(gesis_panel_corona)
+
+ncol(gesis_panel_corona)
+
+dim(gesis_panel_corona)
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Next, let's catch a glimpse (hinthint) of the dataset.
+```
+
+```{r second-exercise, solution = TRUE, eval = FALSE}
+glimpse(gesis_panel_corona)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now check out the names of the columns/variables in the dataset.
+```
+
+```{r third-exercise, solution = TRUE}
+names(gesis_panel_corona)
+```
+
+We see here that most of the names are not very descriptive which is something that we might want to change.
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+First, rename the variables `hzcy053a` to `employment_march` and `hzcy071a` to `children` using `base R`. Then rename `hzcy044a` to `trust_doctor` and `hzcy050a` to `trust_moh` using a function from the `tidyverse` package `dplyr`. 
+```
+
+```{block, opts.label = "clues"}
+The `base R` function for this is `colnames()`, and the `dplyr` function is `rename()`.
+```
+
+```{r fourth-exercise, solution = TRUE}
+# Base R
+colnames(gesis_panel_corona)[colnames(gesis_panel_corona) == "hzcy053a"] <- "employment_march"
+colnames(gesis_panel_corona)[colnames(gesis_panel_corona) == "hzcy071a"] <- "children"
+
+# tidyverse (dplyr)
+gesis_panel_corona <- gesis_panel_corona %>% 
+  rename(trust_doctor = hzcy044a, # new_name = old_name
+         trust_mho = hzcy050a)
+```
+
+For the remainder of this exercise, we will focus on functions from the `tidyverse`. Of course, if you want to, you can also use `base R` to solve the tasks, or, if you are extra ambitious, you can use both.
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+Select the following variables from the dataset and assign them to an object called `demo`: `sex`, `age_cat`, `education_cat`, `marstat`, `household`, `children`.
+```
+
+```{block, opts.label = "clues"}
+You need to use the `select()` function from `dplyr`.
+```
+
+```{r fifth-exercise, solution = TRUE}
+demo <- gesis_panel_corona %>% 
+  select(sex:education_cat,
+         marstat,
+         household,
+         children)
+```
+
+```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
+Filter the `demo` dataset, so that it only contains married men.
+```
+
+```{block, opts.label = "clues"}
+You should probably consult the [codebook for the dataset](https://dbk.gesis.org/dbksearch/download.asp?id=67378). If you do that, you will see that the code for men is 1 and the one for married is also 1.
+```
+
+```{r sixth-exercise, solution = TRUE}
+married_men <- demo %>% 
+  filter(sex == 1,
+         marstat == 1)
+```
+
+```{block, box.title = "7", box.body = list(fill = "white"), box.icon = "fa-star"}
+Using a function from the `naniar` package, recode the values -99, -77, -88, -33, -22, and -11 as missing for all variables in the `demo` dataframe.
+```
+
+```{block, opts.label = "clues"}
+You need to create a vector with the missing values to replace values with `NA` in all variables.
+```
+
+```{r seventh-exercise, solution = TRUE}
+library(naniar)
+
+missings <- c(-99, -77, -88, -33, -22, -11)
+
+demo <- demo %>% 
+  replace_with_na_all(condition = ~.x %in% missings)
+```
+
+```{block, box.title = "8", box.body = list(fill = "white"), box.icon = "fa-star"}
+How many complete cases (without missing values for any of the variables) are there in the `demo` dataframe? Do not assign the result to an object.
+```
+
+```{block, opts.label = "clues"}
+You can use a function from the `tidyr` package to check this. Do not overwrite the `demo` object.
+```
+
+```{r eigth-exercise, solution = TRUE}
+demo %>% 
+  drop_na() %>% 
+  nrow()
+```
+
+
+```{block, box.title = "9", box.body = list(fill = "white"), box.icon = "fa-star"}
+Recode the `age_cat` variable into an ordered factor with 5 levels called `age_5_cat`.
+```
+
+```{block, opts.label = "clues"}
+Again, consulting the [codebook for the dataset](https://dbk.gesis.org/dbksearch/download.asp?id=67378) helps you in picking the right values and labels for the new variable. The helper function `between()` will be helpful here.
+```
+
+```{r ninth-exercise, solution = TRUE}
+demo <- demo %>%
+  mutate(age_5_cat = factor(case_when(
+    between(age_cat, 1, 2) ~ " <=25 years",
+    between(age_cat, 3, 4) ~ "26 to 40 years",
+    between(age_cat, 5, 6) ~ "41 to 50 years",
+    between(age_cat, 7, 8) ~ "51 to 65 years",
+    age_cat > 8 ~ ">= 65 years"),
+    ordered = TRUE))
+```

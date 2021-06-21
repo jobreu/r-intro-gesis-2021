@@ -1,0 +1,105 @@
+---
+title: 'Exercise 1 Data Import & Export - Solutions'
+# title: 'Exercise 1 Data Import & Export'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+output:
+  # unilur::tutorial_html: default
+  unilur::tutorial_html_solution: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(
+  clues = list(box.title = "Clues",
+               box.body = list(fill = "#fff9dc", colour = "black"),
+               box.header = list(fill = "#ffec8b", colour = "black"),
+               box.icon = "fa-search",
+               box.collapse = TRUE)
+)
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+This first part of the exercises only deals with importing data. Later, in the second exercise, we will turn to non-flat data files and label them before exporting.
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Load the titanic data.
+```
+
+```{block, opts.label = "clues"}
+The file format is CSV. Accordingly, you may want to use the `readr` library and a function that starts with `read_...` (of course, you could also use the `base R` equivalent if you want to).
+```
+
+```{r load_titanic, solution = TRUE}
+library(readr)
+
+titanic <-
+  read_csv("../data/titanic.csv")
+```
+
+You may have noticed that the function you just imports factor variables as characters by default. For some analyses, this may not be what we want (for example, if we're going to use "sex" as a predictor in a regression).
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Convert the variable `sex` to a factor.
+```
+
+```{block, opts.label = "clues"}
+You can do that while importing the data or after loading them.
+```
+
+```{r convert_sex, solution = TRUE}
+titanic <-
+  read_csv(
+    "../data/titanic.csv",
+    col_types = cols(
+      Sex = col_factor()
+    )
+  )
+```
+
+We have already worked with the *Titanic* data quite a bit. Let's import some other data for a change.
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Load the gapminder GDP data. Use the .xlsx file in the `data` folder.
+```
+
+```{block, opts.label = "clues"}
+We need the `readxl` package for this importing task.
+```
+
+```{r load_gapminder_gdp, solution = TRUE}
+library(readxl)
+
+gapminder_GDP <-
+  read_excel("../data/GDPpercapitaconstant2000US.xlsx")
+```
+
+As you may have noticed, the format of the output of the two importing functions is the same (tibbles in both cases). Sometimes, however, the contents of an Excel file are not that easy to import. We will illustrate this with the help of the `Unicorns on Unicycles` dataset. This is what is known about this data according to its creator:
+
+> The documents were recently unearthed from a hidden chest in Delft and seem to be written by Rudolphus Hogervorstus, my great great great uncle, in 1681. These documents show that he was a scientist studying the then roaming herds of unicorns in the area around Delft. Unfortunately these animals are extinct now.
+> His work contains multiple tables, carefully written down, documenting the population of unicorns over time in multiple places and related to that the sales and numbers of unicycles in those countries.
+> According to Rudolphus the unicorn populations and unicycles are related "The presence of the cone on the unicorn hints at a very defined sense of equilibrium, it is therefore only natural to assume unicorns ride unicycles".
+> As part of the archival process these tables were copied, as Rudolphus himself would say: "with the black magic, so vile it could not be discussed for hell would come descent upon us" into satans own spawn: Microsoft Excel.
+
+Source: https://github.com/RMHogervorst/unicorns_on_unicycles
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Load the unicorn sales data file. As we are not interested in the `total_turnover` variable only read in the cell range `A1:C43`
+```
+
+```{block, opts.label = "clues"}
+You can define ranges with the argument `range = range_definition` (see `?read_excel`).
+```
+
+```{r load_unicorn_sales, solution = TRUE}
+library(readxl)
+
+unicorn_sales <-
+  read_excel(
+    "../data/sales.xlsx",
+    range = "A1:C43"
+      )
+```

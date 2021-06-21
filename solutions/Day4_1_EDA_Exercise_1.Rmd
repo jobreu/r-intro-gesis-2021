@@ -1,0 +1,231 @@
+---
+title: 'Exercise 1 Exploratory Data Analysis - Solutions'
+# title: 'Exercise 1 Exploratory Data Analysis'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+output:
+  # unilur::tutorial_html: default
+  unilur::tutorial_html_solution: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(
+  clues = list(box.title = "Clues",
+               box.body = list(fill = "#fff9dc", colour = "black"),
+               box.header = list(fill = "#ffec8b", colour = "black"),
+               box.icon = "fa-search",
+               box.collapse = TRUE)
+)
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+For this exercise, we will use the same subset of the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data as in the presentation. Just run the following code to go through the wrangling pipeline. Remember that the `.csv` file should be stored in the `data` folder in the directory with the course materials.
+
+```{r load, echo = F, message = F}
+library(tidyverse)
+library(naniar)
+
+gesis_panel_corona <- read_csv2("../../../data/ZA5667_v1-1-0.csv")
+```
+
+```{r load-gapminder, eval = F}
+library(tidyverse)
+library(naniar)
+
+gesis_panel_corona <- read_csv2("../data/ZA5667_v1-1-0.csv")
+```
+
+```{r wrangle data}
+missings <- c(-111, -99, -77, -33, -22)
+
+corona_survey <- gesis_panel_corona %>% 
+  select(id,
+         sex:education_cat,
+         choice_of_party,
+         left_right = political_orientation,
+         risk_self =  hzcy001a,
+         risk_surround =  hzcy002a,
+         avoid_places =  hzcy006a,
+         keep_distance =  hzcy007a,
+         wash_hands = hzcy011a,
+         stockup_supplies =  hzcy013a,
+         reduce_contacts =  hzcy014a,
+         wear_mask = hzcy015a,
+         trust_rki = hzcy047a,
+         trust_government = hzcy048a,
+         trust_chancellor = hzcy049a,
+         trust_who = hzcy051a,
+         trust_scientists = hzcy052a,
+         info_national_public_tv = hzcy084a,
+         info_national_newspaper = hzcy086a,
+         info_local_newspaper = hzcy089a,
+         info_facebook = hzcy090a,
+         info_other_social_media = hzcy091a) %>% 
+  replace_with_na_all(condition = ~.x %in% missings) %>% 
+    replace_with_na(replace = list(choice_of_party = c(97,98),
+                                   risk_self = c(97),
+                                   risk_surround = c(97),
+                                   trust_rki = c(98),
+                                   trust_government = c(98),
+                                   trust_chancellor = c(98),
+                                   trust_who = c(98),
+                                   trust_scientists = c(98))) %>%
+  mutate(sex = recode_factor(sex,
+                               `1`= "Male",
+                               `2` = "Female"),
+           education_cat = recode_factor(education_cat,
+                                       `1` = "Low",
+                                       `2` = "Medium",
+                                       `3`= "High",
+                                       .ordered = TRUE),
+           age_cat = recode_factor(age_cat,
+                                   `1`= "<= 25 years",
+                                   `2`= "26 to 30 years",
+                                   `3` = "31 to 35 years",
+                                   `4` = "36 to 40 years",
+                                   `5` = "41 to 45 years",
+                                   `6` = "46 to 50 years",
+                                   `7` = "51 to 60 years",
+                                   `8` = "61 to 65 years",
+                                   `9`= "66 to 70 years",
+                                   `10` = ">= 71 years",
+                                   .ordered = TRUE),
+           choice_of_party = recode_factor(choice_of_party,
+                                           `1`= "CDU/CSU",
+                                           `2`= "SPD",
+                                           `3` = "FDP",
+                                           `4` = "Linke",
+                                           `5` = "Gruene",
+                                           `6` = "AfD",
+                                           `7` = "Other")
+    ) %>% 
+  mutate(sum_measures = avoid_places + 
+           keep_distance + 
+           wash_hands + 
+           stockup_supplies + 
+           reduce_contacts + 
+           wear_mask,
+         sum_sources = info_national_public_tv + 
+           info_national_newspaper + 
+           info_local_newspaper + 
+           info_facebook + 
+           info_other_social_media) %>% 
+  rowwise() %>% 
+  mutate(mean_trust = mean(c(trust_rki, 
+                             trust_government, 
+                             trust_chancellor, 
+                             trust_who, 
+                             trust_scientists),
+                           na.rm = TRUE)) %>% 
+  ungroup()
+```
+
+As we will use the same dataset again in the next exercise in this session, it makes sense to save it. To preserve the information about the variable types, it is best to save it as a `.rds` file. You can do this with the following command:
+
+```{r save-df, eval = FALSE}
+saveRDS(corona_survey, "../data/gp_corona_subset.rds")
+```
+
+In case you have not done so, please also install the `summarytools` and the `GGally` package. The following code chunk will check if you have these packages installed and install them, if that is not the case.
+
+```{r pkgs, eval = F}
+if (!require(summaryrtools)) install.packages("summarytools")
+if (!require(summaryrtools)) install.packages("GGally")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Print a simple table with the frequencies of the variable `age_cat`. Also include the counts for missing values.
+```
+
+```{block, opts.label = "clues"}
+You can use the `table()` function from `base R` for this.
+```
+
+```{r first-exercise, solution = TRUE}
+table(corona_survey$age_cat, useNA = "always")
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use a function from the `summarytools` package to get summary statistics for the following variables in your dataset: `left_right`, `sum_measures`, `mean_trust`.
+```
+
+```{block, opts.label = "clues"}
+You need to combine a wrangling function from the `dplyr` package with `descr()` from `summarytools`.
+```
+
+```{r second-exercise, solution = TRUE, message = FALSE, warning = FALSE}
+library(summarytools)
+
+corona_survey %>% 
+  select(left_right,
+         sum_measures,
+         mean_trust) %>%
+  descr()
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use another function from `summarytools` to display the counts and frequencies for the categories in the `age_cat` variable.
+```
+
+```{block, opts.label = "clues"}
+The function you need is `freq()`
+```
+
+```{r third-exercise, solution = TRUE}
+freq(corona_survey$age_cat)
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use yet another `summarytools` function to create a crosstable for the variables `sex` and `education_cat`.
+```
+
+```{block, opts.label = "clues"}
+The function for this is `ctable()`.
+```
+
+```{r fourth-exercise, solution = TRUE}
+ctable(corona_survey$sex, corona_survey$education_cat)
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use the `correlation` package to calculate and print correlations between the following variables: `risk_self`, `risk_surround`, `sum_measures`, `sum_sources`
+```
+
+```{block, opts.label = "clues"}
+You need to use `select()` from `dplyr` and `correlation()` from the package with the same name.
+```
+
+```{r fifth-exercise, solution = TRUE}
+library(correlation)
+
+corona_survey %>% 
+  select(risk_self,
+         risk_surround,
+         sum_measures,
+         sum_sources) %>% 
+  correlation()
+```
+
+```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
+As a final task in this exercise on EDA, plot the above correlations with a function from the `GGally` package. The plot should include the coefficients rounded to two decimal places as labels.
+```
+
+```{block, opts.label = "clues"}
+The required function is `ggcorr()`.
+```
+
+```{r sixth-exercise, solution = TRUE}
+library(GGally)
+
+corona_survey %>% 
+  select(risk_self,
+         risk_surround,
+         sum_measures,
+         sum_sources) %>% 
+  ggcorr(label = TRUE,
+         label_round = 2)
+```

@@ -1,0 +1,113 @@
+---
+title: 'Exercise R Markdown'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+output:
+  unilur::tutorial_html: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(
+  clues = list(box.title = "Clues",
+               box.body = list(fill = "#fff9dc", colour = "black"),
+               box.header = list(fill = "#ffec8b", colour = "black"),
+               box.icon = "fa-search",
+               box.collapse = TRUE)
+)
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+The structure of this final exercise for the course is a bit different. We want you to create and work with `R Markdown` documents (creating `HTML` output) to go through some of the things we covered and did in the previous sessions. There are no coding tasks in this document.
+
+We have created an `R Markdown` document (which we have also already knitted to create an `HTML` output file) that demonstrates some of the things you can do/create with `R Markdown` and repeats a few of the topics and steps we went through in the sessions before this one.
+
+This document uses *Gapminder* data and you can find it in the `exercise` folder: It is called `explore_gapminder.Rmd`.
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+The first thing we want you to do is to open the `explore_gapminder.Rmd`file in *RStudio* and explore it a bit to see what it contains. You can also open `explore_gapminder.html` (in your browser) to see the `.Rmd` and the resulting output document side-by-side.
+```
+
+```{block, opts.label = "clues"}
+You can open the `.Rmd` file via the `File` tab or the menu (`File` -> `Open File`) in *RStudio*.
+```
+
+You might notice that there are quite a few things specified in the `YAML` header. Let's briefly go through them:
+
+toc: true -> The document will contain a table of contents (ToC)
+
+toc_depth: 3 -> The ToC will contain header levels 1 to 3
+
+number_sections: true -> The sections divided by headers will be numbered
+
+toc_float: true -> The ToC is floating, meaning that it moves when you scroll
+
+code_folding: hide -> By default, the code chunks are hidden, but you can show them via the `Code` buttons in the document
+
+theme: flatly -> The *Bootswatch* them *flatly* is used to style the document
+
+highlight: tango -> The document uses the *Pandoc* code highlighting style *tango*
+
+code_download: true -> The document includes a button allowing you to download the full code
+
+df_print: paged -> When data frames are printed in the document they are printed in paged tables
+
+**NB**: To knit the document you need to have the packages it uses installed. These are the following ones:
+`rmarkdown`, `knitr`, `tidyverse`, `visdat`, `janitor`, `pander`, `patchwork`, `correlation`, `GGally`, `broom`, `sjPlot`, `scales`.
+
+An easy option for checking whether you have these packages installed, doing so if that is not the case, and loading them is the `easypackages` package. To use it for this purpose, you can run the following code:
+
+```{r easyp, eval = F}
+if (!require(easypackages)) install.packages("easypackages")
+library(easypackages)
+
+packages("rmarkdown", "knitr", "tidyverse", "visdat", "janitor", "pander", "patchwork", "correlation", "GGally", "broom", "sjPlot", "scales", prompt = F)
+```
+
+Feel free to play around a bit with the `explore_gapminder.Rmd` and its output (you can also change parts of the `YAML` header to see how that influences the output).
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+The big task we have for you for this exercise is to create a similar `R Markdown` document for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data. Using the `explore_gapminder.Rmd` as a starting point and guidance, we want you to do the following in this document:
+
+1. Load and wrangle the data the same way as before to create the `corona_survey` subset, but with one difference: Also include the variable `hzcy026a`, rename it to `obey_curfew` and code the value 4 for it as `NA`
+
+2. In addition to that, define a function called `inverter` as follows and use it to create a new variable called `distrust_gov` based on `trust_government`:
+`inverter <- function (var) {(var * -1) + max(var, na.rm = TRUE) + 1}`
+
+*Note*: You can do both of these first things in a code chunk that is not displayed in the output document.
+
+3. Get an overview of the missing data using the `vis_miss()` function from the `visdat` package.
+
+4. Look at the relative frequencies for the variables `sex`, `age_cat`, `education_cat`, and `choice_of_party` using the `tabyl()` function from the `janitor` package.
+
+5. Create bar plots with `ggplot2` to visualize the relative frequencies (percentages) for the variables `education_cat` and `choice_of_party`.
+
+6. Using the `pander` package, include a table with the output of the `base R` function `summary()` for the variables on trust in different people and institutions.
+
+7. Create `ggplot2` bar plots to visualize the distribution of the variables `risk_self` and `left_right`.
+
+8. Create a `ggplot2` boxplot to show differences in trust in the government between supporters of different parties; also showing (jittered) individual data points.
+
+9. Calculate correlations between `left_right`, `sum_measures`, `sum_sources`, and the trust variables using the `correlation` package and display them in a table using `knitr::kable()`. 
+
+10. Create a plot with the `GGally` package to visualize these correlations.
+
+10. Calculate a logistic regression model with `obey_curfew` as the dependent variable and `mean_trust` and `risk_self` as predictors (also include an intercept).
+
+11. Turn the output of this model into a table with the `broom` package and display it with `knitr::kable()`.
+
+12. Create one regression plot with the coefficients and another one with the predictions using the `sjPlot` package.
+
+This is a lot, but you can find template code for most of this in the `explore_gapminder.Rmd` (and the rest in the slides for the previous sessions). To get you started we have created an almost empty template `.Rmd` called `explore_gesis_panel_corona_stub.Rmd` in the `exercises` folder.
+```
+
+```{block, opts.label = "clues"}
+You can find the solutions in the `explore_gesis_panel_corona.Rmd` in the `solutions` folder.
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+If you are done with the large task of creating your own `.Rmd` for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data, we have also created an `R` Notebook with the same content as the `explore_gesis_panel_corona.Rmd`. The files are called `gesis_corona_survey_notebook.Rmd` and `gesis_corona_survey_notebook.nb.html` and can be found in the `exercises` folder. Feel free to explore the `R` Notebook and compare it with the `explore_gesis_panel_corona.Rmd` with regard to how it can be used and what output it produces. 
+```

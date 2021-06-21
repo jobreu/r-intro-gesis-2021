@@ -1,0 +1,98 @@
+---
+# title: 'Exercise 1 Programming - Solutions'
+title: 'Exercise 1 Programming'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+output:
+  unilur::tutorial_html: default
+  # unilur::tutorial_html_solution: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(
+  clues = list(box.title = "Clues",
+               box.body = list(fill = "#fff9dc", colour = "black"),
+               box.header = list(fill = "#ffec8b", colour = "black"),
+               box.icon = "fa-search",
+               box.collapse = TRUE)
+)
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+After successfully completing your first exercises to make yourself familiar with `R` and `Rstudio`, listening to lengthy lectures on data types, formats, functions, and loops, it's now time to program a little bit. Surely, we cannot cover all the lecture topics, but you should get a good feeling for (and about) programming. While it can get involved, don't worry; the first start is not that hard.
+
+This being said, let's start with some casual tinkering with different data types.
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Create at least 3 different data formats containing different data types and put them in a list.
+```
+
+```{block, opts.label = "clues"}
+Data formats are the Tupperware containers, such as `c()` or `matrix()`. Data types, e.g., can be numeric, character strings, and so forth. Please also add another list in this list to create a nested one.
+```
+
+```{r first_exercise, solution = TRUE}
+cool_numeric_vector <- sample(1:5, 5, replace = TRUE)
+
+cool_character_vector <- c("yeah", "arrrr", "eins11", 0815, "blubb")
+
+cool_matrix <- matrix(1:32, nrow = 4)
+
+cool_list <- list(c(1:3), NA, "huhu")
+
+cool_global_list <-
+  list(
+    cool_numeric_vector,
+    cool_character_vector,
+    cool_matrix,
+    cool_list
+  )
+
+cool_global_list
+```
+
+Ok. That's quite a mishmash (I am so happy this word exists) of different data, right? It's not easy to grasp which list element is of what data format and what data type. Sometimes we, therefore, have to query this information and print it out. I am sure you can build a loop for that.
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Have a look at this vector `numeric_vector <- c(1, 2, 3, "four")`. Create an if-else loop that checks whether this vector really comprises numeric values, prints out a corresponding message if yes, and a different message, if it does not comprise numeric values.
+```
+
+```{block, opts.label = "clues"}
+You can check whether a vector is numeric with the `is.numeric()` function.
+```
+
+```{r second_exercise, solution = TRUE}
+numeric_vector <- c(1, 2, 3, "four")
+
+if (is.numeric(numeric_vector)) {
+  print("Indeed. This is a numeric vector.")
+} else {
+  print("I am afraid I have to tell you the vector is not numeric :-(")
+}
+```
+
+That's nice but static. We have to repeatedly write this statement if we want to check multiple objects. Let's write a function.
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Take your if-else loop and make a function out of it. Also, try it out on more than one object.
+```
+
+```{block, opts.label = "clues"}
+Ensure your function arguments in `function ()` match the ones within the curly brackets `{}`.
+```
+
+```{r third_exercise, solution = TRUE}
+numeric_checker <- function (x) {
+  if (is.numeric(x)) {
+    print("Indeed. This is a numeric vector.")
+  } else {
+    print("I am afraid I have to tell you the vector is not numeric :-(")
+  }
+}
+
+numeric_checker(numeric_vector)
+```

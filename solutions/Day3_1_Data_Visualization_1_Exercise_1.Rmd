@@ -1,0 +1,125 @@
+---
+title: 'Exercise 1 Data Visualization Part 1 - Solutions'
+# title: 'Exercise 1 Data Visualization Part 1'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+output:
+  # unilur::tutorial_html: default
+  unilur::tutorial_html_solution: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(
+  clues = list(box.title = "Clues",
+               box.body = list(fill = "#fff9dc", colour = "black"),
+               box.header = list(fill = "#ffec8b", colour = "black"),
+               box.icon = "fa-search",
+               box.collapse = TRUE)
+)
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+Plotting data is fun. We also do it for data exploration (see the section on *Exploratory Data Analysis*). Still, at least in this slot of exercise, we just want to familiarize ourselves with some of the graphic facilities in R.
+
+So let's start with a simple task: creating a simple scatter plot. For this purpose, we first load the *GESIS Panel* COVID-19 survey data.
+
+```{r loadgpcovid, message=FALSE, eval=TRUE}
+library(dplyr)
+library(haven)
+
+gp_covid <- 
+  read_sav(
+    "../data/ZA5667_v1-1-0.sav"
+  ) %>% 
+  sjlabelled::set_na(na = c(-1:-99, 97))
+```
+
+Now let's plot an actual variable from the dataset.
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Create a scatter plot for the variables `political_orientation` and `hzcy001a`.
+```
+
+```{block, opts.label = "clues"}
+You may want to consider adding some jitter with the function `jitter()`.
+```
+
+```{r scatter, solution = TRUE}
+plot(gp_covid$political_orientation, gp_covid$hzcy001a)
+
+# add some jitter
+plot(
+  jitter(gp_covid$political_orientation, 2), 
+  jitter(gp_covid$hzcy001a, 2)
+)
+```
+
+Who doesn't like some colors, right? This exercise is not for a print journal with ridiculous fees for beautiful colorful plots. Let's use that to our advantage.
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Add some color of your choice to the plot.
+```
+
+```{block, opts.label = "clues"}
+Did you check out the `ColourPicker` add-in for more modern colors?
+```
+
+```{r colorscatter, solution = TRUE}
+plot(
+  jitter(gp_covid$political_orientation, 2), 
+  jitter(gp_covid$hzcy001a, 2),
+  col = c("#1C86EE", "#FFFFFF", "#FFFFFF")
+)
+```
+
+These scatter plots can get boring. So how about some bar plots? However, creating only one bar plot is also not that exciting. Luckily, we can do more and plot more than one.
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Plot 4 bar plots of 4 variables of your choice in two rows and two columns.
+```
+
+```{block, opts.label = "clues"}
+You have to use the `par()` function in combination with its `mfrow` option.
+```
+
+```{r barplots, solution = TRUE}
+tab_1 <- table(gp_covid$hzcy001a)
+tab_2 <- table(gp_covid$hzcy002a)
+tab_3 <- table(gp_covid$hzcy003a)
+tab_4 <- table(gp_covid$hzcy004a)
+
+par(mfrow = c(2, 2))
+barplot(tab_1)
+barplot(tab_2)
+barplot(tab_3)
+barplot(tab_4)
+```
+
+That's interesting. One may wonder what the median is in each of these distributions. You know what's perfect for visualizing this statistic? Boxplots!
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use the same plotting approach, but change the barplot to a boxplot using `boxplot()`.
+```
+
+```{block, opts.label = "clues"}
+Creating the tables beforehand is not needed anymore.
+```
+
+```{r boxplots, solution = TRUE}
+par(mfrow = c(2, 2))
+boxplot(gp_covid$hzcy001a)
+boxplot(gp_covid$hzcy002a)
+boxplot(gp_covid$hzcy003a)
+boxplot(gp_covid$hzcy004a)
+```
+
+Before we later start with the other exercises, you may want to consider to clean your graphics device with `dev.off()`
+
+```{r cleandevice , message=FALSE}
+dev.off()
+```
+

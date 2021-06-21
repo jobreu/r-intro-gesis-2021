@@ -1,0 +1,99 @@
+---
+title: 'Exercise 2 Getting Started - Solutions'
+# title: 'Exercise 2 Getting Started'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+output:
+  # unilur::tutorial_html: default
+  unilur::tutorial_html_solution: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(
+  clues = list(box.title = "Clues",
+               box.body = list(fill = "#fff9dc", colour = "black"),
+               box.header = list(fill = "#ffec8b", colour = "black"),
+               box.icon = "fa-search",
+               box.collapse = TRUE)
+)
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+Before we start with this exercise, two short notes on working with the exercise files in this workshop:
+
+1. We would like to ask you to solve all coding tasks by writing them into your own `R` script files. This ensures that all of your solutions are reproducible, and that you can (re-)use solutions from earlier exercises in later ones.
+
+2. All exercises and their solutions 'assume' they are in the `solutions` folder within the folder that contains the materials for this course. This way they can make use of files in other folders using relative paths. In order for your scripts to run properly, we suggest that you create (and save) them either in the `my_scripts` folder (which already includes an almost empty script that you can continue to work with) or either the `exercises` or `solutions` folder. For the relative file paths to work, you will also need to set your working directory to the folder that contains the script (check the slides again, if you need a reminder who to do that). Otherwise, you may have to change the (relative) file paths accordingly.
+
+Now let's get to it...
+
+To explore what `R` packages are out there that may be of interest for you, have a look at the [`CRAN Task View`](https://cran.r-project.org/) section called *SocialSciences* and do a quick search for "regression" on [METACRAN](https://www.r-pkg.org/). Although it may be tempting (there are so many interesting packages!), try not to spend more than 2 to 3 minutes on this (for now).
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+The first task for this exercise is to install a few packages from `CRAN` (we will use those later on in the course). Please install the following packages: `devtools`, `tidyverse`, `naniar`, `correlation` (*Note*: We will need a few more packages throughout this course, but we do not have to install all of them now). 
+```
+
+```{r first-exercise, solution = TRUE, eval = FALSE}
+install.packages(c("devtools", "tidyverse", "naniar", "correlation"))
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, let's load one of the packages you have just installed. Load the `devtools` package.
+```
+
+```{r second-exercise, solution = TRUE, eval = FALSE}
+library(devtools)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Some packages are not on `CRAN`. Another important source of `R` packages is *GitHub* (especially for development versions). So, let's install a package from there. Install the [`emo` package](https://github.com/hadley/emo) from *GitHub*. **NB**: To be able to install packages from *GitHub* on *Windows* machines, you will need to install [`Rtools`](https://cran.r-project.org/bin/windows/Rtools/) first.
+```
+
+```{block, opts.label = "clues"}
+You need the `install_github()` function from the `devtools` package for this.
+```
+
+```{r third-exercise, solution = TRUE, eval = FALSE}
+library(devtools)
+
+install_github("hadley/emo")
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Check which packages are now installed on your system.
+```
+
+```{block, opts.label = "clues"}
+You can use the *RStudio* interface or a function for this.
+```
+
+```{r fourth-exercise, solution = TRUE, eval = FALSE}
+installed.packages()
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+Add some code and comments to your script.
+```
+
+```{r fifth-exercise, solution = TRUE, eval = FALSE}
+# This is a comment
+1 + 1 == 3
+```
+
+Feel free to save your changes when you're done.
+
+```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
+Have a look at the help file for the `correlation` package.
+```
+
+```{r sixth-exercise, solution = TRUE, eval = FALSE}
+help(package = "correlation")
+```
+
+Before you really start working with *RStudio*, we also recommend changing the settings under `Tools` -> `Global Options` -> `General`, so that the workspace is never automatically saved and restored, and the history is not always saved.
+
+Finally, to make your new favorite work environment prettier, choose a theme for *RStudio*. You can do this via `Tools` -> `Global Options` -> `Appearance` in the *RStudio* menu.
