@@ -1,0 +1,74 @@
+.bold {font-weight: bold}
+.smaller { font-size: 70% }
+.small { font-size: 80% }
+.ssmall { font-size: 90% }
+.large { font-size: 130% }
+.larger { font-size: 150% }
+.huge { font-size: 300% }
+
+.column-left{ float: left; width: 33%; }
+.column-right{ float: right; width: 33%; }
+.column-center{ display: inline-block; width: 33%; }
+
+.column-left-half{float: left; width: 50%;}
+.column-right-half{float: right; width: 50%;}
+
+.bottom {
+	position: absolute;
+	bottom: 30px;
+}
+
+.highlight {background-color: yellow;}
+
+.title-slide {
+  background-color: #445A6F;  
+  color: #FFFFFF;           
+}
+
+.title-slide .remark-slide-number {
+  display: none;
+}
+
+div.my-header {
+    background-color: #F77A00;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#ffb76b), color-stop(0%,#ffa73d), color-stop(0%,#ffffff), color-stop(10%,#ffffff), color-stop(25%,#F77A00), color-stop(100%,#F77A00));
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 30px;
+    width: 100%;
+    text-align: left;
+}
+
+div.my-footer {
+    background-color: #445a6f;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 20px;
+    width: 100%;
+    overflow: hidden;
+}
+
+div.my-footer span {
+    font-size: 9pt;
+    color: #F7F8FA;
+    position: relative;
+    padding-left: 12px;
+    padding-right: 12px;
+    bottom: 3px;
+}
+
+.remark-slide-number {
+  font-size: 12pt;
+  margin-bottom: 625px;
+  margin-right: 10px;
+}
+
+.small .remark-code {
+  font-size: 10pt;
+}
+
+.smaller .remark-code {
+  font-size: 8pt;
+}

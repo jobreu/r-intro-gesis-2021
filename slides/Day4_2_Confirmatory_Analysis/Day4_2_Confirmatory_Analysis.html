@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to R for Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Johannes Breuer Stefan Jünger" />
+    <meta name="date" content="2020-08-06" />
+    <link href="Day4_2_Confirmatory_Analysis_files/remark-css/default.css" rel="stylesheet" />
+    <link href="Day4_2_Confirmatory_Analysis_files/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="Day4_2_Confirmatory_Analysis_files/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="Day4_2_Confirmatory_Analysis_files/tile-view/tile-view.js"></script>
+    <script src="Day4_2_Confirmatory_Analysis_files/clipboard/clipboard.min.js"></script>
+    <link href="Day4_2_Confirmatory_Analysis_files/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="Day4_2_Confirmatory_Analysis_files/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="Day4_2_Confirmatory_Analysis_files/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <script src="Day4_2_Confirmatory_Analysis_files/htmlwidgets/htmlwidgets.js"></script>
+    <script src="Day4_2_Confirmatory_Analysis_files/viz/viz.js"></script>
+    <link href="Day4_2_Confirmatory_Analysis_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+    <script src="Day4_2_Confirmatory_Analysis_files/grViz-binding/grViz.js"></script>
+    <link rel="stylesheet" href="default" type="text/css" />
+    <link rel="stylesheet" href="default-fonts" type="text/css" />
+    <link rel="stylesheet" href="../workshop.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to R for Data Analysis
+## Confirmatory Analysis
+### Johannes Breuer<br />Stefan Jünger
+### 2020-08-06
+
+---
+
+layout: true
+
+
+
+&lt;div class="my-footer"&gt;
+&lt;div style="float: left;"&gt;&lt;span&gt;Johannes Breuer, Stefan Jünger&lt;/span&gt;&lt;/div&gt;
+&lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-08-06&lt;/span&gt;&lt;/div&gt;
+&lt;div style="text-align: center;"&gt;&lt;span&gt;Confirmatory Analysis&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+  
+&lt;style type="text/css"&gt;
+.tinyish .remark-code { /*Change made here*/
+    font-size: 70% !important;
+}
+
+.tinyisher .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+&lt;/style&gt;
+
+---
+
+## Content of this sessions
+.pull-left[
+**What we will cover**
+- Bivariate hypothesis testing
+
+- Using more or less simple regression models in `R`
+  - OLS, GLM, and the like
+  
+- How to re-use the results of these models
+
+- How to feed these results into tables and pretty plots
+]
+
+.pull-right[
+**What we won't cover**
+- Theory (and history) of hypothesis testing
+
+- Crazy complex models with elaborated estimators
+  - e.g., no multilevel models
+  - also no clustered standard errors
+  
+- Bayesian statistics
+]
+
+---
+
+## Data in this session
+In this session, we, again, use the data from *GESIS Panel* COVID-19 survey:
+
+
+
+
+```r
+gp_covid &lt;-
+  haven::read_sav(
+    "./data/ZA5667_v1-1-0.sav"
+  ) %&gt;% 
+  sjlabelled::set_na(na = c(-1:-99, 97)) %&gt;% 
+  dplyr::mutate(
+    likelihood_infection = hzcy001a,
+    age_cat = as.factor(age_cat)
+  ) %&gt;% 
+  sjlabelled::remove_all_labels()
+```
+
+---
+
+## `R` is rich in statistical procedures
+Generally, if you seek to use a specific statistical method in `R`, chances are quite high that you can easily do that. 
+- As we said before: There's ~~an app~~a package for that
+  - Either directly on *CRAN* or, for example, on *GitHub*
+  
+For my use cases, I have only vers rarely encountered situations in which I cannot use a specific  procedure in `R`. Here's my small collection:
+- Structural Equation Models (SEM) using categorical latent variables
+- Hypothesis testing of marginal effects across different models
+- ...
+
+In principle, you could, of course, program these things yourself...
+
+---
+
+## Plenty of options
+A lot can be done in `R` with regard to statistical analysis as it is the number one language for statisticians who develop cutting-edge methods.
+
+Before we start analyzing data, however, we have to make ourselves familiar with some more terminology in `R`.
+
+---
+
+## Formulas in statistical software
+We have seen this before. As in other statistical languages, e.g., regression models require you to define your dependent variable and your independent ones. For example, in *Stata* you have to write:
+
+
+```r
+y x1 x2 x3
+```
+
+*SPSS* is more literate by requiring you to state what your dependent variables are with the `/DEPENDENT` parameter.
+
+---
+
+## `R` is straightforward and literate
+`R` combines the best of two worlds: It is straightforward to write formulas and it is quite literate regarding what role a specific element of a formula plays.
+
+
+```r
+y ~ x1 + x2 + x3
+```
+
+*Note*: Formulas represent a specific object class in `R`.
+
+
+```r
+class(y ~ x1 + x2 + x3)
+```
+
+```
+## [1] "formula"
+```
+
+---
+
+## Denoting the left-hand side with `~`
+In `R`, stating what your dependent variable is is really similar to some fancy flavors of mathematical notation:
+
+`$$y \sim N(\theta, \epsilon)$$`
+
+It states that a specific relationship is actually _estimated_, but we, fortunately, don't have to specify errors here.
+
+
+```r
+y ~ x1 + x2 + x3
+```
+
+Yet, sometimes it may be a good idea at least to specify the intercept as here:
+
+
+```r
+y ~ 1 + x1 + x2 + x3
+```
+
+---
+
+## ...since being explicit regarding the intercept is bliss
+We can estimate models without an intercept:
+
+
+```r
+y ~ x1 + x2 + x3 - 1
+```
+
+Or intercept only models as well:
+
+
+```r
+y ~ 1
+```
+
+---
+
+## Adding predictors with `+`
+You can add as many predictors/covariates as you want with the simple `+` operator. See:
+
+
+```r
+y ~ 1 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 + x11 + x12 +
+  x13 + x14 + x15 + x16 + x17 + x18 + x19 + x20 + x21 + x22 + x23 + x24
+```
+
+There's a shortcut to use all variables in a dataset:
+
+
+```r
+y ~ .
+```
+
+But to be honest, I don't think that's the best idea.
+
+---
+
+## Creating interaction effects with `*` and `:`
+What is more interesting, indeed, is adding interaction effects in a model. As this is the same as multiplying predictor variables, we also use the `*` sign for that.
+
+
+```r
+y ~ x1 * x2
+```
+
+This creates a model formula, including both the main effects of `x1` and `x2`, and their interaction denoted by `x1:x2`. We can even be more explicit and write that in the formula directly:
+
+
+```r
+y ~ x1 + x2 + x1:x2
+```
+
+Later, we will see how all of this looks when we actually feed regression models with these formulas. For the time being, it may seem to be a little bit abstract.
+
+---
+
+## Transforming variables with `I()`
+One last point before we dive into the regression part is transforming your variables. This procedure is rather common in regression analysis. Therefore, it is also straightforward to do in `R`. For simple transformations, such as log-transformation, this can be done as shown here:
+
+
+```r
+y ~ log(x)   # computes the log10 for x
+y ~ scale(x) # z-transformation of x
+```
+
+If your variable is not enclosed by a specific function, you have to wrap the operation in the `I()` function. For example:
+
+
+```r
+y ~ x + I(x^2) # add a quadratic term of x
+```
+
+This should show that we could also change the data type of variables within a function, e.g., by converting a numeric variable to a factor using `as.factor(x)`.
+
+---
+
+## Where to use formulas?
+The previous description refers a lot to formulas used in regression models. Where we also use the concept of formulas with dependent variables is simple hypothesis testing as in t-tests or ANOVA.
+
+These 'basic' statistical models can be easily used in `R`, too, as in any other statistical language. Let's try them out!
+
+---
+
+## Testing group differences in the distribution
+A very common methods for analyzing group differences are t-tests. You can use the `t.test()` function to easily perform such a test. However, our dependent variable may not be distributed normally between groups, such as the gender of our respondents.
+
+
+```r
+barplot(
+  table(
+    gp_covid$likelihood_infection, 
+    gp_covid$sex
+  ),
+  beside = TRUE
+)
+```
+
+.right[↪️]
+
+---
+.tinyish[
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Apply a t-test
+If you think about hypothesis testing, t-tests may be the first method that comes to mind. First and foremost, `R` is a statistical language. Indeed, the way to perform t-tests with `base R` is rather straightforward.
+
+
+```r
+t.test(
+  likelihood_infection ~ sex,
+  data = gp_covid
+)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  likelihood_infection by sex
+## t = -0.57985, df = 3149.6, p-value = 0.5621
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.11473917  0.06236364
+## sample estimates:
+## mean in group 1 mean in group 2 
+##        4.081047        4.107235
+```
+
+---
+
+## Test of normality
+Ok, t-tests are nice, but what if our data is not normally distributed in the first place, thus, violating one of the basic assumptions of performing t-tests? As we have seen in the session on *Exploratory Data Analysis*, to check this we can use a Shapiro-Wilk test of normality.
+
+
+```r
+shapiro.test(gp_covid$likelihood_infection)
+```
+
+```
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  gp_covid$likelihood_infection
+## W = 0.94396, p-value &lt; 2.2e-16
+```
+
+---
+
+## Alternative: Wilcoxon/Mann-Whitney test
+
+If the data are not normally distributed, the Wilcoxon/Mann-Whitney test can be a suitable alternative.
+
+
+```r
+wilcox.test(
+  likelihood_infection ~ sex,
+  data = gp_covid
+  )
+```
+
+```
+## 
+## 	Wilcoxon rank sum test with continuity correction
+## 
+## data:  likelihood_infection by sex
+## W = 1223403, p-value = 0.4646
+## alternative hypothesis: true location shift is not equal to 0
+```
+
+---
+
+## Testing multiple groups with an ANOVA
+There are situations in which we want to test differences across multiple groups. The classic method to use is an analysis of variance (ANOVA) and its many variants (ANCOVA, MANOVA, etc.). Again, you can easily do that in `R`.
+
+
+```r
+nice_anova &lt;- 
+  aov(
+    likelihood_infection ~ age_cat,
+    data = gp_covid
+  )
+
+summary(nice_anova)
+```
+
+```
+##               Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## age_cat        9    400   44.45   29.93 &lt;2e-16 ***
+## Residuals   3142   4666    1.49                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 613 observations deleted due to missingness
+```
+
+---
+
+## Simple linear regressions
+This may not come as a surprise at this point, but regression models are also easy to perform in `R`.
+
+*Disclaimer*: We won't do many regression diagnostics and assume that our dependent variable is continuous for the OLS regression context here.
+
+.tinyish[
+
+```r
+simple_linear_model &lt;-
+  lm(
+    likelihood_infection~ 
+      1 + 
+      age_cat + 
+      sex + 
+      political_orientation,
+    data = gp_covid
+  )
+
+simple_linear_model
+```
+]
+
+.right[↪️]
+
+---
+.tinyish[
+
+```
+## 
+## Call:
+## lm(formula = likelihood_infection ~ 1 + age_cat + sex + political_orientation, 
+##     data = gp_covid)
+## 
+## Coefficients:
+##           (Intercept)               age_cat2               age_cat3  
+##             4.4135933              0.1502594              0.2148462  
+##              age_cat4               age_cat5               age_cat6  
+##             0.0196150              0.0262248             -0.0276572  
+##              age_cat7               age_cat8               age_cat9  
+##            -0.2369713             -0.5343957             -0.6366123  
+##             age_cat10                    sex  political_orientation  
+##            -1.0002513             -0.0355715              0.0007054
+```
+]
+
+---
+
+## Using the `summary()`function
+
+```r
+summary(simple_linear_model)
+```
+
+.right[↪️]
+
+---
+.tinyish[
+
+```
+## 
+## Call:
+## lm(formula = likelihood_infection ~ 1 + age_cat + sex + political_orientation, 
+##     data = gp_covid)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.5608 -0.7094 -0.1090  0.6554  3.6201 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            4.4135933  0.1684705  26.198  &lt; 2e-16 ***
+## age_cat2               0.1502594  0.1687390   0.890 0.373275    
+## age_cat3               0.2148462  0.1671819   1.285 0.198852    
+## age_cat4               0.0196150  0.1624988   0.121 0.903930    
+## age_cat5               0.0262248  0.1627695   0.161 0.872013    
+## age_cat6              -0.0276572  0.1598974  -0.173 0.862687    
+## age_cat7              -0.2369713  0.1497679  -1.582 0.113693    
+## age_cat8              -0.5343957  0.1581236  -3.380 0.000735 ***
+## age_cat9              -0.6366123  0.1594911  -3.992 6.72e-05 ***
+## age_cat10             -1.0002513  0.1580731  -6.328 2.85e-10 ***
+## sex                   -0.0355715  0.0441969  -0.805 0.420974    
+## political_orientation  0.0007054  0.0117938   0.060 0.952307    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.218 on 3091 degrees of freedom
+##   (662 observations deleted due to missingness)
+## Multiple R-squared:  0.07973,	Adjusted R-squared:  0.07646 
+## F-statistic: 24.35 on 11 and 3091 DF,  p-value: &lt; 2.2e-16
+```
+]
+
+---
+
+## Inspecting models with `plot()`
+In the visualization session, we have already learned about the built-in `base R` functions for visually inspecting the modeling of regressions in `R`.
+
+.pull-left[
+
+```r
+par(mfrow = c(2, 2))
+plot(simple_linear_model)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Dummy coding is done automatically
+As you can see, `R` automatically converts factors in a regression model to classic dummy-coded variables, with the reference being the first value level. Hence, there is no need to create several variables with dummy codes and add them one by one to the regression formula. 
+
+You can inspect the contrast matrix using:
+
+.pull-left[
+
+```r
+contrasts(gp_covid$age_cat)
+```
+]
+
+.pull-right[
+
+```
+##    2 3 4 5 6 7 8 9 10
+## 1  0 0 0 0 0 0 0 0  0
+## 2  1 0 0 0 0 0 0 0  0
+## 3  0 1 0 0 0 0 0 0  0
+## 4  0 0 1 0 0 0 0 0  0
+## 5  0 0 0 1 0 0 0 0  0
+## 6  0 0 0 0 1 0 0 0  0
+## 7  0 0 0 0 0 1 0 0  0
+## 8  0 0 0 0 0 0 1 0  0
+## 9  0 0 0 0 0 0 0 1  0
+## 10 0 0 0 0 0 0 0 0  1
+```
+]
+
+---
+
+## Different coding example: Effect coding
+How to include a factor variable in a regression model can, of course, be changed in `R`. For a full overview, you can, e.g., have a look at this [tutorial](https://stats.idre.ucla.edu/r/library/r-library-contrast-coding-systems-for-categorical-variables).
+
+Let's try one alternative option out ourselves (just very briefly). I like the so-called effect coding or deviation coding, which compares the mean at a given level to the overall mean. You can create effect-coded dummies by changing the contrasts this way:
+
+
+```r
+contrasts(gp_covid$age_cat) &lt;- contr.sum(10)
+```
+
+---
+
+## Effect coding contrast matrix
+
+
+```r
+contrasts(gp_covid$age_cat)
+```
+
+```
+##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+## 1     1    0    0    0    0    0    0    0    0
+## 2     0    1    0    0    0    0    0    0    0
+## 3     0    0    1    0    0    0    0    0    0
+## 4     0    0    0    1    0    0    0    0    0
+## 5     0    0    0    0    1    0    0    0    0
+## 6     0    0    0    0    0    1    0    0    0
+## 7     0    0    0    0    0    0    1    0    0
+## 8     0    0    0    0    0    0    0    1    0
+## 9     0    0    0    0    0    0    0    0    1
+## 10   -1   -1   -1   -1   -1   -1   -1   -1   -1
+```
+
+---
+
+## Effect coding regression
+
+```r
+simple_linear_model_effect_coded &lt;-
+  lm(
+    likelihood_infection~ 
+      1 + 
+      age_cat + 
+      sex + 
+      political_orientation,
+    data = gp_covid
+  )
+
+summary(simple_linear_model_effect_coded)
+```
+
+.right[↪️]
+
+---
+.tinyish[
+
+```
+## 
+## Call:
+## lm(formula = likelihood_infection ~ 1 + age_cat + sex + political_orientation, 
+##     data = gp_covid)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.5608 -0.7094 -0.1090  0.6554  3.6201 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            4.2110991  0.0943166  44.649  &lt; 2e-16 ***
+## age_cat1               0.2024942  0.1311359   1.544  0.12265    
+## age_cat2               0.3527537  0.0833736   4.231 2.39e-05 ***
+## age_cat3               0.4173405  0.0807739   5.167 2.53e-07 ***
+## age_cat4               0.2221093  0.0725522   3.061  0.00222 ** 
+## age_cat5               0.2287190  0.0729389   3.136  0.00173 ** 
+## age_cat6               0.1748370  0.0679343   2.574  0.01011 *  
+## age_cat7              -0.0344771  0.0459005  -0.751  0.45263    
+## age_cat8              -0.3319015  0.0645208  -5.144 2.86e-07 ***
+## age_cat9              -0.4341180  0.0672035  -6.460 1.21e-10 ***
+## sex                   -0.0355715  0.0441969  -0.805  0.42097    
+## political_orientation  0.0007054  0.0117938   0.060  0.95231    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.218 on 3091 degrees of freedom
+##   (662 observations deleted due to missingness)
+## Multiple R-squared:  0.07973,	Adjusted R-squared:  0.07646 
+## F-statistic: 24.35 on 11 and 3091 DF,  p-value: &lt; 2.2e-16
+```
+]
+
+---
+
+## Generalized linear regression
+What we have seen so far are estimates for linear OLS regression models. A  standard `R` installation provides a multitude of other estimators/link functions, so-called family objects, e.g., binomial logistic or Poisson regression models. See `?family` for an overview.
+
+In this session, we only show the example of logistic regression. For this  purpose, we recode our subjective risk of infection variable:
+
+.tinyish[
+
+```r
+gp_covid &lt;-
+  gp_covid %&gt;% 
+  dplyr::mutate(
+    likelihood_infection_dichotomous =
+      dplyr::case_when(
+        likelihood_infection &gt; 4  ~ 1,
+        likelihood_infection &lt;= 4 ~ 0
+      )
+  )
+
+table(gp_covid$likelihood_infection_dichotomous)
+```
+
+```
+## 
+##    0    1 
+## 2031 1121
+```
+]
+
+---
+
+## Running a standard logistic regression
+
+```r
+simple_linear_model_logistic &lt;-
+  glm(
+    likelihood_infection_dichotomous ~ 
+      1 + 
+      age_cat + 
+      sex + 
+      political_orientation,
+    family = binomial(link = "logit"),
+    data = gp_covid
+  )
+
+summary(simple_linear_model_logistic)
+```
+
+.right[↪️]
+
+---
+.tinyisher[
+
+```
+## 
+## Call:
+## glm(formula = likelihood_infection_dichotomous ~ 1 + age_cat + 
+##     sex + political_orientation, family = binomial(link = "logit"), 
+##     data = gp_covid)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.3134  -0.9587  -0.6496   1.2241   2.0776  
+## 
+## Coefficients:
+##                        Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)           -0.412468   0.169516  -2.433  0.01497 *  
+## age_cat1               0.329783   0.217478   1.516  0.12942    
+## age_cat2               0.816217   0.139156   5.865 4.48e-09 ***
+## age_cat3               0.642687   0.133970   4.797 1.61e-06 ***
+## age_cat4               0.389152   0.120812   3.221  0.00128 ** 
+## age_cat5               0.485068   0.121148   4.004 6.23e-05 ***
+## age_cat6               0.302457   0.113661   2.661  0.00779 ** 
+## age_cat7              -0.033119   0.079505  -0.417  0.67700    
+## age_cat8              -0.550916   0.121132  -4.548 5.41e-06 ***
+## age_cat9              -0.941366   0.139100  -6.768 1.31e-11 ***
+## sex                   -0.087024   0.079077  -1.101  0.27111    
+## political_orientation -0.001284   0.021302  -0.060  0.95194    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 4036.2  on 3102  degrees of freedom
+## Residual deviance: 3776.6  on 3091  degrees of freedom
+##   (662 observations deleted due to missingness)
+## AIC: 3800.6
+## 
+## Number of Fisher Scoring iterations: 4
+```
+]
+
+---
+
+## Changing the link function to probit
+
+```r
+simple_linear_model_probit &lt;-
+  glm(
+    likelihood_infection_dichotomous ~ 
+      1 + 
+      age_cat + 
+      sex + 
+      political_orientation,
+    family = binomial(link = "probit"),
+    data = gp_covid
+  )
+
+summary(simple_linear_model_probit)
+```
+
+.right[↪️]
+
+---
+.tinyisher[
+
+```
+## 
+## Call:
+## glm(formula = likelihood_infection_dichotomous ~ 1 + age_cat + 
+##     sex + political_orientation, family = binomial(link = "probit"), 
+##     data = gp_covid)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.3123  -0.9592  -0.6512   1.2237   2.0814  
+## 
+## Coefficients:
+##                         Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)           -0.2493968  0.1027433  -2.427 0.015208 *  
+## age_cat1               0.1951991  0.1357027   1.438 0.150312    
+## age_cat2               0.4991937  0.0865738   5.766 8.11e-09 ***
+## age_cat3               0.3905963  0.0835688   4.674 2.95e-06 ***
+## age_cat4               0.2317226  0.0752264   3.080 0.002068 ** 
+## age_cat5               0.2916069  0.0755170   3.861 0.000113 ***
+## age_cat6               0.1776014  0.0706261   2.515 0.011914 *  
+## age_cat7              -0.0306378  0.0486595  -0.630 0.528933    
+## age_cat8              -0.3431128  0.0717301  -4.783 1.72e-06 ***
+## age_cat9              -0.5693086  0.0791810  -7.190 6.48e-13 ***
+## sex                   -0.0546581  0.0480328  -1.138 0.255148    
+## political_orientation -0.0001053  0.0128956  -0.008 0.993485    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 4036.2  on 3102  degrees of freedom
+## Residual deviance: 3776.5  on 3091  degrees of freedom
+##   (662 observations deleted due to missingness)
+## AIC: 3800.5
+## 
+## Number of Fisher Scoring iterations: 4
+```
+]
+
+---
+
+## Handling regression results (a note probably nobody wants to hear...)
+I have to admit I am not a huge fan of running regressions, searching for 'significant' p-values, and pasting the results into a table without interpreting them substantially. We _will_ (briefly) discuss how to create nice tables later on, but we will also talk about how we can apply some other techniques to gain more substantial insights into your data.
+
+Before we do that, we will look at how to work with a readily estimated regression object in `R`. This is meant to show some of the mechanics of what is actually happening in the background when a regression is run in `R`.
+
+---
+
+## Accessing model results I: base `R`
+Regression results are a specific type/class of objects in `R`. You can use the `str()` function to retrieve an overview of the whole structure of the object (it's a list of different information). For starters, we may want to see what the first level of this list may provide by asking for the names of the included pieces of information:
+
+
+```r
+names(simple_linear_model)
+```
+
+```
+##  [1] "coefficients"  "residuals"     "effects"       "rank"         
+##  [5] "fitted.values" "assign"        "qr"            "df.residual"  
+##  [9] "na.action"     "contrasts"     "xlevels"       "call"         
+## [13] "terms"         "model"
+```
+
+---
+
+## Getting the coefficients
+
+
+```r
+simple_linear_model$coefficients
+```
+
+```
+##           (Intercept)              age_cat2              age_cat3 
+##          4.4135933169          0.1502594097          0.2148462393 
+##              age_cat4              age_cat5              age_cat6 
+##          0.0196150389          0.0262247598         -0.0276572461 
+##              age_cat7              age_cat8              age_cat9 
+##         -0.2369713291         -0.5343957261         -0.6366122520 
+##             age_cat10                   sex political_orientation 
+##         -1.0002513373         -0.0355714558          0.0007054441
+```
+
+---
+
+## Getting the standard errors
+`lm` objects are a little bit cumbersome to use as the information is deeply nested within the object. If you want to extract the standard errors, you may need some reverse engineering:
+
+.tinyisher[
+
+```r
+summary(simple_linear_model)$coefficients[,2]
+```
+
+```
+##           (Intercept)              age_cat2              age_cat3 
+##            0.16847046            0.16873903            0.16718186 
+##              age_cat4              age_cat5              age_cat6 
+##            0.16249883            0.16276953            0.15989742 
+##              age_cat7              age_cat8              age_cat9 
+##            0.14976793            0.15812356            0.15949107 
+##             age_cat10                   sex political_orientation 
+##            0.15807305            0.04419694            0.01179375
+```
+]
+
+Or you just compute them by yourself:
+
+.tinyisher[
+
+```r
+sqrt(diag(vcov(simple_linear_model)))
+```
+
+```
+##           (Intercept)              age_cat2              age_cat3 
+##            0.16847046            0.16873903            0.16718186 
+##              age_cat4              age_cat5              age_cat6 
+##            0.16249883            0.16276953            0.15989742 
+##              age_cat7              age_cat8              age_cat9 
+##            0.14976793            0.15812356            0.15949107 
+##             age_cat10                   sex political_orientation 
+##            0.15807305            0.04419694            0.01179375
+```
+]
+
+---
+
+## Getting confidence intervals
+The standard `summary()` doesn't supply confidence intervals. We can use the `confint()` command to get them. For example, for the logistic regression:
+
+
+```r
+confint(simple_linear_model_logistic)
+```
+
+```
+##                             2.5 %      97.5 %
+## (Intercept)           -0.74552148 -0.08083006
+## age_cat1              -0.10174634  0.75435977
+## age_cat2               0.54462150  1.09087948
+## age_cat3               0.38028449  0.90610455
+## age_cat4               0.15157308  0.62559600
+## age_cat5               0.24720885  0.72255407
+## age_cat6               0.07876006  0.52466107
+## age_cat7              -0.18943519  0.12230533
+## age_cat8              -0.79247625 -0.31710976
+## age_cat9              -1.22151746 -0.67530037
+## sex                   -0.24214913  0.06788039
+## political_orientation -0.04303617  0.04049153
+```
+
+---
+
+## Compare models with an ANOVA
+We can also compare models with some standard tools. For example, to examine competing models, such as our logistic and probit regression, we can apply an ANOVA.
+
+.tinyish[
+
+```r
+anova(simple_linear_model_logistic, simple_linear_model_probit)
+```
+
+```
+## Analysis of Deviance Table
+## 
+## Model 1: likelihood_infection_dichotomous ~ 1 + age_cat + sex + political_orientation
+## Model 2: likelihood_infection_dichotomous ~ 1 + age_cat + sex + political_orientation
+##   Resid. Df Resid. Dev Df Deviance
+## 1      3091     3776.6            
+## 2      3091     3776.5  0 0.094111
+```
+]
+
+---
+
+## There are easier ways
+Addon-packages, e.g., for creating tables, usually gather such information automatically, so that we don't need to apply everything by ourselves. However, we think it makes sense to at least know there are always some ways to that yourself.
+
+<div id="htmlwidget-2b2dfe86ab5bffe0e85d" style="width:504px;height:100px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2b2dfe86ab5bffe0e85d">{"x":{"diagram":"digraph flowchart {\n      rankdir = \"LR\";\n      # node definitions with substituted label text\n      node [fontname = Helvetica, shape = rectangle]        \n      tab1 [label = \"Estimated Model\"]\n      tab2 [label = \"Tidy Data Frame with Model Information\"]\n      tab3 [label = \"Table or Figure\"]\n\n      # edge definitions with the node IDs\n      tab1 -> tab2 [style = invis];\n      tab2 -> tab3 [style = invis];\n      tab1 -> tab3;\n      }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+Later in this session, we will also learn about some `tidy` functions that make accessing results even more straightforward.
+
+<div id="htmlwidget-f6b23745edcf03c72f8a" style="width:504px;height:100px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f6b23745edcf03c72f8a">{"x":{"diagram":"digraph flowchart {\n      rankdir = \"LR\";\n      # node definitions with substituted label text\n      node [fontname = Helvetica, shape = rectangle]        \n      tab1 [label = \"Estimated Model\"]\n      tab2 [label = \"Tidy Data Frame with Model Information\"]\n      tab3 [label = \"Table or Figure\"]\n\n      # edge definitions with the node IDs\n      tab1 -> tab2;\n      tab2 -> tab3;\n      tab1 -> tab3;\n      }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day4_2_Confirmatory_Analysis_Exercise_1_question.html) time 🏋️‍♀️💪🏃🚴
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day4_2_Confirmatory_Analysis_Exercise_1_solution.html)
+
+---
+
+## (Simple) model predictions
+It is also quite straightforward to do simple predictions from an estimated model using the `predict()` function in `R`.
+
+.tinyish[
+.pull-left[
+
+```r
+hist(
+  gp_covid$likelihood_infection
+)
+```
+
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-38-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+```r
+hist(
+  predict(simple_linear_model)
+)
+```
+
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-39-1.png" style="display: block; margin: auto;" /&gt;
+]
+]
+
+---
+
+## Feed `predict()` with your own data
+We can feed the `predict()` function with our own data to figure out what our model actually predicts when something changes. This can provide additional insights into our models:
+
+.tinyish[
+
+```r
+predictions_data &lt;-
+  data.frame(
+    political_orientation = 
+      rep(
+        mean(gp_covid$political_orientation, na.rm = TRUE), 
+        2
+      ),
+    sex = rep(mean(gp_covid$sex), 2),
+    age_cat = as.factor(c(1, 10))
+  )
+
+predict(
+  object = simple_linear_model, 
+  newdata = predictions_data, 
+  interval = "confidence"
+  )
+```
+
+```
+##        fit      lwr      upr
+## 1 4.364001 4.082243 4.645759
+## 2 3.363749 3.235150 3.492348
+```
+]
+
+---
+
+## Plotting the coefficients
+
+.pull-left[
+
+```r
+library(sjPlot)
+
+plot_model(
+  simple_linear_model,
+  type = "est"
+)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-41-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## ...multiple models
+
+.pull-left[
+
+```r
+library(sjPlot)
+
+plot_models(
+  simple_linear_model,
+  simple_linear_model_logistic,
+  simple_linear_model_probit
+)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-42-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## It's `ggplot2`-based
+
+.tinyish[
+.pull-left[
+
+```r
+library(sjPlot)
+
+plot_models(
+  simple_linear_model,
+  simple_linear_model_logistic,
+  simple_linear_model_probit
+) +
+  scale_color_manual(
+    breaks = c(
+      "likelihood_infection", 
+      "likelihood_infection_dichotomous.2", 
+      "likelihood_infection_dichotomous.3"
+    ),
+    labels = c("OLS", "Logistic", "Probit"),
+    values = c("#030303", "#8C8C8C", "#BABABA")
+  ) + 
+  labs(color = "Model") +
+  theme_bw()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-43-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## More advanced post-estimation techniques
+In an OLS context, predictions of this kind are straightforward to interpret. For non-linear models, such as in logistic regression, this is way more difficult:
+
+
+```r
+predictions &lt;- 
+  predict(
+    object = simple_linear_model_logistic, 
+    newdata = predictions_data
+  )
+```
+
+Predictions have to be converted into probabilities:
+
+
+```r
+exp(predictions) / (1 + exp(predictions))
+```
+
+```
+##         1         2 
+## 0.4457056 0.1204915
+```
+
+---
+
+## Predictions made easy
+.pull-left[
+
+```r
+library(sjPlot)
+
+plot_model(
+  simple_linear_model_logistic, 
+  terms = "age_cat",
+  type = "pred"
+)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-46-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+These are simple predictions by holding all other variables at their mean value. If you're an avid *Stata* user, you may be familiar with using average marginal effects. You can also use them in `R` with the `margins` package!
+
+---
+
+## What are marginal effects (AME)?
+AME provides a similar interpretation for a one-unit change as in OLS models: the average change of the dependent variable when all other variables are held constant (at their empirical value).
+
+.tinyish[
+
+```r
+margins::margins(simple_linear_model_logistic)
+```
+
+```
+##       sex political_orientation age_cat2 age_cat3 age_cat4 age_cat5  age_cat6
+##  -0.01836            -0.0002708   0.1209  0.07796   0.0147  0.03859 -0.006737
+##  age_cat7 age_cat8 age_cat9 age_cat10
+##  -0.08695  -0.1957  -0.2616   -0.3251
+```
+]
+
+---
+
+## Proof: It's the same in the OLS context
+
+.tinyish[
+
+```r
+margins::margins(simple_linear_model)
+```
+
+```
+##       sex political_orientation age_cat2 age_cat3 age_cat4 age_cat5 age_cat6
+##  -0.03557             0.0007054   0.1503   0.2148  0.01962  0.02622 -0.02766
+##  age_cat7 age_cat8 age_cat9 age_cat10
+##    -0.237  -0.5344  -0.6366        -1
+```
+
+
+```r
+simple_linear_model$coefficients
+```
+
+```
+##           (Intercept)              age_cat2              age_cat3 
+##          4.4135933169          0.1502594097          0.2148462393 
+##              age_cat4              age_cat5              age_cat6 
+##          0.0196150389          0.0262247598         -0.0276572461 
+##              age_cat7              age_cat8              age_cat9 
+##         -0.2369713291         -0.5343957261         -0.6366122520 
+##             age_cat10                   sex political_orientation 
+##         -1.0002513373         -0.0355714558          0.0007054441
+```
+]
+
+---
+
+## AME are nice for predicting and plotting results as well
+
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-50-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Tables of analyses
+The number of packages to create tables in R is infinite - at least almost. While some provide more or less the same functionality, the usual difference is what their output format is.
+- `LaTeX` tables
+- `HTML` tables
+- `.doc`-files
+- ...
+- *Excel* anyone?
+
+`R` allows you to be very flexible here. You can gather the statistics that you want, put everything into a `data.frame`, and just use the table package of your choice.
+
+However, this approach typically requires a lot of manual work.
+
+---
+
+## The `stargazer` package
+To avoid the hassle of too much manual work in table creation with `R`, the [`stargazer`](https://cran.r-project.org/web/packages/stargazer/index.html) package is a popular choice. It provides `LaTeX` tables by default but can also output text, `Markdown`, and `HTML` tables, or even `.doc` documents. Here's an example:
+
+
+```r
+stargazer::stargazer(
+  simple_linear_model,
+  simple_linear_model_effect_coded,
+  simple_linear_model_logistic,
+  simple_linear_model_probit,
+  type = "text"
+)
+```
+
+---
+
+&lt;img src="./pics/stargazer_output.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Different table styles &amp; other toggles
+`stargazer` provides different table styles which you can use to format your table in accordance with the guidelines of many journals.
+
+You can also define which statistics should be printed, how `stargazer` should deal with standard errors, and much more.
+
+I recommend checking out the `stargazer` package, but be aware that creating tables is now a really "hot" topic in `R`. Hence, there are many packages that provide similar and, for some cases, also additional options for creating tables (we will mention some of them in the session on `R Markdown`). For example, `stargazer` does not support modern formats of statistical results, such as the output from `broom` which we will have a look next.
+
+---
+
+## Alternative: `huxtable`
+
+
+```r
+library(huxtable)
+
+huxreg(
+  simple_linear_model,
+  simple_linear_model_effect_coded,
+  simple_linear_model_logistic,
+  simple_linear_model_probit
+)
+```
+
+---
+
+## Standardizing your results: tidy models with `broom`
+.pull-left[
+We have already entered the area of reporting statistical results. We will have a separate session on reporting on with `R Markdown`. One thing to note at this point is that more and more developers in `R` were unsatisfied with the diverse output some of the standard regression procedures provide. The outputs may be helpful to look at, but it's not great for further processing. For this purpose, we need tables.
+]
+
+.pull-right[
+&lt;img src="./pics/broom package.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## 3 functions of `broom`
+`broom` provides only 3 but very powerful main functions:
+- `tidy()`: creates a `tibble` from your model
+- `glance()`: information about your model as `tibble` ('model fit')
+- `augment()`: adds information, e.g., individual fitted values to your data
+
+Let's check them out.
+
+---
+
+## `tidy()`
+
+
+```r
+broom::tidy(simple_linear_model)
+```
+
+```
+## # A tibble: 12 x 5
+##    term                   estimate std.error statistic   p.value
+##    &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 (Intercept)            4.41        0.168    26.2    8.59e-137
+##  2 age_cat2               0.150       0.169     0.890  3.73e-  1
+##  3 age_cat3               0.215       0.167     1.29   1.99e-  1
+##  4 age_cat4               0.0196      0.162     0.121  9.04e-  1
+##  5 age_cat5               0.0262      0.163     0.161  8.72e-  1
+##  6 age_cat6              -0.0277      0.160    -0.173  8.63e-  1
+##  7 age_cat7              -0.237       0.150    -1.58   1.14e-  1
+##  8 age_cat8              -0.534       0.158    -3.38   7.35e-  4
+##  9 age_cat9              -0.637       0.159    -3.99   6.72e-  5
+## 10 age_cat10             -1.00        0.158    -6.33   2.85e- 10
+## 11 sex                   -0.0356      0.0442   -0.805  4.21e-  1
+## 12 political_orientation  0.000705    0.0118    0.0598 9.52e-  1
+```
+
+---
+
+## `glance()`
+
+.tinyish[
+
+```r
+broom::glance(simple_linear_model)
+```
+
+```
+## # A tibble: 1 x 11
+##   r.squared adj.r.squared sigma statistic  p.value    df logLik    AIC    BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1    0.0797        0.0765  1.22      24.3 8.66e-49    12 -5008. 10042. 10121.
+## # ... with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;
+```
+]
+
+---
+
+## `augment()`
+
+.tinyish[
+
+```r
+broom::augment(simple_linear_model)
+```
+
+```
+## # A tibble: 3,103 x 12
+##    .rownames likelihood_infe~ age_cat   sex political_orien~ .fitted .se.fit
+##    &lt;chr&gt;                &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;            &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+##  1 2                        5 7           2                5    4.11  0.0484
+##  2 3                        5 8           1                5    3.85  0.0695
+##  3 4                        4 4           1                7    4.40  0.0823
+##  4 6                        3 10          1               10    3.38  0.0902
+##  5 7                        4 4           2                5    4.37  0.0786
+##  6 8                        4 7           2                6    4.11  0.0515
+##  7 10                       7 1           1                7    4.38  0.149 
+##  8 11                       4 6           2                6    4.32  0.0758
+##  9 12                       5 8           1                7    3.85  0.0740
+## 10 14                       6 6           1                6    4.35  0.0749
+## # ... with 3,093 more rows, and 5 more variables: .resid &lt;dbl&gt;, .hat &lt;dbl&gt;,
+## #   .sigma &lt;dbl&gt;, .cooksd &lt;dbl&gt;, .std.resid &lt;dbl&gt;
+```
+]
+
+---
+
+## Create standardized data of your results
+
+
+```r
+my_fancy_models &lt;-
+  bind_rows(
+    broom::tidy(simple_linear_model) %&gt;% 
+      dplyr::mutate(model = "OLS"), 
+    broom::tidy(simple_linear_model_effect_coded) %&gt;% 
+      dplyr::mutate(model = "OLS Effect Coded"),
+    broom::tidy(simple_linear_model_logistic) %&gt;% 
+      dplyr::mutate(model = "Logistic"),
+    broom::tidy(simple_linear_model_probit) %&gt;% 
+      dplyr::mutate(model = "Probit")
+  )
+```
+
+This may seem like an unnecessary effort if we can use packages like `stargazer`. But believe me, the more you fiddle in `R`, the more you will face situations where using such procedures does not work anymore (I think this might be true for *Stata* or *SPSS* as well). Or think about possible reviewers who want to have something added. With packages like `broom` you can also create a standardized output of other types of models, such as Latent Class Analysis (LCA) (with the package [`poLCA`](https://cran.r-project.org/web/packages/poLCA/index.html)). 
+
+---
+
+## Example: Coefficients Plot from tidy results
+
+The [`dotwhisker`](https://cran.r-project.org/web/packages/dotwhisker/vignettes/dotwhisker-vignette.html) package is another alternative to create a coefficient plot for multiple models from a tidy results data frame.
+
+.pull-left[
+
+```r
+library(dotwhisker)
+
+dwplot(my_fancy_models)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_2_Confirmatory_Analysis_files/figure-html/unnamed-chunk-57-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day4_2_Confirmatory_Analysis_Exercise_2_question.html) time 🏋️‍♀️💪🏃🚴
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day4_2_Confirmatory_Analysis_Exercise_2_solution.html)
+
+---
+
+# Extracurricular activities
+As it is such a handy package, we recommend to explore the `broom` package a bit further. Last year, Alex Hayes, one authors of the package, [gave an excellent talk at the RStudio Conference](https://rstudio.com/resources/rstudioconf-2019/solving-the-model-representation-problem-with-broom/) that is quite worthwhile to watch.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,2975 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to R for Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Johannes Breuer Stefan Jünger" />
+    <meta name="date" content="2020-08-06" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="..\workshop.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to R for Data Analysis
+## Exploratory Data Analysis
+### Johannes Breuer<br />Stefan Jünger
+### 2020-08-06
+
+---
+
+layout: true
+
+
+
+&lt;div class="my-footer"&gt;
+  &lt;div style="float: left;"&gt;&lt;span&gt;Johannes Breuer, Stefan Jünger&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS Summer School in Survey Methodology, 2020-08-06&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;Exploratory Data Analysis&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style type="text/css"&gt;
+
+pre {
+  font-size: 10px
+}
+&lt;/style&gt;
+
+---
+
+## Exploratory Data Analysis (EDA)
+
+After wrangling our data, the next thing we should do is exploring them. In practice, of course, these steps are often done iteratively. Exploratory data analysis can take many shapes and forms. In this session, we will look at the following:
+
+- summary statistics &amp; frequencies
+- correlations &amp; cross-tabulations
+- checking (joint &amp; grouped) distributions of variables
+- checking for missing values and outliers
+
+A key tool for EDA is the use of visualizations which is why we will use some of the visualization techniques discussed in the previous sessions to explore our data.
+
+---
+
+## Data
+
+As using the full dataset can become somewhat unwieldy for the examples in this section, we will create/use a subset of the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data. We will select a subset of variables on the following:
+- demographics
+- political orientation
+- risk perceptions
+- personal measures taken
+- trust in people and institutions
+- use of media to get Corona-related information
+
+As a repetition and reminder, we will quickly go through a wrangling pipeline for these data in the following.
+
+*Note*: Of course, it is possible to do the whole wrangling in one pipe. However, to check if everything worked it is advisable to break up the pipe into smaller chunks (a nice tool for checking and debugging pipes that also provides an *RStudio* Addin is the package [`ViewPipeSteps`](https://github.com/daranzolin/ViewPipeSteps)). Also, splitting up the wrangling pipe steps allows us to show them on the slides.
+
+---
+
+## Wrangling pipeline: Select &amp; rename 
+
+.small[
+
+```r
+gesis_panel_corona &lt;- read_csv2("./data/ZA5667_v1-1-0.csv")
+```
+
+
+
+
+```r
+corona_survey &lt;- gesis_panel_corona %&gt;% 
+  select(id,
+         sex:education_cat,
+         choice_of_party,
+         left_right = political_orientation,
+         risk_self =  hzcy001a,
+         risk_surround =  hzcy002a,
+         avoid_places =  hzcy006a,
+         keep_distance =  hzcy007a,
+         wash_hands = hzcy011a,
+         stockup_supplies =  hzcy013a,
+         reduce_contacts =  hzcy014a,
+         wear_mask = hzcy015a,
+         trust_rki = hzcy047a,
+         trust_government = hzcy048a,
+         trust_chancellor = hzcy049a,
+         trust_who = hzcy051a,
+         trust_scientists = hzcy052a,
+         info_national_public_tv = hzcy084a,
+         info_national_newspaper = hzcy086a,
+         info_local_newspaper = hzcy089a,
+         info_facebook = hzcy090a,
+         info_other_social_media = hzcy091a)
+```
+]
+
+---
+
+## Wrangling pipeline: Missing values
+
+If you look at the [codebook](https://dbk.gesis.org/dbksearch/download.asp?id=67378) for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*, you will see that some of the variables we have selected have specific values that we should either code as missing values or exclude before we do any analyses (exploratory or otherwise).
+
+.small[
+
+```r
+library(naniar)
+
+missings &lt;- c(-111, -99, -77, -33, -22)
+
+corona_survey &lt;- corona_survey %&gt;%
+  replace_with_na_all(condition = ~.x %in% missings) %&gt;% 
+    replace_with_na(replace = list(choice_of_party = c(97,98),
+                                   risk_self = c(97),
+                                   risk_surround = c(97),
+                                   trust_rki = c(98),
+                                   trust_government = c(98),
+                                   trust_chancellor = c(98),
+                                   trust_who = c(98),
+                                   trust_scientists = c(98)))
+```
+]
+
+---
+
+## Wrangling pipeline: Change variable types, recode values, &amp; compute new variables
+
+.smaller[
+
+```r
+corona_survey &lt;- corona_survey %&gt;% 
+    mutate(sex = recode_factor(sex,
+                               `1`= "Male",
+                               `2` = "Female"),
+           education_cat = recode_factor(education_cat,
+                                       `1` = "Low",
+                                       `2` = "Medium",
+                                       `3`= "High",
+                                       .ordered = TRUE),
+           age_cat = recode_factor(age_cat,
+                                   `1`= "&lt;= 25 years",
+                                   `2`= "26 to 30 years",
+                                   `3` = "31 to 35 years",
+                                   `4` = "36 to 40 years",
+                                   `5` = "41 to 45 years",
+                                   `6` = "46 to 50 years",
+                                   `7` = "51 to 60 years",
+                                   `8` = "61 to 65 years",
+                                   `9`= "66 to 70 years",
+                                   `10` = "&gt;= 71 years",
+                                   .ordered = TRUE),
+           choice_of_party = recode_factor(choice_of_party,
+                                           `1`= "CDU/CSU",
+                                           `2`= "SPD",
+                                           `3` = "FDP",
+                                           `4` = "Linke",
+                                           `5` = "Gruene",
+                                           `6` = "AfD",
+                                           `7` = "Other")
+    )
+```
+]
+
+---
+
+## Wrangling pipeline: Compute new variables
+
+
+```r
+corona_survey &lt;- corona_survey %&gt;%
+  mutate(sum_measures = avoid_places + 
+           keep_distance + 
+           wash_hands + 
+           stockup_supplies + 
+           reduce_contacts + 
+           wear_mask,
+         sum_sources = info_national_public_tv + 
+           info_national_newspaper + 
+           info_local_newspaper + 
+           info_facebook + 
+           info_other_social_media) %&gt;% 
+  rowwise() %&gt;% 
+  mutate(mean_trust = mean(c(trust_rki, 
+                             trust_government, 
+                             trust_chancellor, 
+                             trust_who, 
+                             trust_scientists),
+                           na.rm = TRUE)) %&gt;% 
+  ungroup()
+```
+
+---
+
+## Explore your data: First look
+
+To get a first impression of the dataset you can use some of the functions that we discussed in the session on *Data Wrangling*, such as `dim()`, `head()`, or `str()` from `base R`, `glimpse()` from `dplyr`, or `View()`.
+
+While looking at the the full dataset can give us a general understanding of the data and their format and also show if (and how) we may need to wrangle them (further), it is difficult to make sense of the data just by looking at it.
+
+---
+
+## Making sense of data
+
+To make sense of quantitative data we can reduce their information to unique values.
+
+--
+
+.center[
+~ 
+
+**That's a simple definition of summary statistics**
+
+~]
+
+--
+
+As such, we can use summarizing functions of
+- location (e.g., the mean),
+- spread (e.g., standard deviation),
+- the shape of the distribution (e.g., skewness), and
+- relations between variables (e.g., correlation coefficients)
+
+---
+
+## Summary statistics: `summary()`
+
+A quick and easy way to check some summary statistics for your dataset is the `base R` function `summary()` which can be applied to individual variables as well as whole dataframes:
+
+
+```r
+summary(corona_survey$left_right)
+
+summary(corona_survey[, 2:19])
+```
+
+.right[↪️]
+
+---
+
+.smaller[
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    0.00    3.00    5.00    4.66    6.00   10.00      87
+```
+
+```
+##      sex                 age_cat    education_cat choice_of_party
+##  Male  :1933   51 to 60 years:978   Low   : 423   Gruene :756    
+##  Female:1832   61 to 65 years:386   Medium:1154   CDU/CSU:753    
+##                &gt;= 71 years   :382   High  :2188   SPD    :369    
+##                46 to 50 years:367                 Linke  :287    
+##                66 to 70 years:357                 AfD    :281    
+##                36 to 40 years:328                 (Other):337    
+##                (Other)       :967                 NA's   :982    
+##    left_right      risk_self     risk_surround    avoid_places   
+##  Min.   : 0.00   Min.   :1.000   Min.   :1.000   Min.   :0.0000  
+##  1st Qu.: 3.00   1st Qu.:3.000   1st Qu.:4.000   1st Qu.:1.0000  
+##  Median : 5.00   Median :4.000   Median :5.000   Median :1.0000  
+##  Mean   : 4.66   Mean   :4.094   Mean   :4.552   Mean   :0.8446  
+##  3rd Qu.: 6.00   3rd Qu.:5.000   3rd Qu.:6.000   3rd Qu.:1.0000  
+##  Max.   :10.00   Max.   :7.000   Max.   :7.000   Max.   :1.0000  
+##  NA's   :87      NA's   :613     NA's   :661     NA's   :579     
+##  keep_distance      wash_hands     stockup_supplies reduce_contacts 
+##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:1.0000   1st Qu.:1.0000   1st Qu.:0.0000   1st Qu.:1.0000  
+##  Median :1.0000   Median :1.0000   Median :0.0000   Median :1.0000  
+##  Mean   :0.8029   Mean   :0.9105   Mean   :0.3214   Mean   :0.8547  
+##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  
+##  NA's   :579      NA's   :579      NA's   :579      NA's   :579     
+##    wear_mask        trust_rki     trust_government trust_chancellor
+##  Min.   :0.0000   Min.   :1.000   Min.   :1.000    Min.   :1.000   
+##  1st Qu.:0.0000   1st Qu.:4.000   1st Qu.:3.000    1st Qu.:3.000   
+##  Median :0.0000   Median :5.000   Median :4.000    Median :4.000   
+##  Mean   :0.0367   Mean   :4.441   Mean   :3.663    Mean   :3.573   
+##  3rd Qu.:0.0000   3rd Qu.:5.000   3rd Qu.:4.000    3rd Qu.:4.000   
+##  Max.   :1.0000   Max.   :5.000   Max.   :5.000    Max.   :5.000   
+##  NA's   :579      NA's   :670     NA's   :631      NA's   :635     
+##    trust_who     trust_scientists
+##  Min.   :1.000   Min.   :1.000   
+##  1st Qu.:4.000   1st Qu.:4.000   
+##  Median :4.000   Median :4.000   
+##  Mean   :3.968   Mean   :4.239   
+##  3rd Qu.:5.000   3rd Qu.:5.000   
+##  Max.   :5.000   Max.   :5.000   
+##  NA's   :662     NA's   :658
+```
+]
+
+---
+
+## Frequencies: `table()`
+
+A simple way of looking at frequencies (e.g., for categorical variables) is the `base R` function `table()`.
+
+
+```r
+table(corona_survey$choice_of_party)
+```
+
+```
+## 
+## CDU/CSU     SPD     FDP   Linke  Gruene     AfD   Other 
+##     753     369     254     287     756     281      83
+```
+
+If you also want to include `NA` in the frequency counts, you need to specify the argument `useNA = "always"`.
+
+
+```r
+table(corona_survey$choice_of_party, useNA = "always")
+```
+
+```
+## 
+## CDU/CSU     SPD     FDP   Linke  Gruene     AfD   Other    &lt;NA&gt; 
+##     753     369     254     287     756     281      83     982
+```
+
+---
+
+## Proportions with `prop.table()`
+
+If you want proportions instead of raw counts, you can use the `base R` function `prop.table()`. You need to apply this function to an output produced by `table()`. 
+
+.small[
+
+```r
+prop.table(table(corona_survey$choice_of_party))
+```
+
+```
+## 
+##    CDU/CSU        SPD        FDP      Linke     Gruene        AfD      Other 
+## 0.27057133 0.13259073 0.09126842 0.10312612 0.27164930 0.10097018 0.02982393
+```
+
+```r
+prop.table(table(corona_survey$choice_of_party, useNA = "always"))
+```
+
+```
+## 
+##    CDU/CSU        SPD        FDP      Linke     Gruene        AfD      Other 
+## 0.20000000 0.09800797 0.06746348 0.07622842 0.20079681 0.07463479 0.02204515 
+##       &lt;NA&gt; 
+## 0.26082337
+```
+]
+
+---
+
+## Proportions with `prop.table()`
+
+If you want fewer decimals places in the output, you can wrap the the `prop.table()` function in a `round()` call.
+
+.small[
+
+```r
+round(prop.table(table(corona_survey$choice_of_party, useNA = "always")), 3) # rounded to 3 decimal places
+```
+
+```
+## 
+## CDU/CSU     SPD     FDP   Linke  Gruene     AfD   Other    &lt;NA&gt; 
+##   0.200   0.098   0.067   0.076   0.201   0.075   0.022   0.261
+```
+
+```r
+# if you want percentages
+round((prop.table(table(corona_survey$choice_of_party, useNA = "always")) * 100), 2)
+```
+
+```
+## 
+## CDU/CSU     SPD     FDP   Linke  Gruene     AfD   Other    &lt;NA&gt; 
+##   20.00    9.80    6.75    7.62   20.08    7.46    2.20   26.08
+```
+]
+
+---
+
+## Summary statistics: `psych::describe()`
+
+For more detailed summary statistics for the numeric variables you can use the `describe()` function from the [`psych` package](https://cran.r-project.org/web/packages/psych/index.html).
+
+
+```r
+library(psych)
+
+corona_survey %&gt;% 
+  select_if(is.numeric) %&gt;% 
+  select(-id) %&gt;% 
+* describe()
+```
+
+.right[↪️]
+
+---
+
+.smaller[
+
+```
+##                         vars    n mean   sd median trimmed  mad min max range
+## left_right                 1 3678 4.66 1.86      5    4.68 1.48   0  10    10
+## risk_self                  2 3152 4.09 1.27      4    4.11 1.48   1   7     6
+## risk_surround              3 3104 4.55 1.40      5    4.59 1.48   1   7     6
+## avoid_places               4 3186 0.84 0.36      1    0.93 0.00   0   1     1
+## keep_distance              5 3186 0.80 0.40      1    0.88 0.00   0   1     1
+## wash_hands                 6 3186 0.91 0.29      1    1.00 0.00   0   1     1
+## stockup_supplies           7 3186 0.32 0.47      0    0.28 0.00   0   1     1
+## reduce_contacts            8 3186 0.85 0.35      1    0.94 0.00   0   1     1
+## wear_mask                  9 3186 0.04 0.19      0    0.00 0.00   0   1     1
+## trust_rki                 10 3095 4.44 0.77      5    4.59 0.00   1   5     4
+## trust_government          11 3134 3.66 1.01      4    3.75 1.48   1   5     4
+## trust_chancellor          12 3130 3.57 1.15      4    3.68 1.48   1   5     4
+## trust_who                 13 3103 3.97 0.95      4    4.09 1.48   1   5     4
+## trust_scientists          14 3107 4.24 0.79      4    4.35 1.48   1   5     4
+## info_national_public_tv   15 3169 0.90 0.30      1    1.00 0.00   0   1     1
+## info_national_newspaper   16 3169 0.35 0.48      0    0.31 0.00   0   1     1
+## info_local_newspaper      17 3169 0.50 0.50      0    0.50 0.00   0   1     1
+## info_facebook             18 3169 0.19 0.39      0    0.11 0.00   0   1     1
+## info_other_social_media   19 3169 0.15 0.36      0    0.06 0.00   0   1     1
+## sum_measures              20 3186 3.77 1.16      4    3.92 1.48   0   6     6
+## sum_sources               21 3169 2.09 0.95      2    2.04 1.48   0   5     5
+## mean_trust                22 3157 3.98 0.75      4    4.04 0.59   1   5     4
+##                          skew kurtosis   se
+## left_right              -0.10    -0.16 0.03
+## risk_self               -0.05    -0.12 0.02
+## risk_surround           -0.29    -0.21 0.03
+## avoid_places            -1.90     1.62 0.01
+## keep_distance           -1.52     0.32 0.01
+## wash_hands              -2.88     6.27 0.01
+## stockup_supplies         0.76    -1.42 0.01
+## reduce_contacts         -2.01     2.05 0.01
+## wear_mask                4.92    22.25 0.00
+## trust_rki               -1.68     3.54 0.01
+## trust_government        -0.79     0.24 0.02
+## trust_chancellor        -0.72    -0.22 0.02
+## trust_who               -1.02     1.01 0.02
+## trust_scientists        -1.15     1.83 0.01
+## info_national_public_tv -2.66     5.07 0.01
+## info_national_newspaper  0.63    -1.60 0.01
+## info_local_newspaper     0.00    -2.00 0.01
+## info_facebook            1.61     0.60 0.01
+## info_other_social_media  1.94     1.78 0.01
+## sum_measures            -1.14     1.43 0.02
+## sum_sources              0.41     0.35 0.02
+## mean_trust              -0.94     1.01 0.01
+```
+]
+
+---
+
+## Summary statistics: `summarytools::descr()`
+
+The [`summarytools` package](https://github.com/dcomtois/summarytools) provides a lot of functionalities for EDA, including the `descr()` function for summary statistics for numerical variables.
+
+
+```r
+library(summarytools)
+
+corona_survey %&gt;% 
+  select(left_right,
+         starts_with("trust"),
+         sum_measures,
+         sum_sources,
+         mean_trust) %&gt;%
+* descr(stats = "common")
+```
+
+.right[↪️]
+
+---
+
+class: center, middle
+
+.smaller[
+
+```
+## Descriptive Statistics  
+## corona_survey  
+## N: 3765  
+## 
+##                   left_right   mean_trust   sum_measures   sum_sources   trust_chancellor
+## --------------- ------------ ------------ -------------- ------------- ------------------
+##            Mean         4.66         3.98           3.77          2.09               3.57
+##         Std.Dev         1.86         0.75           1.16          0.95               1.15
+##             Min         0.00         1.00           0.00          0.00               1.00
+##          Median         5.00         4.00           4.00          2.00               4.00
+##             Max        10.00         5.00           6.00          5.00               5.00
+##         N.Valid      3678.00      3157.00        3186.00       3169.00            3130.00
+##       Pct.Valid        97.69        83.85          84.62         84.17              83.13
+## 
+## Table: Table continues below
+## 
+##  
+## 
+##                   trust_government   trust_rki   trust_scientists   trust_who
+## --------------- ------------------ ----------- ------------------ -----------
+##            Mean               3.66        4.44               4.24        3.97
+##         Std.Dev               1.01        0.77               0.79        0.95
+##             Min               1.00        1.00               1.00        1.00
+##          Median               4.00        5.00               4.00        4.00
+##             Max               5.00        5.00               5.00        5.00
+##         N.Valid            3134.00     3095.00            3107.00     3103.00
+##       Pct.Valid              83.24       82.20              82.52       82.42
+```
+]
+
+---
+
+## Summary statistics with `dplyr`
+
+`dplyr` provides a helpful function for creating summary statistics: `summarize()`
+
+`summarize()` is a vectorized function that can be used to create summary statistics for variables using functions like...
+
+- `mean()`
+
+- `sd()`
+
+- `min()`
+
+- `max()`
+
+- etc.
+
+A very nice thing about `summarize()` is that it produces a `tibble` which can be used for further analyses, plots, or to output tables (we will talk about the creation of tables in the session on `RMarkdown`).
+
+---
+
+## `dplyr::summarize()`
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  summarize(
+    mean_trust_gov = mean(trust_government, na.rm = TRUE),
+    sd_trust_gov = sd(trust_government, na.rm = TRUE),
+    var_trust_gov = var(trust_government, na.rm = TRUE),
+    min_trust_gov = min(trust_government, na.rm = TRUE),
+    max_trust_gov = max(trust_government, na.rm = TRUE)
+  )
+```
+
+```
+## # A tibble: 1 x 5
+##   mean_trust_gov sd_trust_gov var_trust_gov min_trust_gov max_trust_gov
+##            &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+## 1           3.66         1.01          1.03             1             5
+```
+]
+
+---
+
+## `dplyr::group_by()`
+
+The `dplyr` function `group_by()` creates dataframes (tibbles) that are grouped by one or more variables. This can, e.g., be used to produce grouped summary statistics. *Note:* To end/undo the grouping we can use the `ungroup()` function.
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+* group_by(choice_of_party) %&gt;%
+   summarize(
+    mean_trust_gov = mean(trust_government, na.rm = TRUE),
+    sd_trust_gov = sd(trust_government, na.rm = TRUE),
+    var_trust_gov = var(trust_government, na.rm = TRUE),
+    min_trust_gov = min(trust_government, na.rm = TRUE),
+    max_trust_gov = max(trust_government, na.rm = TRUE)
+  )
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## # A tibble: 7 x 6
+##   choice_of_party mean_trust_gov sd_trust_gov var_trust_gov min_trust_gov
+##   &lt;fct&gt;                    &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+## 1 CDU/CSU                   4.03        0.838         0.702             1
+## 2 SPD                       3.89        0.910         0.829             1
+## 3 FDP                       3.66        1.06          1.11              1
+## 4 Linke                     3.37        1.06          1.13              1
+## 5 Gruene                    3.87        0.804         0.647             1
+## 6 AfD                       2.83        1.21          1.46              1
+## 7 Other                     3.14        1.07          1.14              1
+## # ... with 1 more variable: max_trust_gov &lt;dbl&gt;
+```
+]
+
+---
+
+## `dplyr::across()`
+
+To produce grouped summary statistics for multiple variables you can use the `dplyr` function `across()`. *Note*: We only use cases without missing data for any of the variables here (= listwise deletion).
+
+.smaller[
+
+```r
+corona_survey %&gt;%
+  select(choice_of_party,
+         starts_with("trust")) %&gt;% 
+  drop_na() %&gt;% 
+  group_by(choice_of_party) %&gt;%
+* summarize(across(starts_with("trust"),
+*                  list(mean = mean,
+*                       sd = sd),
+*                  .names = "{col}_{fn}"))
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## # A tibble: 7 x 11
+##   choice_of_party trust_rki_mean trust_rki_sd trust_governmen~ trust_governmen~
+##   &lt;fct&gt;                    &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1 CDU/CSU                   4.57        0.648             4.02            0.837
+## 2 SPD                       4.57        0.647             3.87            0.910
+## 3 FDP                       4.46        0.705             3.62            1.05 
+## 4 Linke                     4.36        0.858             3.35            1.05 
+## 5 Gruene                    4.52        0.696             3.86            0.802
+## 6 AfD                       4.10        0.923             2.82            1.19 
+## 7 Other                     4.24        0.964             3.16            1.05 
+## # ... with 6 more variables: trust_chancellor_mean &lt;dbl&gt;,
+## #   trust_chancellor_sd &lt;dbl&gt;, trust_who_mean &lt;dbl&gt;, trust_who_sd &lt;dbl&gt;,
+## #   trust_scientists_mean &lt;dbl&gt;, trust_scientists_sd &lt;dbl&gt;
+```
+]
+
+Note that we only use cases without missing data for any of the variables here.
+
+---
+
+## `dplyr::across()`
+
+&lt;img src="./pics/dplyr_across.png" width="95%" style="display: block; margin: auto;" /&gt;
+&lt;small&gt;&lt;small&gt;Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations) &lt;/small&gt;&lt;/small&gt;
+
+---
+
+## Frequencies and proportions with `dplyr`
+
+We can also use `group_by()` and `summarize()` to get frequencies and proportions for variables in our dataset.
+
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  group_by(choice_of_party) %&gt;% 
+  summarize(n = n()) %&gt;% 
+  mutate(proportion = n/sum(n)) %&gt;% 
+  ungroup()
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## # A tibble: 7 x 3
+##   choice_of_party     n proportion
+##   &lt;fct&gt;           &lt;int&gt;      &lt;dbl&gt;
+## 1 CDU/CSU           753     0.271 
+## 2 SPD               369     0.133 
+## 3 FDP               254     0.0913
+## 4 Linke             287     0.103 
+## 5 Gruene            756     0.272 
+## 6 AfD               281     0.101 
+## 7 Other              83     0.0298
+```
+
+---
+
+## Frequencies and proportions with `dplyr`
+
+Instead of using `group_by` and `summarize()` to get frequency counts, we can also use `count()` from `dplyr` as a shorthand.
+
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+* count(choice_of_party) %&gt;%
+  mutate(proportion = n/sum(n)) %&gt;% 
+  ungroup()
+```
+
+```
+## # A tibble: 7 x 3
+##   choice_of_party     n proportion
+##   &lt;fct&gt;           &lt;int&gt;      &lt;dbl&gt;
+## 1 CDU/CSU           753     0.271 
+## 2 SPD               369     0.133 
+## 3 FDP               254     0.0913
+## 4 Linke             287     0.103 
+## 5 Gruene            756     0.272 
+## 6 AfD               281     0.101 
+## 7 Other              83     0.0298
+```
+
+---
+
+## Frequencies and proportions with `janitor::tabyl()`
+
+The [`janitor` package](https://github.com/sfirke/janitor) that we briefly mentioned in the section on *Data Wrangling* also provides a helpful function for creating frequency and proportion tables:
+
+.small[
+
+```r
+library(janitor)
+
+corona_survey %&gt;% 
+  tabyl(choice_of_party) %&gt;% 
+  adorn_pct_formatting(digits = 2, affix_sign = TRUE)
+```
+
+```
+##  choice_of_party   n percent valid_percent
+##          CDU/CSU 753  20.00%        27.06%
+##              SPD 369   9.80%        13.26%
+##              FDP 254   6.75%         9.13%
+##            Linke 287   7.62%        10.31%
+##           Gruene 756  20.08%        27.16%
+##              AfD 281   7.46%        10.10%
+##            Other  83   2.20%         2.98%
+##             &lt;NA&gt; 982  26.08%             -
+```
+]
+
+---
+
+## Frequencies and proportions with `summarytools::freq()`
+
+The `summarytools` package also includes the `freq()` function for frequency tables.
+
+.small[
+
+```r
+library(summarytools)
+
+freq(corona_survey$choice_of_party)
+```
+
+```
+## Frequencies  
+## corona_survey$choice_of_party  
+## Type: Factor  
+## 
+##                 Freq   % Valid   % Valid Cum.   % Total   % Total Cum.
+## ------------- ------ --------- -------------- --------- --------------
+##       CDU/CSU    753     27.06          27.06     20.00          20.00
+##           SPD    369     13.26          40.32      9.80          29.80
+##           FDP    254      9.13          49.44      6.75          36.55
+##         Linke    287     10.31          59.76      7.62          44.17
+##        Gruene    756     27.16          86.92     20.08          64.25
+##           AfD    281     10.10          97.02      7.46          71.71
+##         Other     83      2.98         100.00      2.20          73.92
+##          &lt;NA&gt;    982                              26.08         100.00
+##         Total   3765    100.00         100.00    100.00         100.00
+```
+]
+
+---
+
+## Relationships between variables
+
+In addition to checking summary statistics for individual variables, another thing that you quite possibly also want to look at as part of your exploratory data analysis (EDA) are the relationships between (specific) variables in your dataset. There are many ways to do so and the appropriate choice of methods, of course, depends on the types of variables you want to explore. In the following, we will briefly discuss some options for two methods of exploring relationships between variables:
+
+- crosstabulation
+
+- correlations
+
+---
+
+## Crosstabs
+
+Crosstabs can be used to explore relationships between categorical variables. As with almost everything in `R`, there are many different options for creating crosstabs, some of which we will discuss in the following. To start with, you can use the `base R` functions `table()` and `prop.table()` to generate crosstabs.
+
+
+```r
+table(corona_survey$sex, corona_survey$choice_of_party) # rows, columns
+```
+
+```
+##         
+##          CDU/CSU SPD FDP Linke Gruene AfD Other
+##   Male       413 221 160   170    315 204    52
+##   Female     340 148  94   117    441  77    31
+```
+
+```r
+round(prop.table(table(corona_survey$sex, corona_survey$choice_of_party))*100, 2)
+```
+
+```
+##         
+##          CDU/CSU   SPD   FDP Linke Gruene   AfD Other
+##   Male     14.84  7.94  5.75  6.11  11.32  7.33  1.87
+##   Female   12.22  5.32  3.38  4.20  15.85  2.77  1.11
+```
+
+---
+
+## Crosstabs
+
+We can also calculate row or column percentages.
+
+
+```r
+round(prop.table(table(corona_survey$sex, corona_survey$choice_of_party), 1)*100, 2) # row percentages
+```
+
+```
+##         
+##          CDU/CSU   SPD   FDP Linke Gruene   AfD Other
+##   Male     26.91 14.40 10.42 11.07  20.52 13.29  3.39
+##   Female   27.24 11.86  7.53  9.38  35.34  6.17  2.48
+```
+
+```r
+round(prop.table(table(corona_survey$sex, corona_survey$choice_of_party), 2)*100, 2) # column percentages
+```
+
+```
+##         
+##          CDU/CSU   SPD   FDP Linke Gruene   AfD Other
+##   Male     54.85 59.89 62.99 59.23  41.67 72.60 62.65
+##   Female   45.15 40.11 37.01 40.77  58.33 27.40 37.35
+```
+
+If you want to generate tables based on more than two variables, the `base R` function `ftable()` is a good option for prettier printing of results.
+
+---
+
+## Crosstabs with `dplyr`
+
+We can also use functions from `dplyr` in a similar fashion as we have done for a single variable to create crosstabs including frequencies and proportions.
+
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  count(sex, choice_of_party) %&gt;% 
+  pivot_wider(names_from = choice_of_party,
+              values_from = n)
+```
+
+```
+## # A tibble: 2 x 8
+##   sex    `CDU/CSU`   SPD   FDP Linke Gruene   AfD Other
+##   &lt;fct&gt;      &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1 Male         413   221   160   170    315   204    52
+## 2 Female       340   148    94   117    441    77    31
+```
+
+---
+
+## Crosstabs with `dplyr`
+
+We can also use functions from `dplyr` in a similar fashion as we have done for a single variable to create crosstabs including frequencies and proportions.
+
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  count(sex, choice_of_party) %&gt;% 
+  mutate(proportion = n/sum(n)*100) %&gt;%
+  select(-n) %&gt;% 
+  pivot_wider(names_from = choice_of_party,
+              values_from = proportion)
+```
+
+```
+## # A tibble: 2 x 8
+##   sex    `CDU/CSU`   SPD   FDP Linke Gruene   AfD Other
+##   &lt;fct&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Male        14.8  7.94  5.75  6.11   11.3  7.33  1.87
+## 2 Female      12.2  5.32  3.38  4.20   15.8  2.77  1.11
+```
+
+---
+
+## Other options for crosstabulation in `R`
+
+Some of the interesting alternative options for crosstabs in `R` include the `CrossTable()` and `crosstab()` functions from the [`descr` package](https://cran.r-project.org/web/packages/descr/index.html), the latter of which also produces a mosaic plot to visualize the conditional frequencies, the `CrossTable()` function from the [`gmodels` package](https://cran.r-project.org/web/packages/gmodels/index.html), or the `ctable()` function from the [`summarytools` package](https://github.com/dcomtois/summarytools).
+
+A very versatile option for crosstabs is the `tabyl()` function from the `janitor` package that we have introduced before.
+
+---
+
+## Crosstabs with the `janitor` package
+
+The `tabyl()` function from the `janitor` package provides quite a few options for crosstabs. We will only show one example here, but you can learn more in the [`tabyl` vignette](https://cran.r-project.org/web/packages/janitor/vignettes/tabyls.html).
+
+.small[
+
+```r
+library(janitor)
+
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  tabyl(sex, choice_of_party) %&gt;% 
+  adorn_totals(where = c("row","col")) %&gt;% 
+  adorn_percentages(denominator = "row") %&gt;% 
+  adorn_pct_formatting(digits = 2) %&gt;% 
+  adorn_ns(position = "front")
+```
+
+```
+##     sex      CDU/CSU          SPD          FDP        Linke       Gruene
+##    Male 413 (26.91%) 221 (14.40%) 160 (10.42%) 170 (11.07%) 315 (20.52%)
+##  Female 340 (27.24%) 148 (11.86%)  94  (7.53%) 117  (9.38%) 441 (35.34%)
+##   Total 753 (27.06%) 369 (13.26%) 254  (9.13%) 287 (10.31%) 756 (27.16%)
+##           AfD      Other          Total
+##  204 (13.29%) 52 (3.39%) 1535 (100.00%)
+##   77  (6.17%) 31 (2.48%) 1248 (100.00%)
+##  281 (10.10%) 83 (2.98%) 2783 (100.00%)
+```
+]
+
+---
+
+## Chi-Square Test
+
+You can, e.g., use the `summary()` function in combination with `table()` to do a chi-square test. The other packages mentioned previously that include functions for crosstabs can also be used for chi-square tests (e.g., the `janitor` package).
+
+.small[
+
+```r
+# base R
+summary(table(corona_survey$sex, corona_survey$choice_of_party))
+```
+
+```
+## Number of cases in table: 2783 
+## Number of factors: 2 
+## Test for independence of all factors:
+## 	Chisq = 103.67, df = 6, p-value = 4.292e-20
+```
+
+```r
+# janitor
+library(janitor)
+
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  tabyl(sex, choice_of_party) %&gt;%
+  chisq.test()
+```
+
+```
+## 
+## 	Pearson's Chi-squared test
+## 
+## data:  .
+## X-squared = 103.67, df = 6, p-value &lt; 2.2e-16
+```
+]
+
+---
+
+## Correlations
+
+Again, as with the crosstabs examples, there are many different options for calculating and displaying correlations in `R`. In addition to the `base R` functions, we will look at two packages in this part: [`corrr`](https://corrr.tidymodels.org/) and [`correlation`](https://github.com/easystats/correlation).
+
+---
+
+# Correlations with `base R`
+
+The `base R` function `cor()` computes the correlation coefficient(s) between two or more variables. This function can be used to calculate *Pearson's r*, *Kendall's tau*, and *Spearman's rho*. We also need to specify how we want to deal with missing values (e.g., use pairwise complete observations). For example, let's look at the correlations between the trust variables in our dataset:
+
+.small[
+
+```r
+trust &lt;- corona_survey %&gt;% 
+  select(starts_with("trust"))
+
+cor(trust,
+    use = "pairwise.complete.obs",
+    method = "pearson")
+```
+
+```
+##                  trust_rki trust_government trust_chancellor trust_who
+## trust_rki        1.0000000        0.5233628        0.4566379 0.5234133
+## trust_government 0.5233628        1.0000000        0.8700270 0.5686134
+## trust_chancellor 0.4566379        0.8700270        1.0000000 0.5322833
+## trust_who        0.5234133        0.5686134        0.5322833 1.0000000
+## trust_scientists 0.4919817        0.4475961        0.3899243 0.5117994
+##                  trust_scientists
+## trust_rki               0.4919817
+## trust_government        0.4475961
+## trust_chancellor        0.3899243
+## trust_who               0.5117994
+## trust_scientists        1.0000000
+```
+]
+
+---
+## Correlations with `base R`
+
+With `corr.test()` you can display the results of a significance test for a correlation.
+
+
+```r
+cor.test(trust$trust_rki, trust$trust_scientists, method = "pearson")
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  trust$trust_rki and trust$trust_scientists
+## t = 31.25, df = 3058, p-value &lt; 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.4646480 0.5183788
+## sample estimates:
+##       cor 
+## 0.4919817
+```
+
+---
+
+## The `corrr` package
+
+The [`corrr` package](https://corrr.tidymodels.org/) is part of the [`tidymodels` suite of packages](https://www.tidymodels.org/) and provides various functions for displaying correlations. The main function is `correlate()` which produces a `tibble` as output.
+
+.small[
+
+```r
+library(corrr)
+
+correlate(trust)
+```
+
+```
+## 
+## Correlation method: 'pearson'
+## Missing treated using: 'pairwise.complete.obs'
+```
+
+```
+## # A tibble: 5 x 6
+##   rowname trust_rki trust_government trust_chancellor trust_who trust_scientists
+##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;            &lt;dbl&gt;
+## 1 trust_~    NA                0.523            0.457     0.523            0.492
+## 2 trust_~     0.523           NA                0.870     0.569            0.448
+## 3 trust_~     0.457            0.870           NA         0.532            0.390
+## 4 trust_~     0.523            0.569            0.532    NA                0.512
+## 5 trust_~     0.492            0.448            0.390     0.512           NA
+```
+]
+
+---
+
+## The `corrr` package
+
+The `corrr` package provides several functions for tweaking/optimizing the output of the `correlate()` function. Here's one example:
+
+.small[
+
+```r
+trust %&gt;% 
+  correlate() %&gt;% 
+  rearrange() %&gt;% 
+  shave() %&gt;% 
+  fashion()
+```
+
+```
+## 
+## Correlation method: 'pearson'
+## Missing treated using: 'pairwise.complete.obs'
+```
+
+```
+## Registered S3 method overwritten by 'seriation':
+##   method         from 
+##   reorder.hclust gclus
+```
+
+```
+##            rowname trust_scientists trust_rki trust_who trust_government
+## 1 trust_scientists                                                      
+## 2        trust_rki              .49                                     
+## 3        trust_who              .51       .52                           
+## 4 trust_government              .45       .52       .57                 
+## 5 trust_chancellor              .39       .46       .53              .87
+##   trust_chancellor
+## 1                 
+## 2                 
+## 3                 
+## 4                 
+## 5
+```
+]
+
+---
+
+## The `corrr` package
+
+.pull-left[
+The package also provides different options for visualizing correlation coefficients.
+
+
+```r
+trust %&gt;% 
+  correlate() %&gt;%
+* rplot()
+```
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Plotting correlations with `GGally::ggcorr()`
+
+The [`ggcorr` function](https://briatte.github.io/ggcorr/) from the [`GGally` package](https://ggobi.github.io/ggally/) - which is an extension to `ggplot2` -  also provides some interesting options for visualizing correlation coefficients.
+
+
+```r
+library(GGally)
+```
+
+```
+## Registered S3 method overwritten by 'GGally':
+##   method from   
+##   +.gg   ggplot2
+```
+
+---
+
+## `GGally::ggcorr()`
+
+.small[
+
+```r
+trust %&gt;% 
+  ggcorr(label = TRUE,
+         label_round = 2)
+```
+
+&lt;img src="Day4_1_EDA_files/figure-html/ggcorr-example-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## The `correlation` package
+
+The [`correlation` package](https://github.com/easystats/correlation) is part of the [`easystats` project](https://easystats.github.io/blog/portfolio/). It provides a much wider range of correlation types than the `base R` function `cor()` and the `correlate()` function from the `corrr` package. Its main workhorse is the `correlation()` function.
+
+.small[
+
+```r
+library(correlation)
+
+correlation(trust)
+```
+
+```
+## Parameter1       |       Parameter2 |    r |       95% CI |     t |   df |      p |  Method | n_Obs
+## ---------------------------------------------------------------------------------------------------
+## trust_rki        | trust_government | 0.52 | [0.50, 0.55] | 34.06 | 3076 | &lt; .001 | Pearson |  3078
+## trust_rki        | trust_chancellor | 0.46 | [0.43, 0.48] | 28.45 | 3072 | &lt; .001 | Pearson |  3074
+## trust_rki        |        trust_who | 0.52 | [0.50, 0.55] | 33.94 | 3053 | &lt; .001 | Pearson |  3055
+## trust_rki        | trust_scientists | 0.49 | [0.46, 0.52] | 31.25 | 3058 | &lt; .001 | Pearson |  3060
+## trust_government | trust_chancellor | 0.87 | [0.86, 0.88] | 98.46 | 3113 | &lt; .001 | Pearson |  3115
+## trust_government |        trust_who | 0.57 | [0.54, 0.59] | 38.38 | 3083 | &lt; .001 | Pearson |  3085
+## trust_government | trust_scientists | 0.45 | [0.42, 0.48] | 27.82 | 3089 | &lt; .001 | Pearson |  3091
+## trust_chancellor |        trust_who | 0.53 | [0.51, 0.56] | 34.89 | 3079 | &lt; .001 | Pearson |  3081
+## trust_chancellor | trust_scientists | 0.39 | [0.36, 0.42] | 23.52 | 3084 | &lt; .001 | Pearson |  3086
+## trust_who        | trust_scientists | 0.51 | [0.49, 0.54] | 32.99 | 3066 | &lt; .001 | Pearson |  3068
+```
+]
+
+---
+
+## The `correlation` package
+
+Among other things, the `correlation` package, e.g., also provides options for biserial and tetrachoric correlations for factors, and it also allows to calculate grouped/stratified correlations.
+
+
+```r
+corona_survey %&gt;% 
+  select(sex, starts_with("trust")) %&gt;% 
+* group_by(sex) %&gt;%
+  correlation()
+```
+
+.right[↪️]
+
+---
+
+class: center, middle
+
+.smaller[
+
+```
+## Group  |       Parameter1 |       Parameter2 |    r |       95% CI |     t |   df |      p |  Method | n_Obs
+## ------------------------------------------------------------------------------------------------------------
+## Male   |        trust_rki | trust_government | 0.52 | [0.48, 0.55] | 23.98 | 1577 | &lt; .001 | Pearson |  1579
+## Male   |        trust_rki | trust_chancellor | 0.45 | [0.41, 0.49] | 19.88 | 1575 | &lt; .001 | Pearson |  1577
+## Male   |        trust_rki |        trust_who | 0.49 | [0.45, 0.53] | 22.40 | 1566 | &lt; .001 | Pearson |  1568
+## Male   |        trust_rki | trust_scientists | 0.46 | [0.42, 0.49] | 20.25 | 1566 | &lt; .001 | Pearson |  1568
+## Male   | trust_government | trust_chancellor | 0.86 | [0.85, 0.87] | 67.81 | 1596 | &lt; .001 | Pearson |  1598
+## Male   | trust_government |        trust_who | 0.56 | [0.53, 0.59] | 27.06 | 1584 | &lt; .001 | Pearson |  1586
+## Male   | trust_government | trust_scientists | 0.41 | [0.37, 0.45] | 17.87 | 1583 | &lt; .001 | Pearson |  1585
+## Male   | trust_chancellor |        trust_who | 0.54 | [0.50, 0.57] | 25.50 | 1582 | &lt; .001 | Pearson |  1584
+## Male   | trust_chancellor | trust_scientists | 0.36 | [0.31, 0.40] | 15.26 | 1580 | &lt; .001 | Pearson |  1582
+## Male   |        trust_who | trust_scientists | 0.49 | [0.46, 0.53] | 22.49 | 1572 | &lt; .001 | Pearson |  1574
+## Female |        trust_rki | trust_government | 0.53 | [0.49, 0.57] | 24.29 | 1497 | &lt; .001 | Pearson |  1499
+## Female |        trust_rki | trust_chancellor | 0.47 | [0.43, 0.51] | 20.56 | 1495 | &lt; .001 | Pearson |  1497
+## Female |        trust_rki |        trust_who | 0.57 | [0.53, 0.60] | 26.75 | 1485 | &lt; .001 | Pearson |  1487
+## Female |        trust_rki | trust_scientists | 0.54 | [0.50, 0.57] | 24.45 | 1490 | &lt; .001 | Pearson |  1492
+## Female | trust_government | trust_chancellor | 0.88 | [0.87, 0.89] | 72.30 | 1515 | &lt; .001 | Pearson |  1517
+## Female | trust_government |        trust_who | 0.57 | [0.54, 0.61] | 27.15 | 1497 | &lt; .001 | Pearson |  1499
+## Female | trust_government | trust_scientists | 0.50 | [0.46, 0.53] | 22.12 | 1504 | &lt; .001 | Pearson |  1506
+## Female | trust_chancellor |        trust_who | 0.51 | [0.47, 0.55] | 23.06 | 1495 | &lt; .001 | Pearson |  1497
+## Female | trust_chancellor | trust_scientists | 0.43 | [0.39, 0.47] | 18.66 | 1502 | &lt; .001 | Pearson |  1504
+## Female |        trust_who | trust_scientists | 0.55 | [0.51, 0.58] | 25.38 | 1492 | &lt; .001 | Pearson |  1494
+```
+]
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day4_1_EDA_Exercise_1_question.html) time 🏋️‍♀️💪🏃🚴
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day4_1_EDA_Exercise_1_solution.html)
+
+---
+
+## Guilty by ~~association~~ correlation
+
+.column-left-half[
+While correlation coefficients are useful for exploring relationships between variables, they can also be misleading. For example, if we do correlation analysis and we encounter a (Pearson's) correlation coefficient close to 0, we often think of relationships as pictured on the right side.
+]
+
+.column-right-half[
+&lt;img src="Day4_1_EDA_files/figure-html/dino-plot-1-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Guilty by ~~association~~ correlation
+
+This dataset has **the same correlation coefficient (Pearson's r of -0.06)** as the one on the previous slide:
+
+&lt;img src="Day4_1_EDA_files/figure-html/dino-plot-2-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Guilty by ~~association~~ correlation 🦖
+
+So does this one...
+
+&lt;img src="Day4_1_EDA_files/figure-html/dino-plot-3-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Guilty by ~~association~~ correlation
+
+We could go on... The previous three examples all come from the [`datasauRus` package](https://github.com/lockedata/datasauRus) which essentially is an extension of [Anscombe's quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet) and includes 13 datasets with the same (Pearson) correlation between x and y.
+
+&lt;img src="Day4_1_EDA_files/figure-html/dino-plot-4-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Dinosaur 🦖 vs. Shark 🦈
+
+
+
+.pull-left[
+&lt;img src="Day4_1_EDA_files/figure-html/t-rex-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+.small[
+
+```r
+datasaurus_dozen %&gt;% 
+  filter(dataset == "dino") %$% 
+  cor(x, y)
+```
+
+```
+## [1] -0.06447185
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/shark-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+&lt;small&gt;&lt;small&gt;Data shark by [Allison Horst](https://github.com/allisonhorst/stats-illustrations) &lt;/small&gt;&lt;/small&gt;
+
+.small[
+
+```r
+shark %$% 
+  cor(x, y)
+```
+
+```
+## [1] 0.3648294
+```
+]
+]
+
+--
+
+.center[
+***Sharks are more ~~coral-hated~~ correlated!***
+]
+
+.smaller[PS: You can make your own data art with [drawdata](https://drawdata.xyz/).]
+
+---
+
+## Trust no singular value!
+
+Importantly, the x- and y-variables in these `datasaurus_dozen` dataset also all have the same means and standard deviations.
+
+.smaller[
+
+```r
+datasaurus_dozen %&gt;% 
+  group_by(dataset) %&gt;%
+  summarize(
+    mean_x = mean(x), 
+    mean_y = mean(y), 
+    sd_x = sd(x), 
+    sd_y = sd(y), 
+    corr = cor(x, y, method = "pearson")
+  )
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## # A tibble: 13 x 6
+##    dataset    mean_x mean_y  sd_x  sd_y    corr
+##    &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+##  1 away         54.3   47.8  16.8  26.9 -0.0641
+##  2 bullseye     54.3   47.8  16.8  26.9 -0.0686
+##  3 circle       54.3   47.8  16.8  26.9 -0.0683
+##  4 dino         54.3   47.8  16.8  26.9 -0.0645
+##  5 dots         54.3   47.8  16.8  26.9 -0.0603
+##  6 h_lines      54.3   47.8  16.8  26.9 -0.0617
+##  7 high_lines   54.3   47.8  16.8  26.9 -0.0685
+##  8 slant_down   54.3   47.8  16.8  26.9 -0.0690
+##  9 slant_up     54.3   47.8  16.8  26.9 -0.0686
+## 10 star         54.3   47.8  16.8  26.9 -0.0630
+## 11 v_lines      54.3   47.8  16.8  26.9 -0.0694
+## 12 wide_lines   54.3   47.8  16.8  26.9 -0.0666
+## 13 x_shape      54.3   47.8  16.8  26.9 -0.0656
+```
+]
+
+---
+
+## Plot your data!
+
+The message from the `datasaurus_dozen` examples should be clear. Relying only on singular values that summarize the location or spread of a single variable or the association of two variables is not a good idea. To avoid reducing a ~~mountain to a molehill~~ dinosaur to a lack of correlation, it is important to plot your data as part of your EDA to explore:
+
+- univariate distributions
+
+- grouped univariate distributions (if you have and want to compare groups)
+
+- bivariate distributions
+
+There are many good resources for plotting with `R`. A very exhaustive and approachable one is [*From Data to Viz*](https://www.data-to-viz.com/) which provides a collection of recipes for a lot of different plot types (for both `R` and `Python`). Many of the following examples are based on those. 
+
+---
+
+## EDA vs. publication-ready plots
+
+When you get more familiar with plotting in `R` you will notice that there are seemingly unlimited plotting options that allow for comprehensive customization. This means that you can spend a lot of time on tweaking and optimizing plot. While this makes sense for producing figures for publications, in the context of EDA, the figures you produce are meant for yourself (plus maybe a few collaborators). Hence, we will mostly make use of (rather) basic examples in the following. Although `base R` provides quite a few plotting options, we will focus using `ggplot2` (and extensions thereof) as it is generally more versatile.
+
+---
+
+## Plotting univariate distributions
+
+In the following, we will discuss some examples of plotting univariate distributions of
+
+1) categorical variables
+
+2) numeric variables
+
+These plots can be created for a whole dataset or to compare specific subsets (groups) within the data.
+
+Of course, there are more options than the ones we will show for plotting univariate distributions. Which one(s) to choose depends on the specific kind of data you have, the question you want to answer with the data, and also - to some degree - personal preferences or what is customary in your field.
+
+---
+
+## Bar chart
+
+.pull-left[
+The most common way of displaying the distribution of one categorical variable is a bar chart. The simplest way of creating a bar chart that shows counts per category with `ggplot2` is:
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party)) +
+* geom_bar()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Bar chart: Add colors
+
+.pull-left[
+We can also have different colors for the categories in our bar chart:
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party, 
+*            fill = choice_of_party)) +
+  geom_bar()
+```
+]
+
+*Note*: There are many ways of choosing and customizing the colors in a bar chart. However, as our focus is on plots for EDA, we will not cover these options here.
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Row chart
+
+.pull-left[
+While we are quite used to seeing bar charts, flipping their coordinates, so that they become row charts, can make it easier to read them (at least for people from countries in which the reading direction is left to right, top to bottom).
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party, 
+             fill = choice_of_party)) + 
+  geom_bar() +
+* coord_flip()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## "We're last, meaning we're first..."
+
+&lt;img src="./pics/trump_charts.jpg" width="85%" style="display: block; margin: auto;" /&gt;
+
+.footnote[https://twitter.com/JoJoFromJerz/status/1290630319713001472]
+
+---
+
+## Change the order of categories
+
+.pull-left[
+There are [several ways of changing the order of categorical variable values for a plot](https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html). In the previous example, we might want to change the order of parties from top to bottom based on their counts. To do this we can, e.g., use the `fct_rev()` and `fct_infreq()` functions from the `forcats` package.
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+* ggplot(aes(x = fct_rev(fct_infreq(choice_of_party)),
+             fill = choice_of_party)) + 
+  geom_bar() +
+  xlab("Party preference") +
+  ylab("Count") +
+  coord_flip()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Bar or row chart with percentages
+
+.pull-left[
+We might want to display relative frequencies (proportions) instead of absolute frequencies (counts) for our categorical variable.
+
+.small[
+
+```r
+library(scales)
+
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party, 
+             fill = choice_of_party)) + 
+* geom_bar(aes(y = (..count..)/sum(..count..))) +
+* scale_y_continuous(labels=scales::percent) +
+  ylab("Relative Frequencies")
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Pretty bar plot
+
+.pull-left[
+Although we don't want to (and can't) discuss all plot customization option in detail, we want to show one example of a heavily tweaked bar chart to illustrate what is possible.
+
+.smaller[
+
+```r
+colors &lt;- c("#000000", "#E30013", "#FFEE00", "#BE3075", "#19A329", "#009FE1", "#808080")
+
+corona_survey %&gt;% 
+  filter(!is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party, 
+             fill = choice_of_party)) + 
+  geom_bar(aes(y = (..count..)/sum(..count..))) +
+  geom_text(aes(y = (..count..)/sum(..count..), 
+              label = paste0(round(prop.table(..count..) * 100, 2), '%')),
+            stat = 'count',
+            size = 3,
+            vjust = -.5) +
+  scale_y_continuous(labels = scales::percent,
+                     expand = expansion(mult=c(0,0.1))) +
+  scale_fill_manual(values = colors) +
+  labs(title = "Which party would you vote for if federal elections were held next Sunday?",
+       x = "",
+       y = "",
+       caption = "Note: N = 2783 \nSource: GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany.\nGESIS Datenarchiv, Köln. ZA5667 Datenfile Version 1.1.0, https://doi.org/10.4232/1.13520.") +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(),
+        axis.ticks.x = element_blank())
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Alternatives to bar charts
+
+There are [several alternatives to bar charts](https://towardsdatascience.com/anything-but-bars-the-10-best-alternatives-to-bar-graphs-fecb2aaee53a) for plotting categorical variables. An interesting one is the so-called [donut chart](https://www.r-graph-gallery.com/128-ring-or-donut-plot.html) which can, e.g., be created with the `ggdonutchart()` function from the [`ggpubr` package](https://rpkgs.datanovia.com/ggpubr/index.html).
+
+---
+
+## Discrete numeric variables
+
+.pull-left[
+For plotting the univariate distribution of discrete numeric variables (such as those based on Likert scales) it is, of course, possible to also use bar charts.
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(trust_scientists)) %&gt;% 
+  ggplot(aes(x = trust_scientists)) +
+  geom_bar()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Discrete numeric variables
+
+.pull-left[
+Bar plots can become a bit unwieldy for visualizing the distribution of discrete numeric variables, if the number of individual values is high. In cases where there is a very high number of different values in a discrete numeric variable it may be better to use histograms instead of bar plots.
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(left_right)) %&gt;% 
+  ggplot(aes(x = left_right)) +
+  geom_bar()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Special case: Likert-plots
+
+For plotting the shares of responses to Likert-type items, the `plot_likert()` function from the [`sjPlot` package](https://strengejacke.github.io/sjPlot/) is an interesting option. However, this requires labelled data. Another option is the [`likert` package](https://github.com/jbryer/likert).
+
+---
+
+## Continuous numeric variables
+
+The univariate distribution of a continuous numeric variable can be plotted as a histogram. As there are no continuous variables in the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset, we will use data from [*Gapminder*](https://www.gapminder.org/) on worldwide life expectancy and GDP per capita in 2018. As always, we first need to load and wrangle the data.
+
+.smaller[
+
+```r
+life_exp_2018 &lt;- read_csv("./data/life_expectancy_years.csv") %&gt;%
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "life_exp") %&gt;% 
+  filter(year == "2018") %&gt;% 
+  select(-year)
+
+gdp_pc_2018 &lt;- read_csv("./data/gdppercapita_us_inflation_adjusted.csv") %&gt;%
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "gdp_percap") %&gt;% 
+  filter(year == "2018") %&gt;% 
+  select(-year)
+
+gapminder_2018 &lt;- life_exp_2018 %&gt;% 
+  left_join(gdp_pc_2018, by = "country")
+```
+
+
+]
+
+---
+
+## Histogram
+
+.pull-left[
+Now we can use the *Gapminder* data on global life expectancy in 2018 to create a histogram.
+
+.small[
+
+```r
+gapminder_2018 %&gt;% 
+  filter(!is.na(life_exp)) %&gt;% 
+  ggplot(aes(x = life_exp)) +
+* geom_histogram()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Histogram
+
+.pull-left[
+One thing to keep in mind about histograms is that they can look quite different for the same data, depending on the number and size of the bins they use. We can easily adapt this with `ggplot2` by specifying the `binwidth` or the `bins` argument.
+
+
+```r
+gapminder_2018 %&gt;% 
+  filter(!is.na(life_exp)) %&gt;% 
+  ggplot(aes(x = life_exp)) +
+* geom_histogram(binwidth = 5)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Density plot
+
+.pull-left[
+To avoid the issue of picking the "right" number or size of bins, a density plot can be a good alternative to a histogram for continuous numeric variables.
+
+*Note*: If you want combine multiple density plots (e.g., for different groups), you can create ridgeline plots, e.g., with the [`ggridges` package](https://github.com/wilkelab/ggridges).
+
+.small[
+
+```r
+gapminder_2018 %&gt;% 
+  filter(!is.na(life_exp)) %&gt;% 
+  ggplot(aes(x = life_exp)) +
+* geom_density(fill="#69b3a2",
+*              color="#e9ecef")
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Testing the normality assumption
+
+Some statistical tests require that the data (roughly) follow a normal distribution. Histograms and density plots can already help us get a good first impression if our data are (approximately) normally distributed. Two other options for visually testing the normal distribution of our data are [QQ-plots and PP-plots](https://homepage.divms.uiowa.edu/~luke/classes/STAT4580/qqpp.html#pp-plots). While [`ggplot` offers geoms for QQ-plots](https://ggplot2.tidyverse.org/reference/geom_qq.html), the [`qqplotr` package](https://github.com/aloy/qqplotr) offers a lot of convenient functions and options for creating and customizing QQ- and PP-plots.
+
+---
+
+## QQ-Plot
+
+.pull-left[
+The QQ-plot plots data quantiles against theoretical quantiles (e.g., of the normal distribution). If our data are (approximately) normally distributed, they should follow the diagonal line in the QQ-plot, or at least be within its confidence band. Let's create a QQ-plot for the political orientation variable from the *GESIS Panel* dataset.
+
+.small[
+
+```r
+library(qqplotr)
+
+corona_survey %&gt;% 
+  filter(!is.na(left_right)) %&gt;% 
+  ggplot(mapping = aes(sample = left_right)) +
+  stat_qq_band() +
+  stat_qq_line() +
+  stat_qq_point() +
+  labs(x = "Theoretical Quantiles",
+       y = "Sample Quantiles") 
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## QQ-Plot
+
+.pull-left[
+The reason the QQ-plot for the political orientation variable looks the way it does is that the values of the variable are discrete. The ~~picture~~ plot looks different, if we use a continuous variable.
+
+.small[
+
+```r
+gapminder_2018 %&gt;% 
+  filter(!is.na(life_exp)) %&gt;% 
+  ggplot(mapping = aes(sample = life_exp)) +
+  stat_qq_band() +
+  stat_qq_line() +
+  stat_qq_point() +
+  labs(x = "Theoretical Quantiles",
+       y = "Sample Quantiles") 
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## PP-Plot
+
+.pull-left[
+The PP-plot compares the proportion of values between the actual and a theoretical (in this case normal) distribution.
+
+.small[
+
+```r
+gapminder_2018 %&gt;% 
+  filter(!is.na(life_exp)) %&gt;% 
+  ggplot(mapping = aes(sample = life_exp)) +
+  stat_pp_band() +
+  stat_pp_line() +
+  stat_pp_point() +
+  labs(x = "Probability Points",
+       y = "Cumulative Probability") 
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Normality test
+
+`Base R` also provides functions for statistical tests of normality. The most common ones are *Shapiro-Wilk's test* and the *Kolmogorov-Smirnov* test, both of which test the H0 that the data follow a normal distribution against the H1 that they do not follow a normal distribution. It should be noted, however, that, especially for larger sample sizes, these tests tend to be quite conservative.
+
+.small[
+
+```r
+shapiro.test(gapminder_2018$life_exp)
+```
+
+```
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  gapminder_2018$life_exp
+## W = 0.96852, p-value = 0.0003655
+```
+
+```r
+ks.test(gapminder_2018$life_exp, 
+        "pnorm",
+        mean = mean(gapminder_2018$life_exp, na.rm = TRUE),
+        sd = sd(gapminder_2018$life_exp, na.rm = TRUE))
+```
+
+```
+## 
+## 	One-sample Kolmogorov-Smirnov test
+## 
+## data:  gapminder_2018$life_exp
+## D = 0.070116, p-value = 0.3261
+## alternative hypothesis: two-sided
+```
+]
+
+---
+
+## Visual group comparisons
+
+If we want to visually compare distributions (or summary statistics) across groups or, more generally speaking, across different values of categorical variables in our dataset, there are plenty of options in `R`. There are grouped versions of all of the plots we discussed before: bar plots, histograms, and density plots. However, there also are other plot types that are especially suited for comparing subsets/groups in our data. 
+
+*Note*: The [`ggpubr` package](https://rpkgs.datanovia.com/ggpubr/index.html) and the [`ggstatsplot` package](https://github.com/IndrajeetPatil/ggstatsplot) include some good options for visualizations of group comparisons. 
+
+---
+
+## Grouped &amp; stacked bar plots
+
+.pull-left[
+If we want to compare the distribution of categorical variables across groups, we can use grouped or stacked bar plots. If, e.g., we want to compare the party preferences across education categories in the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset, we could do so with a grouped bar plot.
+
+.small[
+
+```r
+corona_survey %&gt;%
+  filter(!is.na(choice_of_party)) %&gt;%
+  ggplot(aes(x = education_cat, 
+             fill = choice_of_party)) +
+* geom_bar(position="dodge")
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Grouped &amp; stacked bar plots
+
+.pull-left[
+If, e.g., we want to compare the share of female and male voters for each party, we can use a stacked bar plot.
+
+.small[
+
+```r
+corona_survey %&gt;%
+  filter(!is.na(choice_of_party)) %&gt;%
+  ggplot(aes(x = choice_of_party, 
+             fill = sex)) +
+* geom_bar(position="fill")
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Bar plot with error bars
+
+.pull-left[
+One way to compare, e.g., mean values across groups is a bar plot with error bars, sometimes also called a dynamite plot.
+
+.small[
+
+```r
+corona_survey %&gt;% 
+  filter(!is.na(trust_government),
+         !is.na(choice_of_party)) %&gt;% 
+  group_by(choice_of_party) %&gt;% 
+  summarize(trust_in_government = mean(trust_government),
+            sd = sd(trust_government)) %&gt;% 
+  ggplot() +
+    geom_bar(aes(x = choice_of_party,
+                 y = trust_in_government),
+             stat="identity", 
+             fill="skyblue") +
+    geom_errorbar(aes(x = choice_of_party,
+                      ymin = trust_in_government - sd,
+                      ymax = trust_in_government + sd), 
+                  width=0.4,
+                  colour="orange",
+                  size=1)
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Boxplot
+
+.pull-left[
+A plot type that, despite having [received quite some criticism in recent years](https://www.data-to-viz.com/caveat/boxplot.html), is still widely used to visually summarize numeric data is the boxplot. `ggplot2` provides its own geom for this type of plot.
+
+.small[
+
+```r
+corona_survey %&gt;%
+  filter(!is.na(trust_government),
+         !is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party, 
+             y = trust_government)) +
+*   geom_boxplot()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Show me your data points!
+
+&lt;img src="./pics/summary_statistics.png" width="95%" style="display: block; margin: auto;" /&gt;
+&lt;small&gt;&lt;small&gt;Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations) &lt;/small&gt;&lt;/small&gt;
+
+---
+
+## Boxplot with individual data points
+
+.pull-left[
+One key point of criticism regarding the use of boxplots as well as dynamite plots (bar plots with error bars) is that they do not provide any information about the distribution of the data. This has even led some scientists to start an initiative to [#barbarplots](https://barbarplots.github.io/index.html). However, with `ggplot2` information about the distribution of variables can easily be added to a boxplot (or other types of plots), e.g., with the `geom_jitter`.
+
+.small[
+
+```r
+corona_survey %&gt;%
+  filter(!is.na(trust_government),
+         !is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party, 
+             y = trust_government)) +
+    geom_boxplot() +
+*   geom_jitter()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Violin plots
+
+.pull-left[
+The previous version of adding individual data points to the boxplot was not really visually appealing. A good alternative to boxplots are violin plots which show the distribution of the variable (within groups) and can be combined with boxplots.
+
+.small[
+
+```r
+corona_survey %&gt;%
+  filter(!is.na(trust_government),
+         !is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party, 
+             y = trust_government)) +
+    geom_violin(aes(fill = choice_of_party,
+                    color = choice_of_party),
+                width=1) +
+    geom_boxplot(width=0.1) +
+    theme(legend.position="none") +
+    xlab("")
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Half-violin plots
+
+.pull-left[
+Violin plots include a mirrored density plot. An alterntive to this are half-violin plot that can, e.g., be created with the [`gghalves` package](https://github.com/erocoar/gghalves).
+
+*Note*: An extension of these half-violin plots are [raincloud plots](https://github.com/RainCloudPlots/RainCloudPlots) that combine density, dot, and boxplots.
+
+.small[
+
+```r
+library(gghalves)
+
+corona_survey %&gt;%
+  filter(!is.na(trust_government),
+         !is.na(choice_of_party)) %&gt;% 
+  ggplot(aes(x = choice_of_party, 
+             y = trust_government)) +
+    geom_half_violin(aes(fill = choice_of_party,
+                         color = choice_of_party)) +
+    geom_half_point(aes(color = choice_of_party),
+                        transformation = position_jitter()) +
+    theme(legend.position="none") +
+    xlab("")
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Plotting bivariate distributions of numeric variables
+
+Similar to univariate statistics and distributions, there are multiple options for plotting bivariate distributions in `R`. Again, [*From Data to Viz*](https://www.data-to-viz.com/) is a good resource to consult here. We will explore some of the options for plotting bivariate distributions of numeric variables in the following.
+
+---
+
+## Scatter plot
+
+.pull-left[
+A very common option for plotting bivariate distributions to explore relationships between numeric variables is the scatter plot.
+
+.small[
+
+```r
+gapminder_2018 %&gt;% 
+  filter(!is.na(life_exp),
+         !is.na(gdp_percap)) %&gt;% 
+  ggplot(aes(x = gdp_percap,
+             y = life_exp)) +
+  geom_point()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-27-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Scatter plot + marginal distributions
+
+.pull-left[
+The `ggMarginal()` function from the [`ggExtra` package](https://github.com/daattali/ggExtra) allows us to add information about the distribution of variables to the margins of a scatter plot. We can add histograms, density plots or boxplots.
+
+.small[
+
+```r
+library(ggExtra)
+
+p &lt;- gapminder_2018 %&gt;% 
+  filter(!is.na(life_exp),
+         !is.na(gdp_percap)) %&gt;% 
+  ggplot(aes(x = gdp_percap,
+             y = life_exp)) +
+  geom_point()
+
+  ggMarginal(p, type = "histogram")
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-28-1.png" style="display: block; margin: auto;" /&gt;
+]
+---
+
+## Extensions
+
+Of course, it is also to include more than just two variables in a plot. For example, you can create grouped scatter plots and map the size of the plots in a scatter plot to another variable (e.g., the population of a country in the *Gapminder* examples). If you want to (visually) explore time series data, [*From Data to Viz*](https://www.data-to-viz.com/) has a section on this or you could, e.g. have a look at the [`timetk` package](https://business-science.github.io/timetk/index.html).
+
+There are also several extension packages for `ggplot2` that provide additional plot types or (convenient) plotting options. For example, the following packages provide some interesting (additional) options for EDA: [`ggExtra`](https://github.com/daattali/ggExtra), [`GGAlly`](https://ggobi.github.io/ggally/), [`ggpubr`](https://rpkgs.datanovia.com/ggpubr/index.html) 
+
+---
+
+## Missings &amp; outliers
+
+Two things that can influence summary statistics as well as univariate and bivariate distributions are missings and outliers. Hence, before we can analyze our data, we should check whether we have clear patterns of missingness or extreme outliers in our data.
+
+---
+
+## Missing data
+
+In the *Data Wrangling* session we have already discussed how we can define specific values as missings (`NA`) and how we can recode `NA` into something else. As we have seen in that session, the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset contains quite a few codes for different types of missing data. However, when we collect data ourselves or if we (re-)use datasets that are not as well-documented as the *GESIS Panel* data, we may need to explore potential patterns of missingness to see, if there may have been identifiable reasons why data for certain variables and/or observations are missing. There is a [vignette for the `naniar` package](https://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.html) that provides a good overview of different missing data visualizations. We will explore some of those in the following.
+
+---
+
+## `visdat::vis_dat()`
+
+.pull-left[
+The [`visdat` package](http://visdat.njtierney.com/) provides several functions for visualizing missind data.
+
+
+```r
+library(visdat)
+
+vis_dat(corona_survey)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-29-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## `visdat::vis_dat()`
+
+.pull-left[
+The `vis_miss()` function from the `visdat` package provides some further details on missing values in a dataset.
+
+
+```r
+vis_miss(corona_survey)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-30-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## `UpSetR::gg_miss_upset()`
+
+.pull-left[
+The [`UpSetR` package](https://github.com/hms-dbmi/UpSetR) includes the `gg_miss_upset()` function which allows some in-depth exploration of missingness patters in a dataset.
+
+
+```r
+library(UpSetR)
+
+gg_miss_upset(trust)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-31-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## `naniar::gg_miss_var()`
+
+.pull-left[
+The [`naniar` package](http://naniar.njtierney.com/index.html) that we have used to replace specific values with `NA` in our data also provides a set of functions for visualizing missing data. The first one we want to look at is `gg_miss_var()` which shows the number or percentage of missing values for each variable in a dataset.
+
+
+```r
+library(naniar)
+
+gg_miss_var(corona_survey,
+            show_pct = TRUE)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-32-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## `naniar::gg_miss_case()`
+
+.pull-left[
+The complement to `gg_miss_var()` is `gg_miss_case()` which shows the number or percentage of missing values for each case/observation in a dataset.
+
+
+```r
+library(naniar)
+
+gg_miss_case(corona_survey,
+            show_pct = TRUE)
+```
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-33-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## `naniar::gg_miss_fct()`
+
+.pull-left[
+The `gg_miss_fct()` function creates a plot that shows the percentage of missing values for all (other) variables for different values of a categorical.
+
+.small[
+
+```r
+library(naniar)
+
+gg_miss_fct(corona_survey,
+            fct = choice_of_party)
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-34-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Outliers
+
+There are many ways of identifying and dealing with outliers. In the following, we will look at three of them: box/violin plots, interquartile range (IQR), and Mahalanobis distance.
+
+*Note*: An alternative method for detecting outliers based on the Minimum Covariance Determinant is described in a [blog post by Will Hipson](https://willhipson.netlify.app/post/outliers/outliers/).
+
+---
+
+## Detecting outliers: Box/violin plots
+
+.pull-left[
+The [`ggstatsplot` package](https://github.com/IndrajeetPatil/ggstatsplot) includes the `ggbetweenstats()` function for creating a combined violin and boxplot that tags outliers.
+
+*Note*: Installing the `ggstatsplot` package will also install a lot of additional packages (which may take some time).
+
+.small[
+
+```r
+library(ggstatsplot)
+
+ggbetweenstats(data = corona_survey, 
+               x = sex,
+               y = left_right,
+               outlier.tagging = TRUE,
+               outlier.label = id,
+               results.subtitle = FALSE)
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-35-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Detecting outliers: IQR
+
+For identifying univariate outliers we can specify lower and upper cutoffs, e.g., using the formula 25th percentile - 1.5 * interquartile range (IQR) for the lower and 75th percentile + 1.5 * IQR for the upper limit. In `R` this can be done as follows:
+
+.small[
+
+```r
+q2575 &lt;- quantile(gapminder_2018$gdp_percap, 
+                  probs=c(.25, .75), 
+                  na.rm = TRUE)
+
+iqr &lt;- IQR(gapminder_2018$gdp_percap,
+           na.rm = TRUE)
+
+ul &lt;-  q2575[2]+1.5*iqr  
+ll &lt;- q2575[1]-1.5*iqr
+
+gapminder_2018_cut &lt;- gapminder_2018 %&gt;%
+  filter(gdp_percap &lt;= ul)
+```
+]
+
+**NB**: The value of 1.5 x IQR is a rule of thumb. You should always check whether this makes sense for your data. In the above example with the *Gapminder* data, e.g., it most likely does not. An alternative approach is using mean + 2 x SD (or 3 x SD), but, again, this is nothing more than a rule of thumb.
+
+---
+
+## Detecting outliers: Mahalanobis distance
+
+.pull-left[
+A common method for identifying multivariate outliers is Mahalanobis distance. The `outlier()` function from the `psych` package calculates and plots Mahalanobis distance.
+
+*Note*: You can also [calculate Mahalanobis distance to identify and filter outliers](https://willhipson.netlify.app/post/outliers/outliers/) using the `base R` function `mahalanobis()`.
+
+.small[
+
+```r
+library(psych)
+
+out &lt;- outlier(gapminder_2018[, -1])
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-36-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## EDA packages
+
+There are quite a few packages that are made for easy EDA or include functions that facilitate EDA. For example: [`inspectdf`](https://alastairrushworth.github.io/inspectdf/), [`skimr`](https://docs.ropensci.org/skimr/), [`summarytools`](https://github.com/dcomtois/summarytools), [`dataMaid`](https://github.com/ekstroem/dataMaid), [`DataExplorer`](https://boxuancui.github.io/DataExplorer/), [`descriptr`](https://descriptr.rsquaredacademy.com/index.html), [`GGally`](https://ggobi.github.io/ggally/index.html)
+
+Going through all of them would be too much. However, we will highlight a few exemplary functions from these packages for automated/simplified EDA that combine several of the different steps and options we covered in this session in the following.
+
+---
+
+## `skimr::skim()`
+
+
+```r
+library(skimr)
+
+skim(corona_survey[, -1])
+```
+
+.right[↪️]
+
+---
+
+.smaller[
+
+&lt;table style='width: auto;'
+        class='table table-condensed'&gt;
+&lt;caption&gt;Data summary&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Name &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; corona_survey[, -1] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Number of rows &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3765 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Number of columns &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 26 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; _______________________ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Column type frequency: &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; factor &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 22 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ________________________ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Group variables &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; None &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+**Variable type: factor**
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; skim_variable &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n_missing &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; complete_rate &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; ordered &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n_unique &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; top_counts &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sex &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.00 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; FALSE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mal: 1933, Fem: 1832 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; age_cat &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.00 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 51 : 978, 61 : 386, &amp;gt;= : 382, 46 : 367 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; education_cat &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.00 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Hig: 2188, Med: 1154, Low: 423 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; choice_of_party &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 982 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.74 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; FALSE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Gru: 756, CDU: 753, SPD: 369, Lin: 287 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+**Variable type: numeric**
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; skim_variable &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n_missing &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; complete_rate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sd &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p0 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p25 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p50 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p75 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p100 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; hist &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; left_right &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.66 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.86 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▂▅▇▃▁ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; risk_self &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 613 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.09 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▂▅▇▅▃ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; risk_surround &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 661 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.82 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.55 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▂▃▇▇▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; avoid_places &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.36 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▂▁▁▁▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; keep_distance &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▂▁▁▁▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; wash_hands &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.91 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.29 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▁▁▁▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; stockup_supplies &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.32 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.47 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▇▁▁▁▃ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; reduce_contacts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▂▁▁▁▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; wear_mask &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.04 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.19 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▇▁▁▁▁ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; trust_rki &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 670 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.82 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.44 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▁▁▅▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; trust_government &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 631 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.66 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▂▃▇▃ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; trust_chancellor &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 635 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.57 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▂▂▃▇▅ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; trust_who &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 662 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.82 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.97 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▁▂▇▅ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; trust_scientists &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 658 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.24 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.79 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▁▂▇▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; info_national_public_tv &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 596 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.90 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▁▁▁▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; info_national_newspaper &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 596 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.48 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▇▁▁▁▅ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; info_local_newspaper &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 596 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▇▁▁▁▇ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; info_facebook &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 596 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.19 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.39 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▇▁▁▁▂ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; info_other_social_media &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 596 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.36 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▇▁▁▁▂ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sum_measures &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▁▃▇▅ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sum_sources &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 596 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.09 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▅▇▃▁▁ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; mean_trust &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 608 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.75 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▁▃▇▇ &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+
+## `GGally::ggpairs()`
+
+.pull-left[
+.small[
+
+```r
+library(GGally)
+
+corona_survey %&gt;% 
+  select(sex,
+         education_cat,
+         risk_self,
+         risk_surround,
+         trust_government,
+         trust_rki,
+         trust_scientists,
+         sum_measures) %&gt;% 
+  ggpairs()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-38-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## `inspectdf::inspect_cat()`
+
+.pull-left[
+.small[
+
+```r
+library(inspectdf)
+
+cat &lt;- inspect_cat(corona_survey)
+
+show_plot(cat)
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day4_1_EDA_files/figure-html/unnamed-chunk-39-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day4_1_EDA_Exercise_2_question.html) time 🏋️‍♀️💪🏃🚴
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day4_1_EDA_Exercise_2_solution.html)
+
+---
+
+# Extracurricular activities
+
+Further explore the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset and develop some ideas for interesting research questions that you could answer by analyzing it with `R`.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
