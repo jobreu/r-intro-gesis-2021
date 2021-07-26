@@ -1,0 +1,68 @@
+---
+title: 'Exercise 3_2_1: A Simple Plot'
+author: 'Johannes Breuer & Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+Plotting data is fun. We also do it for data exploration (see the section on *Exploratory Data Analysis*). Still, at least in this slot of exercise, we just want to familiarize ourselves with some of the graphic facilities in R.
+
+So let's start with a simple task: creating a simple scatter plot. For this purpose, we first load the *GESIS Panel* COVID-19 survey data.
+
+```{r loadgpcovid, message=FALSE, eval=TRUE}
+library(dplyr)
+library(haven)
+
+gp_covid <- 
+  read_sav(
+    "./data/ZA5667_v1-1-0.sav"
+  ) %>% 
+  sjlabelled::set_na(na = c(-1:-99, 97))
+```
+
+Now let's plot an actual variable from the dataset.
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Create a scatter plot for the variables `political_orientation` and `hzcy001a`.
+```
+
+```{block, opts.label = "clues"}
+You may want to consider adding some jitter with the function `jitter()`.
+```
+
+```{r scatter, solution = TRUE}
+plot(gp_covid$political_orientation, gp_covid$hzcy001a)
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Add some jitter to the scatter plot.
+```
+
+```{block, opts.label = "clues"}
+You need the `jitter()` function. Have a look at `?jitter` for more details on using the function.
+```
+
+```{r jitter, solution = TRUE}
+plot(
+  jitter(gp_covid$political_orientation, 2), 
+  jitter(gp_covid$hzcy001a, 2)
+)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Add some color of your choice to the plot.
+```
+
+```{block, opts.label = "clues"}
+Did you check out the `ColourPicker` add-in for more modern colors?
+```
+
+```{r colorscatter, solution = TRUE}
+plot(
+  jitter(gp_covid$political_orientation, 2), 
+  jitter(gp_covid$hzcy001a, 2),
+  col = c("#1C86EE", "#FFFFFF", "#FFFFFF")
+)
+```
