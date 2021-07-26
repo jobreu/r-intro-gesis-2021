@@ -202,6 +202,15 @@ axis(
 
 ---
 
+class: center, middle
+
+
+# [Exercise](XXX) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
 ## Record your plot
 Adding more and more elements to your plot also means that the code you have to write gets more and more. But what can we do when we want to re-use the same plot and dynamically add some stuff? We can record the plot!
 
@@ -399,6 +408,15 @@ It's that easy.
 
 ---
 
+class: center, middle
+
+
+# [Exercise](XXX) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
 ## My personal note on `base R` plotting
 Hopefully, you have gotten the feeling that the `base R` base techniques for plotting already are well-suited for your daily data exploration needs.
 
@@ -555,12 +573,12 @@ woRkshoptools::include_picture("long.png")
 
 ---
 
-## Before we start: some more examples
+## Before we start
 The architecture of building plots in `ggplot` is similar to standard `R` graphics. There is an initial plotting call, and subsequently, more stuff is added to the plot. 
 
 However, in `base R`, it is sometimes tricky to find out how to add (or remove) certain plot elements. For example, think of removing the axis ticks in the scatter plot.
 
-We will systematically explore which elements are used in `ggplot` in this session. To get an idea of how easy it is to create figures in `ggplot`, in the following slides, we will look at some of the basic plot types you can choose from.
+We will systematically explore which elements are used in `ggplot` in this session.
 
 ---
 
@@ -609,55 +627,6 @@ ggplot(
 ```{r ref.label = "jitter", echo = FALSE}
 ```
 ]
-
----
-
-## Boxplots
-
-.tinyish[
-.pull-left[
-```{r boxplot, eval = FALSE}
-ggplot(
-  data = gp_covid,
-  aes(
-    x = as.factor(age_cat), 
-    y = hzcy001a
-  )
-) +
-  geom_boxplot()
-```
-]
-]
-
-.pull-right[
-```{r ref.label = "boxplot", echo = FALSE}
-```
-]
-
----
-
-## Densities
-
-.tinyish[
-.pull-left[
-```{r density, eval = FALSE}
-ggplot(
-  data = gp_covid,
-  aes(
-    x = hzcy001a
-  )
-) +
-  geom_density()
-```
-]
-]
-
-.pull-right[
-```{r ref.label = "density", echo = FALSE}
-```
-]
-
----
 
 ## Creating your own plot
 We do not want to give a lecture on the theory behind data visualization (if you want that, we suggest having a look at the excellent book [*Fundamentals of Data Visualization*](https://serialmentor.com/dataviz/) by Claus O. Wilke).
@@ -838,6 +807,15 @@ ggplot(data = gapminder_children) +
 
 
 **A smoothed regression line!** (The regression behind this operation is run automatically)
+
+---
+
+class: center, middle
+
+
+# [Exercise](XXX) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+
+## [Solutions](XX)
 
 ---
 
@@ -1274,3 +1252,9 @@ ggsave("nice_plot.tiff", nice_plot, dpi = 300)
 - [ggplot2 extensions](http://www.ggplot2-exts.org/gallery/)
 
 ---
+
+class: center, middle
+
+# [Exercise](XXX) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+
+## [Solutions](XXX)
