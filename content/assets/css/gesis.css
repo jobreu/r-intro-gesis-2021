@@ -2,7 +2,7 @@
 
 gesistheme
 Styles for Xaringan slides with GESIS theme
-November 2020
+July 2021
 
 /************
 
@@ -33,7 +33,18 @@ November 2020
   position: fixed;
 }
 
-.title-slide h3 {
+/*.title-slide h3 {
+  color: #FFFFFF;
+  font-style: italic;
+  margin-top: 420px;
+  margin-left: 300px;
+  margin-right: -50px;
+  text-align: left;
+  font-size: 16pt;
+  position: fixed;
+}*/
+
+.title-slide h3:nth-of-type(1) {
   color: #FFFFFF;
   font-style: italic;
   margin-top: 420px;
@@ -43,6 +54,19 @@ November 2020
   font-size: 16pt;
   position: fixed;
 }
+
+.title-slide h3:nth-of-type(2) {
+  color: #FFFFFF;
+  font-style: italic;
+  margin-top: 455px;
+  margin-left: 300px;
+  margin-right: -50px;
+  text-align: left;
+  font-size: 16pt;
+  position: fixed;
+}
+
+
 
 .title-slide .remark-slide-number {
   display: none;
