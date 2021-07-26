@@ -2,7 +2,7 @@
 title: "Introduction to R for Data Analysis"
 subtitle: "Data Types, Import & Export"
 author: "Johannes Breuer & Stefan Jünger"
-date: "August 02. 2021"
+date: "2021-08-02"
 presenter: Stefan
 ---
 layout: true 
@@ -397,9 +397,9 @@ However, there are more flexible ways of doing this as we will see later.
 class: center, middle
 
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise 1_2_1_Data_Types.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_1_2_1_Data_Types.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise 1_2_1_Data_Types.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_1_2_1_Data_Types.html)
 
 
 ---
@@ -881,9 +881,9 @@ Ok, but that's already data wrangling, a topic for this afternoon.
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day2_1_Data_Import_Export_Exercise_1_question.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_1_2_2_Flat_Files.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day2_1_Data_Import_Export_Exercise_1_solution.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_1_2_2_Flat_Files.html)
 
 ---
 
@@ -1012,6 +1012,6 @@ class: center, middle
 
 Please first download the [Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany](https://search.gesis.org/research_data/ZA5667) as .sav, .dta, and .csv file.
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day2_1_Data_Import_Export_Exercise_2_question.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_1_2_3_Statistical_Software_Files.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day2_1_Data_Import_Export_Exercise_2_solution.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_1_2_3_Statistical_Software_Files.html)
