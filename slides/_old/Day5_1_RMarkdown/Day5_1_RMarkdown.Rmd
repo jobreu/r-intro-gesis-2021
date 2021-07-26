@@ -1,0 +1,660 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Reporting with R Markdown"
+author: "Johannes Breuer<br />Stefan Jünger"
+date: "2020-08-07"
+location: "GESIS Summer School in Survey Methodology"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["default", "default-fonts", "../workshop.css"]
+    nature:
+      highlightStyle: "github"
+      highlightLines: true
+      countIncrementalSlides: false
+---
+layout: true
+
+```{r setup, include = F}
+if (!require(easypackages)) install.packages("easypackages")
+library(easypackages)
+
+packages("rmarkdown", "knitr", "kableExtra", "gadenbuie/xaringanExtra", "hadley/emo", prompt = F)
+
+options(htmltools.dir.version = FALSE)
+
+opts_chunk$set(echo = TRUE, fig.align = "center")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "clipboard"))
+xaringanExtra::use_extra_styles(hover_code_line = TRUE,
+                                mute_unhighlighted_code = FALSE)
+```
+
+<div class="my-footer">
+  <div style="float: left;"><span>`r gsub("<br />", ", ", gsub("<br /><br />|<a.+$", "", metadata$author))`</span></div>
+  <div style="float: right;"><span>`r metadata$location`, `r metadata$date`</span></div>
+  <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
+</div>
+
+<style type="text/css">
+
+pre {
+  font-size: 10px
+}
+</style>
+
+---
+
+## `R Markdown`
+
+In the previous sessions, we have seen that `R` offers plenty of options (and there are plenty of packages) for importing and exporting, wrangling, exploring, visualizing, and analyzing data. Normally, once we are (finally) done with all of these steps, we want to share and publish the results of our hard work. While the normal workflow is to somehow export (or copy) the results of our analyses into the desired output format (e.g., a *Word* document or a *Keynote* presentation), we can use an authoring tool for `R` that allows us to create a variety of outputs in different formats: `R Markdown`
+
+.center[
+<img src="./pics/data-science.png" width="60%">
+]
+<small><small>Source: http://r4ds.had.co.nz/</small></small>
+
+---
+
+## What is `R Markdown`?
+
+>R Markdown provides an unified authoring framework for data science, .highlight[combining your code, its results, and your prose commentary]. R Markdown documents are .highlight[fully reproducible] and .highlight[support dozens of output formats], like PDFs, Word files, slideshows, and more ([R for Data Science](https://r4ds.had.co.nz/r-markdown.html)).
+
+--
+
+`R Markdown` is...
+
+- an authoring framework
+
+--
+
+- a [literate programming](https://en.wikipedia.org/wiki/Literate_programming) tool
+
+--
+
+- a document format (`.Rmd`)
+
+--
+
+- an `R` package
+
+---
+
+## What is `R Markdown`?
+
+.center[
+.huge[
+[Markdown](https://en.wikipedia.org/wiki/Markdown) + `R`
+]
+]
+
+TL;DR of the Wikipedia article: `Markdown` is a lightweight language for text formatting.
+
+---
+
+## What does `R Markdown` do?
+
+```{r, rmarkdown-rocks-cartoon, out.width = "75%", echo = F}
+include_graphics("./pics/rmarkdown_rockstar.png")
+```
+<small><small>Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations) </small></small>
+
+---
+
+## What can you do with `R Markdown`?
+
+In a nutshell, with `R Markdown` it is possible to produce dynamic documents which...
+
+- include text, code, and output from that code
+
+--
+
+- render to many different output formats, including:
+
+  + HTML
+  
+  + Markdown
+  
+  + PDF
+  
+  + Microsoft Word
+  
+  + Open Document
+  
+  + RTF
+
+For a [full list of supported output formats](https://rmarkdown.rstudio.com/docs/reference/index.html#section-output-formats) see the `rmarkdown` package documentation.
+
+---
+
+## Disclaimer
+
+Covering everything you can do with `R Markdown` or even exploring all options for specific kinds of outputs, such as presentations or scientific publications, in-depth would be enough for separate workshops. Hence, this session only serves as a teaser and outlook to provide an overview and give a few examples of the many things you can do and create with `R Markdown`.
+
+---
+
+## Getting started with `R Markdown`
+
+If you use *RStudio* you only need to install the `R Markdown` package:
+
+```{r rmarkdown-requirements, eval = F}
+install.packages("rmarkdown")
+```
+
+If you do not have *RStudio* installed, you also need to [install Pandoc](https://pandoc.org/installing.html).
+
+---
+
+## Getting started with `R Markdown`
+
+You can create a new `R Markdown` document in *RStudio* via `File` -> `New File` -> `R Markdown`. This will open a new window in which you can set the author and title and pick an output format for your document.
+
+```{r, rmarkdown-menu, out.width = "50%", echo = F}
+include_graphics("./pics/create_rmarkdown_menu.png")
+```
+
+---
+
+## PDF output
+
+If you want to generate PDF output with `R Markdown`, you need `LaTeX`. If you have a `LaTeX` distribution like [`MiKTeX`](https://miktex.org/) or [`TeX Live`](https://www.tug.org/texlive/) on your system, you should be all set.
+
+If you do not have `LaTeX` installed, the easiest option - especially if you do not want to use plain `LaTeX` - is to install [`TinyTeX`](https://yihui.org/tinytex/) which is "a lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live". To do so you can use the [`tinytex` package](https://cran.r-project.org/web/packages/tinytex/index.html).
+
+```{r tinytex, eval = F}
+install.packages('tinytex')
+
+tinytex::install_tinytex()
+```
+
+**Note**: As we can't cover `LaTeX` in this course and because - based on your system configuration (OS, admin rights, etc.) - properly setting up `LaTeX` can be a bit fiddly (especially if you do not use `tinytex`), we will focus on `HTML` output for this session.
+
+---
+
+## Output formats
+
+The `R Markdown` package already support different output types and formats, such as:
+
+- Documents
+  + `HTML`
+  + `PDF`
+  + `RTF`
+  + *OpenDocument*
+  + *Microsoft Word*
+
+- Presentations
+  + ioslides (`HTML`)
+  + slidy (`HTML`)
+  + Beamer (`LaTeX`)
+  + *Microsoft PowerPoint*
+  
+*Note*: Some of these options require that additional software is installed (e.g., `LaTeX` for PDF, including Beamer presentations, *LibreOffice* for *OpenDocument*, or *Microsoft Office* for *Word* and *PowerPoint*).
+
+---
+
+## Output formats
+
+There are quite a few packages that offer extension output formats for `R Markdown`. For example:
+
+- [`pagedown`](https://github.com/rstudio/pagedown) for paginated `HTML` output that can be turned into PDF without the need to use `LaTeX` (can also be used to create [data-based CVs](https://github.com/nstrayer/cv))
+- [`officedown`](https://davidgohel.github.io/officedown/) for extended formatting and output options for *Microsoft Office* documents
+- [`distill`](https://rstudio.github.io/distill/) for scientific and technical writing and also [websites/blogs](https://themockup.blog/posts/2020-08-01-building-a-blog-with-distill/)
+- [`papaja`](https://crsh.github.io/papaja_man/) for APA manuscripts
+- [`rticles`](https://github.com/rstudio/rticles) for `R Markdown LaTeX` templates for various journals and publishers
+- [`xaringan`](https://github.com/yihui/xaringan) for presentations - which is what we used for our slides
+- [`bookdown`](https://bookdown.org/) for books (but also for websites)
+- [`blogdown`](https://bookdown.org/yihui/blogdown/) for websites - which is how Johannes created his [personal website](https://www.johannesbreuer.com/)
+- [`vitae`](https://github.com/mitchelloharawild/vitae) for (data-based) Résumés and CVs - which Johannes used to create his [CV](https://www.johannesbreuer.com/files/cv_JB_June20_apa-style.pdf)
+- [`posterdown`](https://github.com/brentthorne/posterdown) for academic (conference) posters
+- [`flexdashboard`](https://rmarkdown.rstudio.com/flexdashboard/index.html) for interactive dashboards
+
+---
+
+## Getting started with `R Markdown`
+
+When you create a new `R Markdown` document in *RStudio* the new document will include a basic template to which I added a few lines on inline code at the end in the example below.
+
+```{r, rmarkdown-example, out.width = "70%", echo = F}
+include_graphics("./pics/rmarkdown_example.png")
+```
+
+---
+
+## Anatomy of an `R Markdown` document
+
+```{r, rmarkdown-annotated, out.width = "75%", echo = F}
+include_graphics("./pics/rmarkdown_example_annotated.png")
+```
+
+---
+
+## YAML header
+
+```{r yaml-101, eval = F}
+---
+title: "My First R Markdown Document"
+author: "Gordon Shamway"
+date: "30 7 2020"
+output: html_document
+---
+```
+
+[YAML](https://yaml.org/) stands for "YAML Ain't Markup Language" (formerly known as "Yet Another Markup Language"). The YAML header in `R Markdown` documents contains metadata for the document. It provides human-readable configuration information and can include a large variety of key:values-pairs to specify what the document should look like. It needs to be at the beginning of the document and start and end with `---`.
+
+*Note*: There is an `R` package called [`ymlthis`](https://ymlthis.r-lib.org/) for creating extended YAML headers in and with `R`.
+
+---
+
+## `(R) Markdown` formatting
+
+While it is not necessary to know `Markdown` to use `R Markdown` (though if you want to know more, you can, e.g., check out the [Markdown Guide](https://www.markdownguide.org/) or this nice [interactive tutorial](https://commonmark.org/help/tutorial/)), it helps to know some of the basics of `Markdown` text formatting as they are the same for `R Markdown`.
+
+---
+
+## Text formatting
+
+.pull-left[
+### Syntax
+
+```
+**bold**
+
+*italics*
+
+***bold & italics***
+
+~~strikethrough~~
+```
+]
+
+.pull-right[
+### Output
+
+**bold**
+
+*italics*
+
+***bold & italics***
+
+~~strikethrough~~
+]
+
+---
+
+## Headers
+
+.pull-left[
+### Syntax
+
+```
+# Header 1
+
+## Header 2
+
+### Header 3
+```
+]
+
+.pull-right[
+### Output
+
+# Header 1
+
+## Header 2
+
+### Header 3
+]
+
+---
+
+# Paragraphs
+
+A new paragraph is started with a blank line before the text. **NB**: If you just hit Enter/Return to move text to a new line in an `R Markdown` document, the text you enter after that will not be on a new line in the output document.
+
+If you want to insert empty lines, you can use the `HTML` command `<br>` for `HTML` output.
+
+---
+
+## Lists
+
+.pull-left[
+### Syntax
+
+```
+- unordered list
+  + sub-item
+
+1. ordered list
+2. ordered list
+  + sub-item
+  + sub-item
+```
+]
+
+.pull-right[
+### Output
+
+- unordered list
+  - sub-item
+
+1. ordered list
+2. ordered list
+  + sub-item
+  + sub-item
+]
+
+---
+
+## Code & formulas
+
+.column-left[
+### Syntax
+
+```
+`library(tidyverse)`
+
+$\bar{x} = \frac{1}{n} \sum_{i=1}^{n}x_{i}$
+
+$$\sigma^{2} = \frac{\sum_{i=1}^{n} 
+  \left(x_{i} - \bar{x}\right)^{2}}
+  {n-1}$$
+
+```
+.small[
+*Note*: For generating formulas you can, e.g., use the [Online LaTeX Equation Editor](https://www.codecogs.com/latex/eqneditor.php) or the [Visual Math Editor](http://visualmatheditor.equatheque.net/VisualMathEditor.html).
+]
+]
+
+.column-right[
+### Output
+
+`library(tidyverse)`
+
+$\bar{x} = \frac{1}{n} \sum_{i=1}^{n}x_{i}$
+
+$$\sigma^{2} = \frac{\sum_{i=1}^{n} 
+  \left(x_{i} - \bar{x}\right)^{2}}
+  {n-1}$$
+]
+
+
+---
+
+## Other formatting stuff
+
+.pull-left[
+### Syntax
+
+```
+[link](https://www.gesis.org)
+
+> block quote
+
+![R Logo](./pics/Rlogo.png)
+```
+]
+
+.pull-right[
+### Output
+
+[link](https://www.gesis.org)
+
+> block quote
+
+![R Logo](./pics/Rlogo.png)
+]
+
+For more formatting options check out the [RMarkdown Reference Guide](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) which is also available in *RStudio* via `Help` -> `Cheatsheets` -> `R Markdown Reference Guide`.
+
+---
+
+# Formatting
+
+You can also use `HTML` code in `R Markdown` documents that produce `HTML` output. And, likewise, you can also use `LaTeX` code in documents that generate `PDF` output.
+
+---
+
+## Code chunks
+
+```{r code-chunk, echo = F}
+include_graphics("./pics/code_chunk.png")
+```
+
+As the name says, code chunks in `R Markdown` documents include code. This is typically `R` code, but other languages are supported as well (e.g., `Python` or `SQL`). The code is executed when the file is knitted (we'll talk about what this means in a bit). 
+
+You can insert a code chunk via the `Insert` button (select `R`) or using the keyboard shortcut <kbd>Ctrl + Alt + I</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Option + I</kbd> (*Mac*). 
+
+It is good practice to name code chunks. In the above example `{r cars}` specifies the language for the code `r` and a name `cars`. By naming code chunks it is, e.g., possible to reference them in other code chunks and they will also appear in the interactive ToC at the bottom of the tab for the `R Markdown` document. Chunk names may never be used twice in a single document and should not include spaces or underscores.
+
+---
+
+## Chunk options
+
+```{r chunk-options, echo = F}
+include_graphics("./pics/code_chunk_options.png")
+```
+
+You can also set a variety of options for code chunks. In the above example, we set `echo = FALSE` which means that the code itself will not be displayed in the output document (only its output). Other exemplary chunk options are `eval = FALSE`, meaning that the code is not executed, or `warning = FALSE` or `message = FALSE` which mean that warnings or messages produced by the code are not shown in the output document. Yihui Xie, the main author of the `knitr` package, keeps an [updated list of all code chunk options](https://yihui.org/knitr/options/). 
+
+---
+
+## Setup chunk
+
+```{r setup-chunk, echo = F}
+include_graphics("./pics/setup_chunk.png")
+```
+
+It generally makes sense to include a setup chunk in your document (right after the YAML header). Here you can set global options for your code chunks (which can be overridden by setting options for individual chunks), general options for `R` (e.g., regarding the use of scientific notation), or already load packages.
+
+---
+
+## Inline code
+
+```{r inline-code, echo = F}
+include_graphics("./pics/inline_code.png")
+```
+
+It is also possible to execute code within text. This makes sense to print `R` output in the text and makes the document dynamic as the output is automatically updated if it is compiled again after the input (usually the data) has changed. Inline code needs to be enclosed in `backticks` and has to start with a specification of the language (typically `r`) if the code should be executed when the document is compiled. Only the result(s) of the inline code (not the code itself) will be displayed in the output document.
+
+---
+
+## Comments
+
+It is also possible to include comments in an `RMarkdown` document that will not be displayed in the output. To comment something out, you can select it and use the keyboard shortcut <kbd>Ctrl + Shift + C</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Shift + C</kbd> (*Mac*). A comment in `R Markdown` looks like this: `<!-- This is a comment -->` 
+
+---
+
+## Knitting `r ji("yarn")`
+
+To compile the `RMarkdown` document (in this case into a `HTML`) document, you simply need to click the `Knit` `r ji("yarn")` button. Doing this will generate the `HTML` file (by default) in the directory where the `.Rmd` file is stored. It will also open a preview window in *RStudio*.
+
+```{r, rmarkdown-preview, out.width = "60%", echo = F}
+include_graphics("./pics/rmarkdown_preview.png")
+```
+
+---
+
+## Things to know about knitting in *RStudio*
+
+The knitting process happens in a new environment. The working directory for this will (by default) be the directory in which the `.Rmd` file is stored. This is important, e.g., for setting file paths in the `.Rmd` document. This also means that this process will not have access to any of the objects or functions you have created as well as packages you have loaded in the current session.
+
+When you are new to `R Markdown` it makes sense to knit early and knit often to see if everything works and produces the results you expected (unless your document is computationally intensive and, hence, takes a long time to compile).
+
+However, for computationally intensive tasks, you could consider setting the option `opts_chunk$set(cache = TRUE)`. It will cache chunk calls and their results as long as you do not edit them (but be aware that potentially sensitive data could be stored in the cache).
+---
+
+## How `R Markdown` works
+
+Behind the scenes, `R Markdown` uses [`knitr`](https://yihui.org/knitr/) to execute the code and create a `Markdown` (`.md`) document with the code and output included, and [`pandoc`](https://pandoc.org/) to convert to a range of different output formats. Again, both of them are included when you install *RStudio*.
+
+.center[<img src="./pics/rmarkdown_process.png" width="80%">]
+<small><small>Figure by [Andrew Collier](https://github.com/datawookie)</small></small>
+
+---
+
+## How `R Markdown` works
+
+```{r, rmarkdown-wizards-cartoon, out.width = "85%", echo = F}
+include_graphics("./pics/rmarkdown_wizards.png")
+```
+<small><small>Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations) </small></small>
+
+---
+
+## Workflow
+
+When you use `R Markdown` to create documents it makes sense to adopt a [project-based workflow using *RStudio* projects]((https://rstats.wtf/project-oriented-workflow.html) to "have everything in one place" which facilitates sharing (or also simply moving/copying) your materials and increases reproducibility (for yourself and others).
+
+```{r, rmarkdown-repro-cartoon, out.width = "75%", echo = F}
+include_graphics("./pics/reproducibility_court.png")
+```
+<small><small>Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations) </small></small>
+
+---
+
+## Tables
+
+As with almost everything in `R`, there are many options (read: packages) for creating tables. Some popular packages that also include options for displaying (and formatting) tables in `R Markdown` are:
+
+- [`xtable`](http://xtable.r-forge.r-project.org/)
+- [`stargazer`](https://cran.r-project.org/web/packages/stargazer/index.html)
+- [`pander`](https://rapporter.github.io/pander/)
+- [`flextable`](https://davidgohel.github.io/flextable/index.html)
+- [`huxtable`](https://hughjonesd.github.io/huxtable/)
+- [`gt`](https://gt.rstudio.com/index.html) 
+- [`gtsummary`](http://www.danieldsjoberg.com/gtsummary/) for summaries of dataframes, tests, and (regression) models
+
+`knitr` also includes the `kable()` function for creating tables which can be further extended and formatted with the [`kableExtra`](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html) package, and `rmarkdown::paged_table()` allows you to create paged tables. 
+
+---
+
+## Tables
+
+Each of the packages listed on the previous slide have their own strengths and limitations. In addition to the formats and functionalities they offer, they also differ in the types of output formats that they support. While most packages, e.g., support `HTML` output, not all can be used to produce output for `LaTeX` or *Microsoft Word*. Discussing these packages for table creation in detail is beyond the scope of this session, but we do provide some examples for creating tables in the exemplary `R Markdown` documents we have created for the exercise for this session.
+
+---
+
+## Citations & bibliographies
+
+Through `Pandoc` it is possible to [automatically generate citations and bibliographies in a variety of styles](https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html#Bibliographies). If you use a reference manager, such as the free and open-source [*Zotero*](https://www.zotero.org/), you can generate [`BibTeX`](https://en.wikipedia.org/wiki/BibTeX) files which you need for the [`citr` package](https://github.com/crsh/citr) which provides a handy *RStudio* addin for automatically creating citations and bibliographies in `R Markdown` documents. Another package that can be used for this is [`RefManageR`](https://github.com/ropensci/RefManageR/). 
+
+---
+
+## Customizing document appearance and style
+
+It is possible to customize the looks of `R Markdown` documents by specifying further options in the YAML header. For example, it is possible to use a set of [*Bootswatch* themes](https://bootswatch.com/) and choose from a [variety of Pandoc syntax highlighting options](https://www.garrickadenbuie.com/blog/pandoc-syntax-highlighting-examples/). If you do not use a Bootswatch theme, there are even more [`knitr` code highlighting options](http://animation.r-forge.r-project.org/knitr/).
+
+```{r yaml-extended, eval = F}
+---
+title: "My Fancy R Markdown Document"
+author: "Jeffrey Lebowski"
+date: "30 7 2020"
+output: html_document:
+    theme: sandstone
+    highlight: kate
+---
+```
+
+---
+
+## Customizing document appearance and style
+
+Even more customization of document appearance and style is possible by using custom [`CSS`](https://en.wikipedia.org/wiki/Cascading_Style_Sheets) files. Some of the packages that provide extension output formats or templates for `R Markdown` make use of this. If you want to learn more about options for controlling the appearance and style of `HTML` documents created with `R Markdown`, you can check out the [section on this topic](https://bookdown.org/yihui/rmarkdown/html-document.html#appearance-and-style) in *R Markdown: The Definitive Guide*.
+
+```{r css, eval = F}
+---
+title: "My Fully Customized R Markdown Document"
+author: "Guybrush Threepwood"
+date: "30 7 2020"
+output:
+  html_document:
+    css: styles.css
+---
+```
+
+---
+
+## Templates
+
+The packages that provide extension output formats also provide templates for `R Markdown` documents that can typically also be accessed via the *RStudio* menu once the package is installed. In addition to that, there are many other packages that provide a selection of `R Markdown` document templates. For example:
+
+- [`prettydoc`](https://prettydoc.statr.me/)
+
+- [`stationery`](https://cran.r-project.org/web/packages/stationery/index.html)
+
+- [`rmdformats`](https://github.com/juba/rmdformats)
+
+- [`markdowntemplates`](https://github.com/hrbrmstr/markdowntemplates)
+
+---
+
+## `R` Notebooks
+
+A special type of `R Markdown` document is the [`R` Notebook](https://garrettgman.github.io/rmarkdown/r_notebooks) which is a document in which code chunks can be executed independently and interactively, and the output is displayed directly beneath the code. In practice, this means that you can assess the output of code chunks without having to knit the entire document. Hence, `R` Notebooks are more suitable for interactive use. The output of `R` notebooks are `.nb.html` files. You can create a new `R` notebook in *RStudio* via `File` -> `New File` -> `R Notebook`. And you can easily change from "regular" `R Markdown` to an `R` Notebook by changing the output type in the YAML header to `html_notebook`. If you want to know more about `R` Notebooks, you can, e.g., have a look at the [section on `R` Notebooks in *R Markdown: The Definitive Guide*](https://bookdown.org/yihui/rmarkdown/notebook.html).
+
+```{r yaml-notebook, eval = F}
+---
+title: "My First R Notebook"
+author: "Max Power"
+date: "30 7 2020"
+output: html_notebook
+---
+```
+
+---
+
+## Excursus: Interactive Notebooks
+
+ `R` Notebooks are a nice option. However, if you want to use interactive notebooks to, e.g., share your results (with collaborators) or in your teaching, I would generally see [*Jupyter Notebooks*](https://jupyter.org/) as the better option as they provide some nice extra functionalities (especially when used with [*Jupyter Lab*](https://towardsdatascience.com/jupyter-lab-evolution-of-the-jupyter-notebook-5297cacde6b) and [*Binder*](https://mybinder.org/)). While they are not a native `R` format, *Jupyter* stands for `Julia`, `Python`, `R` and *Jupyter Notebooks* can be used with an `R` kernel. Notably, *Jupyter Notebooks* cannot be edited with *RStudio*, but an easy-to-use option for this is [*Anaconda*](https://www.anaconda.com/products/individual). If you use or want to use *Jupyter Notebooks*, you should also check out the [*GESIS Notebooks* service](https://notebooks.gesis.org/).
+
+---
+
+## `R Markdown` & collaborative editing
+
+As this session should have illustrated, you can do a lot of things and produce a large variety of output formats with `R Markdown`. One limitation, however, is that collaborative editing is not that straightforward with `R Markdown`. Unlike *Microsoft Word* or *Google Docs*, the commenting options are somewhat restricted. It is also not possible to directly track changes in `R Markdown` documents. Of course, you can use version control systems like `Git` for this. Also, real-time collaborative editing, as offered, e.g., by *Google Docs*, is not possible with `RMarkdown`. Two packages that address these limitations are [`redoc`](https://github.com/noamross/redoc) and [`rmdrive`](https://github.com/januz/rmdrive):
+
+- "`redoc` is a package to enable a two-way `R Markdown`-*Microsoft Word* workflow. It generates Word documents that can be de-rendered back into `R Markdown`, retaining edits on the *Word* document, including tracked changes".
+
+- "`rmdrive` provides convenience functions to copy `.Rmd` files to *Google Drive* for synchronous collaborative editing, then return them back to a local `.Rmd` file for rendering."
+
+.small[
+*Note*: The [development version of *RStudio* includes an experimental visual editor for `R Markdown`](https://bookdown.org/yihui/rmarkdown-cookbook/rstudio-visual.html) and this feature will likely be integrated into future releases of *RStudio*.
+]
+
+---
+
+## `R Markdown` resources
+
+The [*RStudio* `R Markdown` Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/rmarkdown-2.0.pdf)
+
+The [`R Markdown` materials by *RStudio*](https://rmarkdown.rstudio.com/index.html)
+
+The [`RMarkdown` chapter](https://r4ds.had.co.nz/r-markdown.html) in *R for Data Science* by Hadley Wickham
+
+[R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, and Garrett Grolemund
+
+[R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/) by Yihui Xie, Christophe Dervieux, and Emily Riederer
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day5_1_RMarkdown_Exercise_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+---
+
+## Extracurricular activities
+
+Watch some of the short (~ 10 mins each) [tutorial videos on *YouTube* by Nick Fox](https://www.youtube.com/playlist?list=PLmvNihjFsoM5hpQdqoI7onL4oXDSQ0ym8) on *Writing Reproducible Scientific Papers in `R`* and code along.
+
+Watch the short (~ 20 mins) [tutorial video on *YouTube* by Dan Quintana](https://www.youtube.com/watch?v=ox_Ue9yzf-0) on *How to make a personal academic website for free using R and the blogdown package* and start making your personal website (or blog) with `R Markdown`. 
+
+---
+
+# Acknowledgements `r ji("heart")`
+
+All slides were created with the [`xaringan` package](https://github.com/yihui/xaringan) which builds on [`remark.js`](https://remarkjs.com), [`knitr`](http://yihui.name/knitr), and [`R Markdown`](https://rmarkdown.rstudio.com). The exercises were created with the [`unilur` package](https://github.com/koncina/unilur).  
+
+The `workshop.css` file we used for the layout of the slides includes elements from `CSS` files for `xaringan` presentations by [Frederik Aust](https://github.com/crsh) and [David Zimmer](https://github.com/DavZim).  
+
+We thank the *GESIS Training* team for taking good care of the organization of this course (and the whole summer school) and all of you for participating!

@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to R for Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Johannes Breuer Stefan Jünger" />
+    <meta name="date" content="2020-08-05" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="..\workshop.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to R for Data Analysis
+## Data Visualization Part 2
+### Johannes Breuer<br />Stefan Jünger
+### 2020-08-05
+
+---
+
+layout: true
+
+
+
+&lt;div class="my-footer"&gt;
+  &lt;div style="float: left;"&gt;&lt;span&gt;Johannes Breuer, Stefan Jünger&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-08-05&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;Data Visualization Part 2&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style type="text/css"&gt;
+.tinyish .remark-code { /*Change made here*/
+  font-size: 70% !important;
+}
+
+.tinyisher .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+&lt;/style&gt;
+
+---
+
+## What is `ggplot2`?
+`ggplot2` is another `R` package for creating plots and is part of the `tidyverse`.
+
+
+It uses the *grammar of graphics*. Some things to note about `ggplot2`:
+- it is well-suited for multi-dimensional data
+- it expects data (frames) as input
+- components of the plot are added as layers
+
+
+
+```r
+plot_call +
+  layer_1 +
+  layer_2 +
+  ... +
+  layer_n
+```
+
+
+---
+## `ggplot2` examples 
+.pull-left[
+&lt;img src="./pics/143_radar_chart_multi_indiv_2.png" width="640" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="./pics/21_ggplot2_ddensity_plot.png" width="640" style="display: block; margin: auto;" /&gt;
+]
+
+
+&lt;small&gt;&lt;small&gt;Sources: https://www.r-graph-gallery.com/wp-content/uploads/2016/05/143_radar_chart_multi_indiv_2.png and https://www.r-graph-gallery.com/wp-content/uploads/2015/09/21_ggplot2_ddensity_plot.png&lt;/small&gt;&lt;/small&gt;
+
+---
+
+## `ggplot2` examples 
+.pull-left[
+&lt;img src="./pics/51_scatterplot_linear_model_with_CI_ggplot2.png" width="640" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="./pics/328_Hexbin_map_USA_4.png" width="800" style="display: block; margin: auto;" /&gt;
+]
+
+&lt;small&gt;&lt;small&gt;Sources: https://www.r-graph-gallery.com/wp-content/uploads/2015/11/51_scatterplot_linear_model_with_CI_ggplot2-300x300.png and https://www.r-graph-gallery.com/wp-content/uploads/2017/12/328_Hexbin_map_USA_4-300x200.png&lt;/small&gt;&lt;/small&gt;
+
+---
+
+## Histograms as in `base R`
+
+
+
+.tinyish[
+.pull-left[
+
+```r
+ggplot(gp_covid, aes(x = age_cat)) + 
+  geom_histogram()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Components of a plot
+According to Wickham (2010, 8)* a layered plot consists of the following components:
+
+&lt;span class="footnote"&gt;
+&lt;small&gt;&lt;small&gt;&lt;span class="red bold"&gt;*&lt;/span&gt; http://dx.doi.org/10.1198/jcgs.2009.07098&lt;/small&gt;&lt;/small&gt;
+&lt;/span&gt;
+
+
+- data and aesthetic mappings,
+- geometric objects,
+- scales,
+- and facet specification
+
+
+
+```r
+plot_call +
+  data +
+  aesthetics +
+  geometries +
+  scales +
+  facets
+```
+
+---
+
+## Data requirements
+You can use one single data frame to create a plot in `ggplot2`.
+- everything on the plot is just data
+- creates a smooth workflow from data wrangling to the final presentation of the results
+
+&lt;img src="./pics/data-science_man.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+&lt;small&gt;&lt;small&gt;Source: http://r4ds.had.co.nz&lt;/small&gt;&lt;/small&gt;
+
+However, this makes it difficult to add extra features to your plot.
+- There are ways of doing it anyway
+- Yet, it requires thinking about what to plot
+
+---
+
+## Why the long format? 🐴
+`ggplot2` prefers data in the long data format (**NB**: of course, only if this is possible and makes sense for the dataset at hand)
+- in some scientific disciplines this format is only used for specialized analyses (e.g., time series analysis)
+
+.pull-left[
+We may want to get used to it as this format has some benefits:
+- every element we aim to plot is an observation
+- no thinking required how a specific variable relates to an observation
+- most importantly, the long format is more parsimonious
+  - it requires less memory and less disk space
+]
+
+.pull-right[
+&lt;img src="./pics/long.png" width="40%" style="display: block; margin: auto;" /&gt;
+&lt;small&gt;&lt;small&gt;Source: https://github.com/gadenbuie/tidyexplain#tidy-data&lt;/small&gt;&lt;/small&gt;
+]
+  
+
+---
+
+## Before we start: some more examples
+The architecture of building plots in `ggplot` is similar to standard `R` graphics. There is an initial plotting call, and subsequently, more stuff is added to the plot. 
+
+However, in `base R`, it is sometimes tricky to find out how to add (or remove) certain plot elements. For example, think of removing the axis ticks in the scatter plot.
+
+We will systematically explore which elements are used in `ggplot` in this session. To get an idea of how easy it is to create figures in `ggplot`, in the following slides, we will look at some of the basic plot types you can choose from.
+
+---
+
+## Scatterplot from previous sessions
+
+
+
+.tinyish[
+.pull-left[
+
+```r
+ggplot(
+  data = gp_covid,
+  aes(
+    x = age_cat, 
+    y = hzcy001a
+  )
+) +
+  geom_point()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Scatterplot from previous sessions with jitter
+
+.tinyish[
+.pull-left[
+
+```r
+ggplot(
+  data = gp_covid,
+  aes(
+    x = age_cat, 
+    y = hzcy001a
+  )
+) +
+  geom_jitter()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Boxplots
+
+.tinyish[
+.pull-left[
+
+```r
+ggplot(
+  data = gp_covid,
+  aes(
+    x = as.factor(age_cat), 
+    y = hzcy001a
+  )
+) +
+  geom_boxplot()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Densities
+
+.tinyish[
+.pull-left[
+
+```r
+ggplot(
+  data = gp_covid,
+  aes(
+    x = hzcy001a
+  )
+) +
+  geom_density()
+```
+]
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Creating your own plot
+We do not want to give a lecture on the theory behind data visualization (if you want that, we suggest having a look at the excellent book [*Fundamentals of Data Visualization*](https://serialmentor.com/dataviz/) by Claus O. Wilke).
+- creating plots is all about practice
+- ...and 'borrowing' code from others
+
+.column-left-half[
+
+```r
+please +
+  no +
+  more +
+  pseudo +
+  code +
+  man
+```
+]
+
+.column-right-half[
+Three components are important:
+- Plot initiation
+- data input
+- aesthetics definition
+- so-called geoms
+]
+
+---
+
+## Plot initiation
+Now, let's start from the beginning and have a closer look at the *grammar of graphics*.
+
+.pull-left[
+`ggplot()` is the most basic command to create a plot (similar as `plot()`:
+
+
+```r
+ggplot()
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+**But it doesn't show anything...**
+
+---
+
+## Data input
+
+.pull-left[
+As we've already learned `ggplot()` expects data as input. We create some interesting plots using data from *Gapminder*.
+]
+
+.tinyish[
+.pull-right[
+
+```r
+gapminder_children &lt;- 
+  readr::read_csv(
+    "./data/children_per_woman_total_fertility.csv"
+    ) %&gt;% 
+  tidyr::pivot_longer(
+    -country, 
+    names_to = "year",
+    values_to = "children"
+  ) %&gt;% 
+  dplyr::left_join(
+      readr::read_csv(
+    "./data/countries_continent.csv"
+      )
+  ) %&gt;% 
+  dplyr::filter(year &gt;= 1950) %&gt;% 
+  dplyr::mutate(
+    year = as.numeric(year),
+    continent = as.factor(continent)
+    ) %&gt;% 
+  tidyr::drop_na()
+```
+]
+
+]
+
+---
+
+## What now?
+
+.pull-left[
+
+```r
+ggplot(data = gapminder_children)
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+**Still nothing there...**
+
+---
+
+## `aes`thetics! 
+
+.pull-left[
+`ggplot` requires information about the variables to plot.
+
+
+```r
+ggplot(data = gapminder_children) +
+  aes(x = year, y = children)
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+**That's a little bit better, right?**
+
+---
+
+## `geom`s!
+.pull-left[
+Finally, `ggplot` needs information *how* to plot the variables.
+
+
+```r
+ggplot(data = gapminder_children) +
+  aes(x = year, y = children) +
+  geom_point()
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+**A scatter plot!**
+
+---
+
+## Add a fancy `geom`
+.pull-left[
+We can also add more than one `geom`.
+
+
+```r
+ggplot(data = gapminder_children) +
+  aes(x = year, y = children) +
+  geom_point() +
+  geom_smooth()
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+
+**A smoothed regression line!** (The regression behind this operation is run automatically)
+
+---
+
+## Going further: adding group `aes`thetics
+
+.pull-left[
+We can add different colors for different groups in our data.
+
+
+```r
+ggplot(
+  data = gapminder_children,
+  aes(
+    x = year, 
+    y = children, 
+    group = continent
+    )
+  ) +
+  geom_smooth()
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Manipulating group `aes`thetics
+
+.pull-left[
+We can also change the colors that are used in the plot.
+
+
+```r
+ggplot(
+  data = gapminder_children,
+  aes(
+    x = year, 
+    y = children, 
+    color = continent,
+    group = continent
+    )
+  ) +
+  geom_smooth() +
+  scale_color_brewer(palette = "Paired")
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+The legend is drawn automatically, that's handy!
+
+---
+
+## Using another palette
+
+.pull-left[
+
+```r
+ggplot(
+  data = gapminder_children,
+  aes(
+    x = year, 
+    y = children, 
+    color = continent,
+    group = continent
+    )
+  ) +
+  geom_smooth() +
+  scale_color_brewer(palette = "Spectral") 
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Difference between `color` and `fill`
+When you work with `ggplot2`, at least after some time, you will be faced with two components of the plot or `geom` associated with colors: `color` and `fill`.
+
+Generally, `color` refers to the geometry borders, such as a line. `fill` refers to a geometry area, such as a polygon.
+
+Have this difference in mind when you use `scale_color_brewer` or `scale_fill_brewer` in your plots. Manipulating these colors and their corresponding legends in an elaborate plot can get really tedious, to be honest. 
+
+---
+
+## Choosing a fill color
+
+.pull-left[
+
+```r
+ggplot(
+  data = gapminder_children,
+  aes(
+    x = year, 
+    y = children, 
+    color = continent,
+    group = continent,
+    fill = continent
+    )
+  ) +
+  geom_smooth() +
+  scale_color_brewer(palette = "Spectral") +
+  scale_fill_brewer(palette = "Dark2")
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Colors and `theme`s
+One particular strength of `ggplot2` lies in its immense theming capabilities. The package has some built-in theme functions that makes theming a plot fairly easy, e.g.,
+- `theme_bw()`
+- `theme_dark()`
+- `theme_void()`
+- etc.
+
+See: https://ggplot2.tidyverse.org/reference/ggtheme.html
+
+
+If you want to, you can play around with some of those themes in the exercises for this session.
+
+In general, the [`r-color-palettes` repository by Emil Hvitfeldt](https://github.com/EmilHvitfeldt/r-color-palettes) is a good resource for choosing color palettes in `R` and there are many collections of full `ggplot2` themes out there (e.g., the [`hrbrthemes` package](https://github.com/hrbrmstr/hrbrthemes)).
+
+---
+
+## Alternative to being too colorful: facets
+.pull-left[
+
+```r
+ggplot(
+  data = gapminder_children,
+  aes(
+    x = year, 
+    y = children
+    )
+  ) +
+  geom_smooth(color = "black") +
+  facet_wrap(~continent, ncol = 3) +
+  theme_bw()
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## The `theme()` argument in general
+The most direct interface for manipulating your theme is the `theme()` argument. Here you can change the appearance of:
+- axis labels
+- captions and titles
+- legend
+- grid layout
+- the wrapping strips
+- ...
+
+---
+
+## Example: changing the grid layout &amp; axis labels
+.pull-left[
+
+```r
+ggplot(
+  data = gapminder_children,
+  aes(
+    x = year, 
+    y = children
+    )
+  ) +
+  geom_smooth(color = "black") +
+  facet_wrap(~continent, ncol = 3) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    strip.background = element_rect(fill = "white")
+  )
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Example: changing  axis labels
+.pull-left[
+
+```r
+ggplot(
+  data = gapminder_children,
+  aes(
+    x = year, 
+    y = children
+    )
+  ) +
+  geom_smooth(color = "black") +
+  facet_wrap(~continent, ncol = 3) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    strip.background = element_rect(fill = "white")
+  ) + 
+  ylab("Number of Children") +
+  xlab("Year")
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Another remark on plotting options
+
+.pull-left[
+Working with combined aesthetics and different data inputs can become cumbersome.
+
+Particularly, plotting similar aesthetics which interfere with the automatic procedures can create conflicts.
+
+Some 'favourites' include:
+- Multiple legends
+- and various color scales for similar `geoms` 
+- ... and there's more!
+]
+
+.pull-right[
+&lt;img src="./pics/800px-The_Scream.jpg" width="1065" style="display: block; margin: auto;" /&gt;
+]
+
+.right[
+&lt;small&gt;&lt;small&gt;Source: https://de.wikipedia.org/wiki/Der_Schrei#/media/File:The_Scream.jpg&lt;/small&gt;&lt;/small&gt;
+]
+
+---
+
+## `ggplot` plots are 'simple' objects
+In contrast to standard `R` plots, `ggplot2` are standard objects like any other object in `R` (they are lists). So there is no graphics device involved from which we have recorded our plot to re-use it later. We can just use it directly.
+
+
+```r
+my_fancy_plot &lt;- 
+  ggplot(data = gapminder_children) +
+  aes(x = year, y = children) +
+  geom_point() 
+
+my_fancy_plot &lt;- 
+  my_fancy_plot +
+  geom_smooth()
+```
+
+Additionally, there is also no need to call `dev.off()`
+
+---
+
+## It makes combining plots easy
+As of today, there are now a lot of packages that help to combine `ggplot2`s fairly easily. For example, the [`cowplot` package](https://cran.r-project.org/web/packages/cowplot/index.html) provides a really flexible framework. I have used `cowplot` to create the map in the previous session.
+
+Yet, fiddling with this package can become quite complicated. One of my favorite packages at the moment is the [`patchwork` package](https://cran.r-project.org/web/packages/patchwork/index.html) because of its easy to use syntax. It's really, really easy.
+
+---
+
+## Plotting side by side in one row
+.pull-left[
+
+```r
+library(patchwork)
+
+my_histogram &lt;- 
+  ggplot(
+    gp_covid, 
+    aes(x = age_cat)
+  ) + 
+  geom_histogram()
+
+my_boxplot &lt;-  
+  ggplot(
+    gp_covid, 
+    aes(y = age_cat)
+  ) + 
+  geom_boxplot()
+
+my_histogram | my_boxplot
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Plotting in two columns
+.pull-left[
+
+```r
+my_histogram / my_boxplot
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## combine them with base R graphics
+.pull-left[
+
+```r
+(my_histogram | ~hist(gp_covid$age_cat)) /
+  (my_boxplot | ~boxplot(gp_covid$age_cat))
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## There's more
+You can also annotate plots with titles, subtitles, captions, and tags.
+
+You can nest plots and introduce more complex layouts.
+
+I'd recommend, if you're interested, to check out the [`patchwork` repository on *GitHub*](https://github.com/thomasp85/patchwork) since everything is really well-documented there.
+
+---
+
+## Shortcuts in `ggplot`
+
+`ggplot2` is powerful...
+- yet, it is admittedly somewhat complicated to use in the beginning
+- and it has a steep learning curve
+
+However, there are some convenient shortcuts that you can use for creating simple plots.
+
+---
+
+## `qplot()` or `quickplot()`
+
+.pull-left[
+
+```r
+qplot(
+  x = gapminder_children$year, 
+  y = gapminder_children$children,
+  geom = "point",
+  group = gapminder_children$continent
+  )
+```
+]
+
+--
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## `qplot()` or `quickplot()`
+
+.pull-left[
+
+```r
+qplot(
+  x = gapminder_children$year, 
+  y = gapminder_children$children,
+  geom = c("point", "smooth")
+  )
+```
+]
+
+.pull-right[
+&lt;img src="Day3_2_Data_Visualization_2_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Exporting ggplot graphics
+Exporting `ggplot2` graphics is fairly easy with the `ggsave()` function. It automatically detects the file format. You can also define the plot height, width, and dpi, which is particularly useful to produce high-class graphics for publications.
+
+
+```r
+nice_plot &lt;- 
+  qplot(
+    x = gapminder_children$year, 
+    y = gapminder_children$children,
+    geom = c("point", "smooth")
+  )
+
+ggsave("nice_plot.png", nice_plot, dpi = 300)
+```
+
+Or:
+
+
+```r
+ggsave("nice_plot.tiff", nice_plot, dpi = 300)
+```
+
+---
+
+## Some additional resources
+
+- [ggplot2 - Elegant Graphics for Data Analysis](https://www.springer.com/gp/book/9783319242750) by Hadley Wickham
+
+- [Chapter 3](https://r4ds.had.co.nz/data-visualisation.html) in *R for Data Science*
+
+- [Fundamentals of Data Visualization](https://serialmentor.com/dataviz/) by Claus O. Wilke
+
+- [Data Visualization - A Practical Introduction](https://press.princeton.edu/titles/13826.html) by Kieran Healy
+
+- [data-to-viz](https://www.data-to-viz.com/)
+
+- [R Graph Gallery](https://www.r-graph-gallery.com/)
+
+- [BBC Visual and Data Journalism cookbook for R graphics](https://bbc.github.io/rcookbook/#how_to_create_bbc_style_graphics)
+
+- [ggplot2 extensions](http://www.ggplot2-exts.org/gallery/)
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day3_2_Data_Visualization_2_Exercise_question.html) time 🏋️‍♀️💪🏃🚴
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day3_2_Data_Visualization_2_Exercise_solution.html)
+
+---
+
+## Extracurricular activities
+
+Plotting erroneous data in standard `R` often produces error messages. In `ggplot2`, instead, you may produce funny graphics that you did not intend to create in the first place. It's a whole genre nowadays, and [this Twitter account](https://twitter.com/accidental__art?lang=en) collects a lot of these sometimes funny plots. You should definitely have a look!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
