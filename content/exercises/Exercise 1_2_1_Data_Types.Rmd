@@ -1,0 +1,99 @@
+---
+title: 'Exercise 1_2_1: Data Types'
+author: 'Cute Cat'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Create a numeric vector with at 6 numbers.
+```
+
+```{block, opts.label = "clues"}
+To create a vector you would need the `c()` function. 
+```
+
+```{r first.exercise, solution = TRUE}
+cool_numeric_vector <-
+  c(4, 8, 15, 16, 23, 42)
+
+cool_numeric_vector
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, create a character vector with four distinct strings.
+```
+
+```{block, opts.label = "clues"}
+Strings or characters have to be enclosed by quotation marks (`""` or `''`).
+```
+
+```{r second.exercise, solution = TRUE}
+cool_character_vector <-
+  c("I", "like", "bananas", "and", "rhubarb", "pie")
+
+cool_character_vector
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Let's turn to more complex data structures. Create a matrix with two columns using the `matrix()` function based on the numeric vector you built in the first exercise.
+```
+
+```{block, opts.label = "clues"}
+You have to either define the `nrow` or `ncol` option to get the proper layout of the matrix.
+```
+
+```{r third.exercise, solution = TRUE}
+cool_matrix <-
+  matrix(cool_numeric_vector, nrow = 3)
+
+cool_matrix
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Create a list from all the above defined data types.
+```
+
+```{block, opts.label = "clues"}
+Just wrap all elements in the `list()` function
+```
+
+```{r fourth.exercise, solution = TRUE}
+cool_list <-
+  list(
+    cool_numeric_vector,
+    cool_character_vector,
+    cool_matrix
+  )
+
+cool_list
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+Extract the matrix from the list and convert it to a data frame using the `as.data.frame()` function .
+```
+
+```{block, opts.label = "clues"}
+List elements are accessed with `[[]]`. 
+```
+
+```{r fifth.exercise, solution = TRUE}
+cool_data_frame <- 
+  as.data.frame(cool_list[[3]])
+```
+
+```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
+Add some column names (e.g., "first" and "second") for the two columns of the data frame.
+```
+
+```{block, opts.label = "clues"}
+You would need the `names()` function.
+```
+
+```{r sixth.exercise, solution = TRUE}
+names(cool_data_frame) <- c("one", "two")
+
+cool_data_frame
+```
