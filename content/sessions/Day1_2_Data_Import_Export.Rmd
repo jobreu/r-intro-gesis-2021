@@ -1,28 +1,19 @@
 ---
 title: "Introduction to R for Data Analysis"
-subtitle: "Data import and export"
-author: "Johannes Breuer & Stefan Jünger<br>August 03, 2021"
-location: "GESIS, Cologne, Germany"
+subtitle: "Data Types, Import & Export"
+author: "Johannes Breuer & Stefan Jünger"
+date: "August 02. 2021"
+presenter: Stefan
 ---
 layout: true 
 
 ```{r child = "../config/sessions_setup.Rmd"}
 ```
 
-```{css, echo = FALSE}
-.tinyish .remark-code { /*Change made here*/
-  font-size: 70% !important;
-}
-
-.tinyisher .remark-code { /*Change made here*/
-  font-size: 50% !important;
-}
-```
-
 ---
 
 ## Getting data into `R`
-Thus far, we've already learned what `R` and `RStudio` are. We also know how we can start our own programming project in R. Still, this course is about starting to use R and feeling prepared to use it for statistical analyses. There's one essential prerequisite:
+Thus far, we've already learned what `R` and `RStudio` are. This course is about starting to use `R` and feeling prepared to use it for statistical analyses. There's one essential prerequisite:
 
 .center[**We need data!**]
 
@@ -32,8 +23,384 @@ woRkshoptools::include_picture("./import_data.png")
 
 ---
 
+## Content of this session 
+
+- What are `R`'s internal data types?
+- How to work with different data types?
+- How to import data in different formats?
+- How to export data in different formats
+
+---
+
 ## Data we use in this course
-During the course, we use several different datasets. Mainly in this session, where we apply different importing functions, we use a large variety ranging from data bout the Titanic to data about unicorns. However, we will also use data that are (presumably) more interesting for social and behavioral scientists.
+During the course, we use several different datasets. Mainly in this session, where we apply different importing functions, we use a large variety ranging from data about the Titanic to data about unicorns. However, we will also use data that are (presumably) more interesting for social and behavioral scientists.
+
+---
+
+## It boils down to...
+.pull-left[
+**How your data are stored (data types)**
+- 'Numbers' (Integers & Doubles)
+- Character Strings
+- Logical
+- Factors
+- ...
+- There's more, e.g., expressions, but let's leave it at that
+]
+
+.pull-right[
+**Where your data are stored (data formats)**
+- Vectors
+- Matrices
+- Arrays
+- Data frames / Tibbles
+- Lists
+]
+
+.footnote[https://www.stat.berkeley.edu/~nolan/stat133/Fall05/lectures/DataTypes4.pdf]
+
+---
+
+## Numeric data
+.small[
+*Integers* are values without a decimal value. To be explicit in `R` in using them, you have to place an `L` behind the actual value, just like that:
+
+```{r integer-1}
+1L
+```
+
+By contrast, *doubles* are values with a decimal value.
+
+```{r integer-2}
+1.1
+```
+
+We can check data types by using the `typeof()` function.
+
+```{r typeof}
+typeof(1L)
+typeof(1.1)
+```
+]
+
+---
+
+## Character strings
+At first glance, a *character* is a letter somewhere between a-z. *String* in this context might mean that we have a series of characters. However, numbers and other symbols can be part of a *character string*, which can then be, e.g., part of a text. In `R`, character strings are wrapped in quotation marks.
+
+```{r string}
+"Hi. I am a character string, the 1st of its kind!"
+```
+
+So character strings are meaningless, which means that there are no values associated with their content unless we change that, e.g., with factors.
+
+---
+
+## Factors
+If you're a *Stata* (or *SPSS*) user, you may already be quite familiar with factors. Factors are data types that assume that their values are not continuous, e.g., as in ordinal or nominal data. They are useful when inserted into regression models, as we will see later in this course.
+
+```{r factor}
+factor(1.1)
+factor("Hi. I am a character string, the 1st of its kind!")
+```
+
+Factors take numeric data or character strings as input as they simply convert them into so-called levels. This concept may be a little bit abstract for the time being. It's just essential to have heard about them before you learn more about them in the data wrangling session.
+
+---
+
+## Logical values
+Logical values are basically either `TRUE` or `FALSE` values. These values are produced by making logical requests on your data.
+
+```{r logical}
+2 > 1
+2 < 1
+```
+
+I'd say that logical values are at the heart of creating loops. For this purpose, we need way more logical operators to request `TRUE` or `FALSE` values.
+
+---
+
+## Logical operators
+Here are all (?) logical operators in `R`:
+- `<` 	less than
+- `<=` 	less than or equal to
+- `>` 	greater than
+- `>=` 	greater than or equal to
+- `== `	exactly equal to
+- `!=` 	not equal to
+- `!x` 	Not x
+- `x | y` 	x OR y
+- `x & y `	x AND y
+- `isTRUE(x)` 	test if X is TRUE 
+- `isFALSE(x)` 	test if X is FALSE 
+
+.footnote[https://www.statmethods.net/management/operators.html]
+
+Moreover, there are some more `is.PROPERTY_ASKED_FOR()` functions, such as `is.numeric()`, which also return `TRUE` or `FALSE` values.
+
+---
+
+## `R`'s data formats 
+`R`'s different data types can be put into 'container's.
+
+```{r containers, echo = FALSE, out.width = "75%"}
+woRkshoptools::include_picture("9213.1526125966.png")
+```
+
+.footnote[https://devopedia.org/r-data-structures]
+
+---
+
+## Vectors
+Vectors are built by enclosing your content with `c()` ("c" for "concatenate")
+
+```{r vectors}
+numeric_vector   <- c(1, 2, 3, 4)
+character_vector <- c("a", "b", "c", "d")
+
+numeric_vector
+character_vector
+```
+
+Vectors are really like vectors in mathematics. Initially, it doesn't matter if you look at them as column or row vectors.
+
+---
+
+## ...but it matters when you combine vectors
+Using the function `cbind()` or `rbind()` you can either combine vectors column-wise or row-wise, respectively.
+
+```{r combine-vectors}
+cbind(numeric_vector, character_vector)
+rbind(numeric_vector, character_vector)
+```
+
+They are now matrices (also numeric values are coerced into strings).
+
+---
+
+## Matrices
+Matrices are the basic rectangular data format in R.
+
+```{r matrix}
+fancy_matrix <- matrix(1:16, nrow = 4)
+
+fancy_matrix
+```
+
+You cannot store multiple data types, such as strings and numeric values in the same matrix.  Otherwise, your data will get coerced to a common type, as seen in the previous slide.
+- In fact, this is something that happens already within vectors.
+
+```{r vector-coercion}
+c(1, 2, "evil string")
+```
+
+---
+
+## Data frames
+While matrices are used, e.g.,--\*drumroll\*-- for matrix operations, data frames resemble more the data formats most of you are probably already familiar with. We can build data frames by hand as here:
+
+.tinyish[
+```{r data-frames, eval = FALSE}
+library(randomNames) # a name generator package
+
+fancy_data <-
+  data.frame( 
+    who = 
+      randomNames(n = 10, which.names = "first"),
+    age = 
+      sample(14:49, 10, replace = TRUE), # you see what we are doing here?   
+    salary_2018 = 
+      sample(15:100, 10, replace = TRUE),  
+    salary_2019 = 
+      sample(15:100, 10, replace = TRUE)
+  )
+ 
+fancy_data
+```
+]
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+class: middle
+```{r ref.label = "data-frames", echo = FALSE}
+```
+
+---
+
+## `tibbles`
+`data.frames` tend to be pretty large, and printing them on your screen can get difficult. As part of the `tidyverse`, tibbles facilitate printing (and adding more metadata to the columns of a `data.frame`). Instead of using `data.frame()` for our data creation we could have been using `tibble()`. Or we convert an existing `data.frame`, which looks like that:
+
+```{r as_tibbles, eval = FALSE}
+library(tibble)
+as_tibble(fancy_data)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+class: middle
+```{r ref.label = "as_tibbles", echo = FALSE}
+```
+
+---
+
+## One last type you should know: lists
+Lists are perfect for storing numerous and potentially diverse information in one place.
+
+```{r fancy_list, eval = FALSE}
+fancy_list <- 
+  list(
+    numeric_vector,
+    character_vector,
+    fancy_matrix,
+    fancy_data
+  )
+
+fancy_list
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+class: middle
+.tinyish[
+```{r ref.label = "fancy_list", echo = FALSE}
+```
+]
+
+---
+
+## Nested lists
+```{r fancy_nested_list, eval = FALSE}
+fancy_nested_list <-
+  list(
+    fancy_vectors = list(numeric_vector, character_vector),
+    data_stuff = list(fancy_matrix, fancy_data)
+  )
+
+fancy_nested_list
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+class: middle
+.tinyish[
+```{r ref.label = "fancy_nested_list", echo = FALSE}
+```
+]
+
+---
+
+## Accessing elements by index
+Generally, there is this use of `[index_number]`-logic in `R` to access only a subset of information in data, no matter if we have vectors or data frames.
+
+Say, we want to extract the second element of our `character_vector` object, we could do that like this:
+
+```{r}
+character_vector[2]
+```
+
+---
+
+# More complicated cases: matrices
+Matrices can have more dimensions, often you want information from a specific row and column.
+
+```{r eval = FALSE}
+a_wonderful_matrix[number_of_row, number_of_column]
+```
+
+*Note*: You can do the same indexing with `data.frame`s
+
+---
+
+## Matrices and subscripts (as in mathematical notation)
+Identify rows, columns, or elements using subscripts is similar to matrix  notation:
+
+```{r eval = FALSE}
+fancy_matrix[, 4] # 4th column of matrix
+fancy_matrix[3,] # 3rd row of matrix
+fancy_matrix[2:4, 1:3] # rows 2,3,4 of columns 1,2,3 
+```
+
+It's really like in math, and you can perform standard mathematical operations, such as matrix multiplications.
+
+```{r}
+fancy_matrix[2:4, 1:3] %*% fancy_matrix[1:3, 2:4]
+```
+
+---
+
+## The case of data frames
+A nice feature of `data.frames` or `tibbles` is that their columns are names, just as variable names in ordinary data. It would be cumbersome do use index numbers to extract a specific column/variable, right? Do not fear:
+
+```{r}
+fancy_data$who
+```
+
+Just place a `$`-sign between the data object and the variable name.
+
+---
+
+## `[]` in data frames
+Sometimes we also have to rely on character strings as input information, e.g., for iterating over data. We can also use `[]` to access variables by name. 
+
+.pull-left[ 
+Not only this way:
+
+```{r}
+fancy_data[1]
+```
+]
+
+.pull-right[
+But also this way:
+
+```{r}
+fancy_data["who"]
+```
+]
+
+---
+
+## Difference between `[]` and `[[]]` 
+
+```{r echo = FALSE}
+woRkshoptools::include_picture("indexing_lists.png")
+```
+
+.footnote[https://twitter.com/hadleywickham/status/643381054758363136/photo/1]
+
+---
+
+## Receiving and defining names
+
+We can print all names of an object using the `names()` function...
+
+```{r receiving-names}
+names(fancy_data)
+```
+
+...and we can change its names with it.
+
+```{r changing-names}
+names(fancy_data) <- c("name", "salary_2018", "salary_2019")
+
+names(fancy_data)
+```
+
+However, there are more flexible ways of doing this as we will see later.
+
+---
+
+class: center, middle
+
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise 1_2_1_Data_Types.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise 1_2_1_Data_Types.html)
+
 
 ---
 
@@ -70,25 +437,23 @@ This `R` package provides ["[a]n excerpt of the data available at Gapminder.org.
 ## How to use the data in general
 To code along and be able to do the exercises, you should store the data files for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* in a folder called `data` in the same folder as the other materials for this course.
 
-The *Gapminder* data (as well as the Titanic and unicorn) should already be in the `data` folder (if you downloaded/cloned the materials from the [*GitHub* repo for this course](https://github.com/jobreu/r-intro-gesis-2020)).
+The *Gapminder* data (as well as the Titanic and unicorn) should already be in the `data` folder (if you downloaded/cloned the materials from the [*GitHub* repo for this course](https://github.com/jobreu/r-intro-gesis-2021)). We also provide you a synthetic data set based on the GESIS Panel data. This synthetic data set was created by [Bernd Weiß](https://berndweiss.net/) using the [`synthpop` package](https://www.synthpop.org.uk/).
 
 ---
 
-## What's great about `R` is that it's data-agnostic
-```{r, echo = FALSE}
+## `R` is data-agnostic
+```{r, echo = FALSE, out.width = "65%"}
 woRkshoptools::include_picture("./Datenimport.PNG")
 ```
 
 ---
 
-## What's intimidating: the choice of packages
+## But the choice of packages is intimidating
 .pull-left[
 **What you will learn**
 - Getting the most common data formats into `R`
   - e.g., CSV, *Stata*, *SPSS*, or *Excel* spreadsheets
-  
 - Using the most recent methods of doing that
-
 - We will rely a lot on packages and functions from the `tidyverse` instead of using `base R`
 ]
 
@@ -111,13 +476,13 @@ woRkshoptools::include_picture("./rstudio_import.PNG")
 
 ## Where to find data
 
-### Browse Button in *RStudio*
-```{r, echo = FALSE}
+**Browse Button in `RStudio`**
+```{r, echo = FALSE, out.width="75%"}
 woRkshoptools::include_picture("./importBrowse.PNG")
 ```
 
-### Code preview in *Rstudio*
-```{r, echo = FALSE}
+**Code preview in `Rstudio`**
+```{r, echo = FALSE, out.width="75%"}
 woRkshoptools::include_picture("./codepreview.PNG")
 ```
 
@@ -130,7 +495,7 @@ woRkshoptools::include_picture("./coding_cat.gif")
 ```
 ]
 
-.footnote[https://media.giphy.com/media/LmNwrBhejkK9EFP504/source.gif]
+.footnote[[Source](https://media.giphy.com/media/LmNwrBhejkK9EFP504/source.gif)]
 
 ---
 
@@ -163,11 +528,9 @@ For simple files, `base R` provides proper tools for importing.
 
 Yet, for importing other files, we have to rely on additional packages anyway.
 - the `tidyverse` packages (and its "friends") allow us to import and export all kinds of different data formats in a coherent way
-
 - the tidy data format also facilitates adding metadata to imported data
   - they are tibbles
   - a specific kind are labelled data (more on that in a bit)
-  
 - the `tidyverse` provides some sane defaults, e.g., by automatic data type detection
 
 ---
@@ -178,22 +541,23 @@ Yet, for importing other files, we have to rely on additional packages anyway.
 
 ---
 
-## Ok now, for starters: Importing a CSV file in `R` using `utils`
+## For starters: Importing a CSV file using `Base R`
 
-```{r loadtitanic}
+```{r loadtitanic, eval = FALSE}
 titanic <- read.csv("./data/titanic.csv")
 
 titanic
 ```
 
-.right[`r emo::ji("left_arrow_curving_right")`]
+.tiny[
+```{r loadtitanic-print, echo = FALSE}
+titanic <- read.csv("./data/titanic.csv")
 
----
-class: middle
-.tinyish[
-```{r ref.label = "loadtitanic", echo = FALSE}
+titanic
 ```
 ]
+
+
 
 ---
 
@@ -281,7 +645,7 @@ Not to mention all the helper functions and options. For example, we can define 
 
 ---
 
-## Data type specifications for `tibbles`
+## Data type specifications for `tibbles` 
 - characters
   - indicated by `<chr>`
   - specified by `col_character()`
@@ -556,9 +920,9 @@ list.files()
 ---
 
 ## `R`'s native file formats
-If you plan to continue to work with R (something we would always recommend `r emo::ji("stuck_out_tongue_winking_eye")`), there are at least two native 'file formats' to choose from. The advantage of using them is that they are compressed files, so that they don't occupy unnecessarily large disk space. Moreover, they are already prepared as you left them, and they take less time to be loaded (not a big deal in a small data world but relevant for big(ger) data).
+If you plan to continue to work with `R` (something we would always recommend `r emo::ji("stuck_out_tongue_winking_eye")`), there are at least two native 'file formats' to choose from. The advantage of using them is that they are compressed files, so that they don't occupy unnecessarily large disk space. Moreover, they are already prepared as you left them, and they take less time to be loaded (not a big deal in a small data world but relevant for big(ger) data).
 
-`.Rdata` files saving and loading:
+`.Rdata`/`.rda` files saving and loading:
 
 ```{r, eval = FALSE}
 save(mydata, file = "mydata.RData")
