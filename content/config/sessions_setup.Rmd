@@ -10,14 +10,16 @@ knitr::opts_chunk$set(
 )
 
 # load course content table
-# source("./content/R/course_content.R")
+source("./content/R/course_content.R")
 
-options(warn = -1)
+options(warn = -1,
+        htmltools.dir.version = FALSE,
+        htmltools.preserve.raw = FALSE)
 
 xaringanExtra::use_xaringan_extra(c("tile_view", "clipboard"))
 xaringanExtra::use_extra_styles(
-  hover_code_line = TRUE,         #<<
-  mute_unhighlighted_code = FALSE  #<<
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = FALSE
 )
 ```
 
