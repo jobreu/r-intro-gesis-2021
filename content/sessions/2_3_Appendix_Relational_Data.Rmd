@@ -1,0 +1,421 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Appendix: Relational Data"
+author: "Johannes Breuer & Stefan Jünger"
+date: "2021-08-02"
+presenter: Johannes
+---
+layout: true 
+
+```{r child = "../config/sessions_setup.Rmd"}
+```
+
+---
+
+## Relational data
+
+In some cases, you may need to combine different data sets (e.g., if you have seperate data sets from waves of a longitudinal survey study or data on the same subjects from different sources). 
+
+The simplest case is that the dataframes you want to combine either have the same cases/rows in the same order but different variables/columns, or the same columns/variables (with the same names) but different cases/rows.
+
+In those cases, you can use the `base R` functions `rbind()` to add/combine rows or `cbind()` to add/combine columns, or, better yet, `bind_rows()` or `bind_cols()` from `dplyr`.
+
+---
+
+## Relational data
+
+For all other situations, you can use the `merge()` function from `base R`. However, a more convenient option is using the the so-called *two-table verbs* from `dplyr` which allow you to combine two (or more) tabular data sets in various ways. We will look at two categories of those verbs in the following:
+
+1. Mutating joins  
+
+2. Filtering joins  
+
+If you have ever worked with (or at least seen) `SQL` code, many of the following things will look familiar. For a more in-depth introduction, you can have a look at the [chapter on relational data](https://r4ds.had.co.nz/relational-data.html) in *R for Data Science*.
+
+---
+
+## Superhero data `r ji("bat")``r ji("zap")``r ji("spider_web")``r ji("merman")`
+
+As we cannot use the data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* to illustrate the different joins from `dlpyr`, we will, instead, use data from the [Super Heroes dataset from *Kaggle*](https://www.kaggle.com/claudiodavi/superhero-set).
+
+```{r superhero-data, include = F}
+heroes <- read_csv("./data/heroes_information.csv") %>% 
+  select(name, Alignment, Race, Publisher) %>% 
+  rename(Name = name) %>%
+  mutate(Publisher = str_replace(Publisher, " Comics", "")) %>%
+    filter(
+    (Name == "Batgirl" & Race != "-") |
+      Name == "Aquaman" |
+      Name == "Catwoman" |
+      Name == "Magneto" |
+      Name == "Deadpool" |
+      Name == "Poison Ivy" |
+      Name == "Hellboy"
+  )
+
+publishers <- read_csv("./data/heroes_information.csv") %>% 
+  select(Publisher) %>%
+  distinct() %>% 
+  filter(
+    Publisher == "Marvel Comics" |
+    Publisher == "DC Comics" |
+    Publisher == "Image Comics"
+  ) %>% 
+  distinct() %>%
+  mutate(Publisher = str_replace(Publisher, " Comics", ""),
+    Founded = case_when(
+    Publisher == "Marvel" ~ 1939L,
+    Publisher == "DC" ~ 1934L,
+    Publisher == "Image" ~ 1992L
+  ),
+  Location = case_when(
+    Publisher == "Marvel" ~ "NYC (NY)",
+    Publisher == "DC" ~ "Burbank (CA)",
+    Publisher == "Image" ~ "Berkeley (CA)"
+  ))
+
+```
+
+.pull-left[
+.center[
+**Superheroes**
+```{r superhero-table, echo = F}
+heroes %>%
+  kable("html") %>% 
+  kable_styling(font_size = 16)
+```
+]
+]
+
+.pull-right[
+.center[
+**Publishers**
+```{r publishers-table, echo = F}
+publishers %>%
+  kable("html") %>% 
+  kable_styling(font_size = 16)
+```
+]
+]
+
+---
+
+## Mutating joins
+
+.large[
+> A mutating join [...] .highlight[first matches observations by their keys], then .highlight[copies across variables from one table to the other] ([R for Data Science](https://r4ds.had.co.nz/relational-data.html#mutating-joins)).
+
+- `inner_join()`  
+
+- `left_join()`  
+
+- `right_join()`  
+
+- `full_join()`
+]
+
+---
+
+## Inner join
+
+ > All rows from `x` where there are matching values in `y`, and all columns from `x` and `y`.
+
+```{r inner-gif, echo=FALSE, out.width=".50%"}
+woRkshoptools::include_picture("./inner-join.gif")
+```
+.small[
+Animation by [Garrick Aden-Buie](https://github.com/gadenbuie/tidyexplain)
+]
+
+---
+
+## Inner join example
+
+.pull-left[
+.center[
+```{r superhero-table 2, echo = F}
+heroes %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+
+.pull-right[
+.center[
+```{r publishers-table-2, echo = F}
+publishers %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+<br>
+```{r inber-join-display, eval = F}
+heroes %>% 
+  inner_join(publishers, by = "Publisher")
+```
+
+```{r inner-join-result, echo = F}
+heroes %>% 
+  inner_join(publishers, by = "Publisher") %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+
+---
+
+## Left join
+
+> All rows from `x`, and all columns from `x` and `y`. Rows in `x` with no match in `y` will have `NA` values in the new columns.
+
+```{r left-gif, echo=FALSE, out.width=".50%"}
+woRkshoptools::include_picture("./left-join.gif")
+```
+.small[
+Animation by [Garrick Aden-Buie](https://github.com/gadenbuie/tidyexplain)
+]
+
+---
+
+## Left join example
+
+.pull-left[
+.center[
+```{r superhero-table-3, echo = F}
+heroes %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+
+.pull-right[
+.center[
+```{r publishers-table-3, echo = F}
+publishers %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+<br>
+```{r left-join-display, eval = F}
+heroes %>% 
+  left_join(publishers, by = "Publisher")
+```
+
+```{r left-join-result, echo = F}
+heroes %>% 
+  left_join(publishers, by = "Publisher") %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+
+---
+
+## Right join
+
+> All rows from y, and all columns from `x` and `y`. Rows in `y` with no match in `x` will have `NA` values in the new columns.
+
+```{r right-gif, echo=FALSE, out.width=".50%"}
+woRkshoptools::include_picture("./right-join.gif")
+```
+.small[
+Animation by [Garrick Aden-Buie](https://github.com/gadenbuie/tidyexplain)
+]
+
+---
+
+## Right join example
+
+.pull-left[
+.center[
+```{r superhero-table-4, echo = F}
+heroes %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+
+.pull-right[
+.center[
+```{r publishers-table-4, echo = F}
+publishers %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+<br>
+```{r right-join-display, eval = F}
+heroes %>% 
+  right_join(publishers, by = "Publisher")
+```
+
+```{r right-join-result, echo = F}
+heroes %>% 
+  right_join(publishers, by = "Publisher") %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+
+---
+
+## Full join
+
+> All rows and all columns from both `x` and `y`. Where there are not matching values, returns `NA` for the one missing.
+
+```{r full-gif, echo=FALSE, out.width=".50%"}
+woRkshoptools::include_picture("./full-join.gif")
+```
+.small[
+Animation by [Garrick Aden-Buie](https://github.com/gadenbuie/tidyexplain)
+]
+
+---
+
+## Full join example
+
+.pull-left[
+.center[
+```{r superhero-table-5, echo = F}
+heroes %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+
+.pull-right[
+.center[
+```{r publishers-table-5, echo = F}
+publishers %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+<br>
+```{r full-join-display, eval = F}
+heroes %>% 
+  full_join(publishers, by = "Publisher")
+```
+
+```{r full-join-result, echo = F}
+heroes %>% 
+  full_join(publishers, by = "Publisher") %>%
+  kable("html") %>% 
+  kable_styling(font_size = 9)
+```
+
+---
+
+## Filtering joins
+
+.large[
+> Filtering joins .highlight[match observations in the same way as mutating joins], but .highlight[affect the observations, not the variables] ([R for Data Science](https://r4ds.had.co.nz/relational-data.html#filtering-joins)).
+
+- `semi_join()`  
+
+- `anti_join()`
+]
+
+---
+
+## Semi join
+
+> All rows from `x` where there are matching values in `y`, keeping just columns from `x`.
+
+```{r semi-gif, echo=FALSE, out.width=".50%"}
+woRkshoptools::include_picture("./semi-join.gif")
+```
+.small[
+Animation by [Garrick Aden-Buie](https://github.com/gadenbuie/tidyexplain)
+]
+
+---
+
+## Semi join example
+
+.pull-left[
+.center[
+```{r superhero-table-6, echo = F}
+heroes %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+
+.pull-right[
+.center[
+```{r publishers-table-6, echo = F}
+publishers %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+<br>
+```{r semi-join-display, eval = F}
+heroes %>% 
+  semi_join(publishers, by = "Publisher")
+```
+
+```{r semi-join-result, echo = F}
+heroes %>% 
+  semi_join(publishers, by = "Publisher") %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+
+---
+
+## Anti join
+
+> All rows from `x` where there are not matching values in `y`, keeping just columns from `x`.
+
+```{r anti-gif, echo=FALSE, out.width=".50%"}
+woRkshoptools::include_picture("./anti-join.gif")
+```
+.small[
+Animation by [Garrick Aden-Buie](https://github.com/gadenbuie/tidyexplain)
+]
+
+---
+
+## Anti join example
+
+.pull-left[
+.center[
+```{r superhero-table-7, echo = F}
+heroes %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+
+.pull-right[
+.center[
+```{r publishers-table-7, echo = F}
+publishers %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```
+]
+]
+<br>
+```{r anti-join-display, eval = F}
+heroes %>% 
+  anti_join(publishers, by = "Publisher")
+```
+
+```{r anti-join-result, echo = F}
+heroes %>% 
+  anti_join(publishers, by = "Publisher") %>%
+  kable("html") %>% 
+  kable_styling(font_size = 10)
+```

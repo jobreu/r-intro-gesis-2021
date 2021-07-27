@@ -1,6 +1,6 @@
 ---
 title: "Introduction to R for Data Analysis"
-subtitle: "Appendix: Extended Setup & Workflows"
+subtitle: "Appendix: Extended Setup & Workflow"
 author: "Johannes Breuer & Stefan Jünger"
 date: "2021-08-02"
 presenter: Johannes
@@ -14,7 +14,7 @@ layout: true
 
 ## Further information on `R` and *RStudio* setup and workflows
 
-These slides contain some additional information on setting up and developing workflows for `R` and *RStudio*. The information contained in these slides is, admittedly, a lot to digest for `R` newbies, but there is no need to worry: You do not need to fully understand and remember all of it now, but helps a lot to at least be aware of the terms and concepts mentioned in the following as this also facilitates understanding how `R` works, what can go wrong, and how to deal with problems that might arise.
+These slides contain some additional information on setting up and developing workflows for `R` and *RStudio*. The information contained in these slides is, admittedly, a lot to digest for `R` novices, but there is no need to worry: You do not need to fully understand and remember all of it now, but helps a lot to at least be aware of the terms and concepts mentioned in the following as this also facilitates understanding how `R` works, what can go wrong, and how to deal with problems that might arise.
 
 ---
 
@@ -126,10 +126,10 @@ woRkshoptools::include_picture("./script_sections_collapsed_highlighted.png")
 
 ## *RStudio* pane layout
 
-You can adjust the size of the different panes in *RStudio* and you can minimize or maximize panes.
-You can also customize the pane layout for *RStudio* by selecting `Tools` -> `Global Options` -> `Pane Layout` via the *RStudio* menu.
+You can adjust the size, minimize, and maximize the different panes in *RStudio* .
+You can also customize the pane layout in *RStudio* by via `Tools` -> `Global Options` -> `Pane Layout`.
 
-```{r rstudio-panes, out.width = "45%", echo=FALSE}
+```{r rstudio-panes, out.width = "40%", echo=FALSE}
 woRkshoptools::include_picture("./rstudio_pane_layout.png")
 ```
 
@@ -167,13 +167,17 @@ In addition to the `Environment` tab in *RStudio*, you can view the content of y
 
 You can remove objects from your workspace with the `rm()` function. Note, however, that this cannot be undone, so you have to create the object again in case you need it (again).
 
-Unless you [change the default settings in *RStudio* as suggested in the "Getting Started" session](https://jobreu.github.io/r-intro-gesis-2021/slides/1_1_Getting_Started.html#65), it will save the workspace in a file called `.RData` in your current working directory and restore the workspace when you restart it. 
+Unless you [change the default settings in *RStudio* as suggested in the "Getting Started" session](https://jobreu.github.io/r-intro-gesis-2021/slides/1_1_Getting_Started.html#67), it will save the workspace in a file called `.RData` in your current working directory and restore the workspace when you restart it. 
 
 ---
 
 ## `R` workspace
 
 While saving your workspace can be useful, this should not be your main (or default) way of saving your work. Instead, you should use scripts to store your code (including any functions you define) and save any output (including relevant intermediary results; especially if they take a substantial amount of time to produce) in files with an appropriate format (we will discuss this in more detail in the session on importing and exporting data). This increases reproducibility and also makes it easier to share your work (or collaborate on it) with others. Also, you will eventually probably work on more than one project, so you would need to use multiple workspaces which can get messy quite quickly.
+
+---
+
+## `R` workspace
 
 If you explicitly want to save your whole workspace (e.g., because you notice that your computer is about to crash or your battery will be depleted and you have no time left to save/export individual files), you can do so by clicking the small blue disk icon in the `Environment` tab in *RStudio* or with the `save.image()` command.
 
@@ -191,7 +195,7 @@ This removes all user-created objects from the (global) workspace. Now, imagine 
 
 Also, this command does not affect what packages have been loaded, the working directory, or any other options for `R` that may have been set to non-default values.
 
-Hence, `rm(list = ls())` (and the need to use it) should be avoided if possible. A much better way of ensuring that you start with a blank slate at the beginning of your `R` session is to use the [*RStudio* settings described in the "Getting Started" session](https://jobreu.github.io/r-intro-gesis-2021/slides/1_1_Getting_Started.html#65).
+Hence, `rm(list = ls())` (and the need to use it) should be avoided if possible. A much better way of ensuring that you start with a blank slate at the beginning of your `R` session is to use the [*RStudio* settings described in the "Getting Started" session](https://jobreu.github.io/r-intro-gesis-2021/slides/1_1_Getting_Started.html#67).
 
 ---
 
@@ -199,7 +203,7 @@ Hence, `rm(list = ls())` (and the need to use it) should be avoided if possible.
 
 The command history contains all commands you have executed in the current session (in the console or from scripts). In *RStudio* you can view them in the `History` tab which includes buttons for restoring/opening, and saving a command history, exporting selecting commands from the history to the console or a source file (typically an `R` script), removing individual entries, and cleaning the whole history. You can also search your command history.
 
-```{r rstudio-history, out.width = "90%", echo=FALSE}
+```{r rstudio-history, out.width = "75%", echo=FALSE}
 woRkshoptools::include_picture("./rstudio_history.png")
 ```
 
@@ -224,6 +228,10 @@ Similar to the workspace, the command history should not be the main/default way
 There are two types of `.Renviron` files:
 - a user-wide one
 - project-specific ones
+
+---
+
+## `.Renviron`
 
 The easiest way to edit the user-wide `.Renviron` file is to use the `edit_r_environ()` function from the [`usethis` package](https://usethis.r-lib.org/index.html). You can create a project-specific `.Renviron` file by running the command `usethis::edit_r_environ("project")` in the session of your project.
 
@@ -322,3 +330,44 @@ If you receive an error message and don't (fully) understand what it means, you 
 If copying and pasting is not your thing, you can also use the [`searcher`](https://github.com/r-assist/searcher) or the [`errorist` package](https://github.com/r-assist/errorist) to search for error messages (in different places) directly from `R`. The `searcher` package can also be used to search for other things (besides error messages) from `R`.
 
 ---
+
+## Coding styles
+
+What helps to increase the comprehensibility and reusability of code is to follow a specific coding style. There are quite a few things that can be regulated by coding style conventions, such as...
+- line length (see the ["sacred 80 column rule"]( https://www.emacswiki.org/emacs/EightyColumnRule))
+- indentation
+- variable/object naming
+- comments
+- assignment rules
+
+`R` is pretty flexible in styling (compared, e.g., to `Python`, which has strict rules for indentation) which makes it even more necessary to think about these conventions.
+
+---
+
+## Coding styles
+
+Two popular coding style guides for `R` are:
+
+- [*Google's R style guide](https://google.github.io/styleguide/Rguide.html)
+
+- [the `tidyverse` style guide](https://style.tidyverse.org/)
+
+---
+
+## Coding in style `r ji("sunglasses")`
+  
+The [`styler`](http://styler.r-lib.org/) package, which includes an *RStudio* add-in, makes it easy to implement the `tidyverse` style guide.
+
+```{r install & load styler, eval = F, echo = T}
+install.packages("styler")
+library(styler)
+
+```
+
+From the package documentation:
+- `style_file()` styles .R and/or .Rmd files.
+- `style_dir()` styles all .R and/or .Rmd files in a directory.
+
+```{r, out.width = "50%", echo = FALSE}
+woRkshoptools::include_picture("./styler_addin.png")
+```
