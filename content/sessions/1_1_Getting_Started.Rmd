@@ -1,0 +1,945 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Getting Started with R and RStudio"
+author: "Johannes Breuer & Stefan Jünger"
+date: "2021-08-02"
+presenter: Johannes
+---
+layout: true 
+
+```{r child = "../config/sessions_setup.Rmd"}
+```
+
+---
+
+## About this course
+
+In this course, we will provide an introduction to the basic concepts and functionalities of `R` and go through a prototypical data analysis workflow: import, wrangling, exploration, (basic) analysis, and reporting. 
+
+By the end of this course you should...
+
+- be comfortable with using `R` and *RStudio*
+- be able to import, wrangle, and explore your data with `R`
+- be able to conduct basic visualizations and analyses of your data with `R`
+- be able to report your findings using `R Markdown`
+
+**Note**: This is not a statistics workshop. Our focus will be on learning how to use `R`.
+
+---
+
+## Learning by coding
+
+```{r hadley-tweet, echo=FALSE}
+tweet_embed("https://twitter.com/hadleywickham/status/589068687669243905",
+            theme = "dark")
+```
+
+---
+
+## Prerequisites for this course
+
+.large[
+- Working versions of `R` (<= version 4.0.0) and *RStudio* on your computer 
+
+- Prior experience with quantitative data analysis, basic statistics, and regression 
+
+- Experience with using other statistical packages (e.g., *SPSS* or *Stata*) is helpful
+]  
+
+---
+
+## About us
+
+### Johannes Breuer
+
+.small[
+- Senior researcher in the team Data Augmentation at the GESIS department Survey Data Curation and (co-)leader of the team Research Data & Methods at the [*Center for Advanced Internet Studies*](https://www.cais.nrw/en/center-for-advanced-internet-studies-cais-en/) (CAIS)
+
+- Main areas:
+    - digital trace data for social science research
+    - data linking (surveys + digital trace data) 
+    
+- Ph.D. in Psychology, University of Cologne  
+
+- Previously worked in several research projects investigating the use and effects of digital media (Cologne, Hohenheim, Münster, Tübingen)  
+
+- Other research interests
+    - computational methods
+    - data management
+    - open science
+
+[johannes.breuer@gesis.org](mailto:johannes.breuer@gesis.org) |
+[@MattEagle09](https://twitter.com/MattEagle09) |
+[personal website](https://www.johannesbreuer.com/)
+]
+
+---
+
+## About us
+
+### Stefan Jünger
+
+.pull-left[
+```{r me-pic, echo = FALSE, out.width = "50%"}
+woRkshoptools::include_picture("./stefan.png")
+```
+]
+
+.pull-right[
+- Postdoctoral researcher in the team Data Augmentation at the GESIS department Survey Data Curation
+- Ph.D. in social sciences, University of Cologne
+]
+
+- Research interests:
+  - quantitative methods & Geographic Information Systems (GIS)
+  - social inequalities & attitudes towards minorities
+  - data management & data privacy
+  - reproducible research
+
+.small[
+[stefan.juenger@gesis.org](mailto:stefan.juenger@gesis.org) |
+[@StefanJuenger](https://twitter.com/StefanJuenger) |
+[https://stefanjuenger.github.io](https://stefanjuenger.github.io)
+]
+
+---
+
+## Our jou`R`neys
+
+.small[
+**Johannes**
+- was socialized with *SPSS*
+- was annoyed with *AMOS* when learning structural equation modeling (around 2011)
+- decided to learn to use the [`lavaan`](https://lavaan.ugent.be/) package for `R` instead of *MPlus* to avoid being dependent on yet another proprietary software package
+- attended an introductory *Data analysis with `R`* course at *GESIS* in 2012
+- only used `R` for SEM for some time, while still doing everything else (esp. data wrangling) with *SPSS*
+- finally made the full transition to `R` when joining *GESIS* in 2017
+
+**Stefan**
+- learned statistical 'programming' when *SPSS* was still the major player in town
+- got hooked by `R` somewhere around 2008 or 2009 because of the plots
+- wrote horrible code and estimated multilevel models that took forever to be estimated
+- switched to `R` for geospatial data in 2015, wrote  his first (bad) [`R` package](https://github.com/StefanJuenger/georefum) for geo-stuff
+- tried *Python*, uses *Python* occasionally, but is forever in love with `R` `r emo::ji("heart")`
+]
+
+---
+
+## Keep calm and carry on learning `R`
+
+```{r first-then, out.width = "85%", echo = F}
+woRkshoptools::include_picture("r_first_then.png")
+```
+<small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
+
+---
+
+## About you
+
+- What's your name?  
+
+- Where do you work/study? What are you working on/studying?
+
+- What is your experience with `R` or other programming languages?
+
+- What statistical software package(s) do you typically use?
+
+- What do you want to use `R` for?
+
+Please try to keep it short (3 to 4 sentences or ~30 secs).
+
+---
+
+## Workshop Structure & Materials
+
+- The workshop consists of a combination of short lectures and hands-on exercises
+
+- For the time after the workshop sessions each day, we have also prepared some optional (and hopefully fun) "extracurricular activities"
+
+- Slides and other materials are available at
+
+.center[`https://github.com/jobreu/r-intro-gesis-2021`]
+
+---
+
+## Online format
+
+- If possible, we invite you to turn on your camera
+
+- If you have an immediate question during the lecture parts, please send it via text chat
+  - Public or private (to the person currently not presenting if you want an immediate response)
+
+- If you have a question that is not urgent and might be interesting for everybody, you can also use audio (& video) to ask it at the end of a lecture part or during the exercises
+  - please use the use the "raise hand" function in *Zoom* for this
+
+- We will try to provide (one-on-one) "tech support" during the exercises 
+  - please contact us via the text chat if you have any technical issues/questions that we can try to solve together with you
+
+- We would also kindly ask you to mute your microphones when you are not asking (or answering) a question
+
+---
+
+## Course schedule
+
+```{r schedule-1, echo = F}
+course_content_1
+```
+
+---
+
+## Course schedule
+
+```{r schedule-2, echo = F}
+course_content_2
+```
+
+---
+
+## Course schedule
+
+```{r schedule-3, echo = F}
+course_content_3
+```
+
+---
+
+## What is `R`?
+
+>R is a free software environment for statistical computing and graphics. It compiles and runs on a wide variety of UNIX platforms, Windows and MacOS ([`R` Project website](https://www.r-project.org/)).
+
+`R` is [free and open-source software (FOSS)](https://en.wikipedia.org/wiki/Free_and_open-source_software) and also a programming language. More specifically, it is a free, non-commercial implementation of the [`S` programming language](https://en.wikipedia.org/wiki/S_(programming_language) (developed by Bell Laboratories).
+
+---
+
+## A very brief history of `R`
+
+- `R` was created by Ross Ihaka and Robert Gentleman at the Department of Statistics at the University of Auckland (NZ) in 1993
+
+- The `R` *Core Group* that has been responsible for the development of `R` since then and `CRAN` were founded in 1997
+
+- version `1.0.0` of `R` was released in 2000
+
+- *RStudio* was initially released in 2011
+
+- today (August 2, 2021) we are at version `4.1.0` (version `4.1.1` is scheduled for Aug 10, 2021)
+
+If you want to know a bit more about the origins and history of `R` as well as the philosophy behind it, the book [*R Programming for Data Science*](https://bookdown.org/rdpeng/rprogdatascience/) by Roger D. Peng provides a [good summary](https://bookdown.org/rdpeng/rprogdatascience/history-and-overview-of-r.html). Alternatively, you can also watch this [*YouTube* video in which David Smith talks about *Twenty Years of R*](https://youtu.be/iq_biXEIx-U).
+
+---
+
+## O`R`igins
+
+```{r r-cd-tweet, echo=FALSE}
+tweet_embed("https://twitter.com/HannahOish/status/1036353875605737472",
+            theme = "dark")
+```
+
+---
+
+## Why use `R`?
+
+- it is **free** an **open-source**
+
+--
+
+- it is **modular** through the use of packages
+  - You want to do X with `R`? There's ~~an app~~ a package for that!
+  - The universe of packages for `R` keeps on expanding
+  
+--
+  
+- it can be used for almost all steps in the research process: data collection, processing, exploration, analysis, and reporting/publishing
+
+--
+
+- it offers extremely powerful and versatile options for **data visualization**
+
+--
+
+- it has a **great community** with groups like [*R-Ladies*](https://rladies.org/), the [*R Consortium*](https://www.r-consortium.org/), [*rOpenSci*](https://ropensci.org/), and many local [`R` user groups](https://jumpingrivers.github.io/meetingsR/r-user-groups.html) around the globe
+  - also check out the [*#rstats* hashtag on Twitter](https://twitter.com/search?q=%23rstats&src=typed_query)
+  
+--
+
+- it is becoming **increasingly popular** in [academic publications](http://r4stats.com/articles/popularity/), [programming communities like Stack Overflow](https://stackoverflow.blog/2017/10/10/impressive-growth-r/), and also in [job advertisements](http://r4stats.com/articles/popularity/)
+
+--
+
+- it is **FUN**!
+
+---
+
+## Fun with `R`
+
+You can use `R` to...
+
+- read [Chuck norris jokes](https://cran.r-project.org/web/packages/norris/index.html)
+
+--
+
+- [create memes](https://github.com/sctyner/memer)
+  - there's also a whole [genre of `R` memes](https://github.com/favstats/rstatsmemes)
+
+--
+
+- [create 3D LEGO mosaics from images](http://www.ryantimpe.com/post/lego-mosaic3/)
+  - ... and even find out [which LEGO bricks you need to build them for real](https://github.com/ryantimpe/brickr)
+
+--
+
+- [play](https://github.com/gsimchoni/CastleOfR) or [create text adventures](https://lucidmanager.org/text-adventure/)
+
+--
+
+- [create objects in *Minecraft*](https://ropenscilabs.github.io/miner_book/)
+
+--
+
+- make all sorts of [dice rolls for your pen & paper/tabletop role-playing games](https://github.com/Felixmil/rollR)
+
+---
+
+## The versatility of `R`
+
+Some of the things you can do and create with `R` include...
+
+- all sorts or statistical analysis & machine learning (e.g., with [tidymodels](https://www.tidymodels.org/))
+- text mining and natural language processing (e.g., with [quanteda](https://quanteda.io/))
+- collecting data, for example:
+	- surveys (or diary studies) with [formr](https://formr.org/)
+	- web scraping with [rvest](https://rvest.tidyverse.org/)
+- all sorts of visualizations, including:
+	- animated plots with [gganimate](https://gganimate.com/)
+	- interactive visualizations with [plotly](https://plotly.com/r/)
+	- (interactive) maps with [tmap](https://cran.r-project.org/web/packages/tmap/index.html)
+	- (interactive) 3D visualizations with [rayshader](https://www.rayshader.com/)
+- 3D rendering with [rayrender](https://www.rayrender.net/)
+- interactive web applications with [shiny](https://shiny.rstudio.com/)
+- reproducible reports and publications with [R Markdown](https://rmarkdown.rstudio.com/)
+- websites with [blogdown](https://bookdown.org/yihui/blogdown/)
+- books with [bookdown](https://bookdown.org/)
+- presentations with [xaringan](https://github.com/yihui/xaringan)
+- ...
+
+---
+
+## Installing `R`
+
+You can download `R` via the [`R` Project website](https://www.r-project.org/). The exact installation process depends on your operating system (OS). The *R Cookbook* provides a [detailed explanation of the installation process for *Windows*, *macOS*, and *Linux/Unix*](https://rc2e.com/gettingstarted#recipe-id001).
+
+If you want or need to update your version of `R`, you can do this the same way as for the first-time installation. If you use *Windows*, you can also use the [`installr` package](https://github.com/talgalili/installr) to update `R` (we will talk about packages in a bit).
+
+---
+
+## Graphical user interface (GUI) for `R`
+
+`R` comes with a basic GUI (on *Windows* you can access it by opening the `Rgui.exe` file). However, it is quite limited in terms of its functionalities.
+
+```{r, basic-R-GUI, out.width = "95%", echo=FALSE}
+woRkshoptools::include_picture("./base_R_gui.png")
+```
+
+---
+
+## Integrated development interfaces (IDE) for `R`
+
+Using an IDE provides several advantages, such as:
+
+  - syntax highlighting
+  
+  - auto-completion
+  
+  - better overview of files, libraries, created objects/output
+  
+---
+
+## *RStudio*
+
+*RStudio* is the most widely used IDE for `R`.<sup>1</sup> In addition to the general advantages of an IDE, it has some specific ones:
+
+- easy integration with version control via `Git` (for a good tutorial on this, see [*Happy Git and GitHub for the useR*](https://happygitwithr.com/))
+
+- interfaces to [`Python` via the `reticulate` package](https://rstudio.github.io/reticulate/articles/rstudio_ide.html) and [`SQL`, e.g., via the `dbplyr` package](https://irene.rbind.io/post/using-sql-in-rstudio/)
+
+- possibility to install and use [addins](https://rstudio.github.io/rstudioaddins/) that extend the functionalities of the *RStudio* GUI (for an overview of *RStudio* addins, you can check out this [curated list by Dean Attali](https://github.com/daattali/addinslist))
+
+- new versions also include (live) spellchecking features and a visual editor for `R Markdown`
+
+.footnote[
+[1] There are, of course, other IDEs that can be used with/for `R`. Another popular option is [*Visual Studio*](https://visualstudio.microsoft.com/) from *Microsoft* (for which an [`R` extension](https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r) is available).
+]
+
+---
+
+## Installing *RStudio*
+
+You can download the installer for your OS from the [*RStudio* website](https://rstudio.com/products/rstudio/download/). The [*R Cookbook*](https://rc2e.com/) also provides some more [details on how to install and start *RStudio*](https://rc2e.com/gettingstarted#recipe-id002b).
+
+When you open *RStudio* for the first time it should look like this (only in white instead of black and maybe not with `R` startup messages in German):
+
+```{r, rstudio-1st, out.width = "85%", echo=FALSE}
+woRkshoptools::include_picture("./r_studio_noscript.png")
+```
+
+---
+
+## *RStudio* interface
+
+```{r, rstudio-1st-explained, out.width = "200%", echo=FALSE}
+woRkshoptools::include_picture("./rstudio_1st_explained.png")
+```
+
+## The `R` console in *RStudio*
+
+The console is the interactive input-output window of *RStudio*. You can enter commands here and press <kbd>Enter</kbd> to execute them. Typically, the output the the commands you enter into the console will also be displayed here.
+
+If you see the **`>`** in the console, it means that it is ready to receive commands.
+
+If you see a **`+`** at the beginning of the console input line, this means that the command is incomplete. A common reason for this is a missing `)` or `"`. If you see the `+` at the beginning of the console input line, you can either complete the command (and then run it by pressing <kbd>Enter</kbd>/<kbd>Return</kbd>) or abort entering the command by pressing <kbd>Esc</kbd>.
+
+Once you have executed at least one command in the console you can cycle through previous ones using ↑ and ↓ on your keyboard.
+
+---
+
+## `R` as a calculator
+
+The simplest thing you can do with the `R` console is to use it as a calculator. 
+
+```{r calc-example-1}
+3+2
+2^3
+1/3
+```
+
+*Note:* In the console, you won't see the `##` in the output.
+The `[1]` before the result indicates that this is the first output value of the command (more complex commands can have more than one output value).
+
+---
+
+## `R` as a calculator
+
+```{r calc-example-2}
+100^3
+1/2500
+```
+
+For printing very small and very large numbers, `R` uses [scientific notation](https://en.wikipedia.org/wiki/Scientific_notation). If you want to avoid this, you can use the command `options(scipen=999)`. **NB**: This setting will only be active for the current session.
+
+```{r calc-example-scipen}
+options(scipen=999)
+100^3
+1/2500
+```
+
+---
+
+## Objects in `R`
+
+`R` is an object-oriented programming language.
+The simplest example of assignment in `R` is the assignment of a single value to an object. This value can, e.g., be an single number or a character string. 
+
+```{r assignment}
+x <- 10
+y <- "This is a character string"
+
+x
+y
+```
+
+---
+
+## `R` objects in *RStudio*
+
+Once one or more objects have been assigned values they also appear in the `Environment` tab in *RStudio*.
+
+```{r, rstudio-objects, out.width = "100%", echo=FALSE}
+woRkshoptools::include_picture("./rstudio_environment_objects.png")
+```
+
+---
+
+## `R` workspace
+
+The `Environment` tab in *RStudio* shows the content of your current working environment (also called workspace) which includes any used-defined objects. The contents of the current environment are stored in the working memory (RAM) of your computer until you exit `R` (or *RStudio*).
+
+*Note*: The fact that `R` objects are stored in your computer's RAM can become problematic if you work with "big data". However, there are solutions for working with larger-than-RAM data in `R` (such as [`disk.frame`](https://diskframe.com/)).
+
+---
+
+## `R`s memory use
+
+In the newest versions of *RStudio*, the `Environment` tab includes a small icon that displays the system's overall memory use (displayed as a pie/donut chart) and the amount of RAM used by `R` (the number next to that).
+
+```{r, mem-use-icon, out.width = "100%", echo=FALSE}
+woRkshoptools::include_picture("./env_mem_use.png")
+```
+
+---
+
+## `R`s memory use
+
+From the dropdown menu next to that icon, you can also select *Memory Usage Report* to get more detailed information about current working memory (RAM) use.
+
+```{r, mem-use-report, out.width = "100%", echo=FALSE}
+woRkshoptools::include_picture("./mem_use_report.png")
+```
+
+---
+
+## The two workhorses of `R`: Functions and packages `r ji("horse")`
+
+If you want to do anything in `R`, you need to use functions, and functions are provided through packages. We will go through the basics of functions and packages in `R` in the following.
+
+---
+
+## Functions
+
+Put simply, a function takes an input, does something with it, and produces some sort of output. Functions typically have arguments. In the simplest case, a function only requires an input (a value or object) as a single argument (some functions even require no argument). 
+
+```{r function-one-arg}
+sqrt(9)
+x <- 9
+sqrt(x)
+```
+
+The output of a function can, of course, also be assigned to an object.
+
+```{r function-one-arg-assign}
+x <- sqrt(9)
+x
+```
+
+*Note*: Technically, functions are also objects in `R`.
+
+---
+
+## Functions
+
+Most functions in `R` have more than one argument.
+
+```{r function-more-args}
+y <- "This is a character string"
+
+# in the character string named y: replace i with X
+gsub(pattern = "i", replacement = "X", y)
+```
+
+---
+
+## Functions
+
+If you want to know how to use a function, you can consult its help file. You can do that via the `?` command:
+
+```{r help-file, eval = F}
+?gsub # ?function_name
+```
+
+In *RStudio*, this will open a file in the `Help` tab.
+
+```{r, help-example, out.width = "60%", echo=FALSE}
+woRkshoptools::include_picture("./help_example.png")
+```
+
+---
+
+## Functions
+
+Functions can have required and optional arguments. Required arguments need to be specified for a function to run, whereas optional arguments have defaults and, hence, do not have to be provided in a function call.
+You can easily identify required and optional arguments in the `Usage` section of the help file for a function: If the argument is in the format `argument = value` it is optional. If only the argument name is provided `function(argument_1)`, this means that this argument is required. 
+
+```{r, help-example2, out.width = "50%", echo=FALSE}
+woRkshoptools::include_picture("./help_example.png")
+```
+
+---
+
+## Functions
+
+Function arguments can be provided in the specified order or by referencing them by name (in which case the order can change). For example, the following two versions of the `gsub` function call are both valid.
+
+```{r funtion-arguments}
+y <- "This is a character string"
+
+gsub("i", "X", y)
+
+gsub(y, replacement = "X", pattern = "i")
+```
+
+Typing the argument names is more work but it increases the comprehensibility of your code for human readers.
+
+---
+
+## Functions
+
+If you want to understand the "inner workings" of a function (or maybe use code from existing functions for writing your own functions), you can also print the function body by just running the function name without the parentheses behind it.
+
+```{r fun-body}
+gsub
+```
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_1_1_1_Getting_StaRted.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_1_1_1_Getting_StaRted.html)
+
+---
+
+## `R` packages
+
+The key elements of the `R` universe are its packages. They essentially are collections of functions (and sometimes also datasets) and provide some form of documentation for those.
+
+The basic `R` system as well as a huge number of additional packages that extend its functionalities are available via [*The Comprehensive R Archive Network* (CRAN)](https://cran.r-project.org/).
+
+>CRAN is a network of ftp and web servers around the world that store identical, up-to-date, versions of code and documentation for R ([CRAN website](https://cran.r-project.org/)).
+
+---
+
+## `base R`
+
+When we talk about `base R` we typically refer to the set of packages that come with a new installation of `R` via *CRAN*. 
+
+There also is a package called `base` included with this but the `base R` system includes a number of other packages as well: `utils`, `stats`, `datasets`, `graphics`, `grDevices`, `grid`, `methods`, `tools`, `parallel`, `compiler`, `splines`, `tcltk`, `stats4`. 
+
+In addition, a new installation also includes the following "recommended" packages: `boot`, `class`, `cluster`, `codetools`, `foreign`, `KernSmooth`, `lattice`, `mgcv`, `nlme`, `rpart`, `survival`, `MASS`, `spatial`, `nnet`, `Matrix`.
+
+---
+
+## Finding packages
+
+*CRAN* provides an [alphabetically sorted list with all available packages](https://cran.r-project.org/web/packages/available_packages_by_name.html). You can search for your keywords of interest in that list, but that is not the most convenient option. 
+
+Two helpful resources for finding `R` packages:
+
+  - [CRAN Task Views](https://cran.r-project.org/) provide curated lists of recommended packages for specific tasks/areas/topics
+  
+  - [METACRAN](https://www.r-pkg.org/) allows you to search and browse all packages on *CRAN*
+
+Of course, you can also use your search engine of choice and search for what you want to do plus "R package" (example: "ANOVA R package"), and we will introduce you to many useful packages for various purposes throughout this course.
+
+---
+
+## Installing packages from *CRAN* in `R`
+
+Installing packages from *CRAN* in `R` is very straightforward.
+
+```{r install-pkgs, eval = F}
+# Install a package
+install.packages("correlation") # single or double quotation marks
+
+# Install multiple packages at once
+install.packages(c("correlation", "effectsize"))
+
+```
+
+`R` packages are installed in specific directories on your computer. 
+**NB**: If you have multiple versions of `R` installed, there are directories for each version (with the exception of minor updates: e.g., 4.0.1 and 4.0.2 share the same folder for installed packages, whereas 3.6.0 and 3.7.0 do not).
+To find where packages are installed on your machine you can use the following command:
+
+```{r library-path, eval = F}
+.libPaths()
+```
+
+---
+
+## Loading packages
+
+Once you have installed a package, you need to load it to be able to use the functions (and/or datasets) it contains in your `R` session.
+
+```{r load-pkg}
+library(correlation) # no quotation marks needed
+```
+
+---
+
+## Other sources for `R` packages
+
+While it is the main source, not all packages for `R` are available via *CRAN*. Another important source of `R` packages, especially those that are still in early development, is [*GitHub*](https://github.com/). To be able to install packages hosted on *GitHub* you need to use functions from the [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html) or the [`remotes`](https://cran.r-project.org/web/packages/remotes/index.html) package (which you need to install first as they do not come with `base R`). For example, if you want to install the [RPG dice roll package](https://github.com/Felixmil/rollR) that I mentioned before:
+
+.small[
+```{r install-gh, eval = F}
+# Option 1
+library(devtools)
+install_github("Felixmil/rollR") # last part of the GitHub URL (user name + repository name)
+
+# Option 2
+library(remotes)
+install_github("Felixmil/rollR") # last part of the GitHub URL (user name + repository name)
+```
+]
+
+*Note*: To be able to install packages from *GitHub* on *Windows* machines, you will need to install [`Rtools`](https://cran.r-project.org/bin/windows/Rtools/) first.
+
+---
+
+## Packages about packages
+
+There are a few packages that facilitate the installation and loading of `R` packages (from various sources). Two popular ones are:
+
+- [easypackages](https://cran.r-project.org/web/packages/easypackages/index.html)
+
+- [pacman](https://cran.r-project.org/web/packages/pacman/index.html)
+
+---
+
+## Installed packages
+
+You can get information about the packages you have installed on your system with the following function:
+
+```{r installed-pkgs, eval = F}
+installed.packages()
+```
+
+---
+
+## Managing packages with the *RStudio* GUI
+
+You can also use the `Packages` tab in the *RStudio* GUI to install, load, update, and uninstall packages. You can load a package by clicking the checkbox on the left side of its name. However, to make sure that you (and others) can reproduce what you have done, you should ideally include the installation and loading of packages as part of your `R` scripts.
+
+```{r, pkg-tab, out.width = "60%", echo=FALSE}
+woRkshoptools::include_picture("./rstudio_pkg_tab.png")
+```
+
+---
+
+## `R` scripts
+
+While the console is useful for trying things out, you should not use it for your actual data analysis. For this you should use `R` scripts that allow you to store and document your code. `R` scripts are similar to syntax files for *SPSS* or do-files for *Stata*. `R` scripts have the file extension `.R`.
+
+In *RStudio*, you can create a new script via the menu (`File` -> `New File` -> `R Script`), by clicking the small white sheet icon with the green `+` symbol and choosing `R Script`, or through the keyboard shortcut <kbd>Ctrl + Shift + N</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Shift + N</kbd> (*Mac*). You can open an existing script by clicking on it in the files tab, by clicking the open folder icon, via `File` -> `Open File`, or using the keyboard shortcut <kbd>Ctrl + O</kbd> (*Windows* & *Linux*)/<kbd>Cmd + O</kbd> (*Mac*).
+
+---
+
+## *RStudio* interface: Scripts
+
+When you open or create a script in *RStudio* this will be displayed in a fourth pane (which will have multiple tabs if you open/create more than one `R` script or other types of source files).
+
+```{r, rstudio-scripts, out.width = "100%", echo=FALSE}
+woRkshoptools::include_picture("./r_studio_script.png")
+```
+
+---
+
+## Working with `R` scripts
+
+You can write your code in an `R` script just like you do in the console. 
+
+If you want to execute a single command from your script in *RStudio*, you can do so by placing your cursor somewhere in command (or directly after it) and clicking the `Run` button in the menu or by using the keyboard shortcut <kbd>Ctrl + Return</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Enter</kbd> (*Mac*). This also works if you select multiple lines of code/commands.
+
+You can also run all commands in your script by selecting `Run all` from the dropdown menu next to the `Run` button or via the keyboard shortcut <kbd>Ctrl + Alt + R</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Option + R</kbd> (*Mac*).   
+
+You can save your script in *RStudio* via `File` -> `Save` or `Save As...`, by clicking the small blue floppy disk icon, or through the keyboard shortcut <kbd>Ctrl + S</kbd> (*Windows* & *Linux*)/<kbd>Cmd + S</kbd> (*Mac*).   
+
+---
+
+## Commenting `R` scripts
+
+To properly document your code (for your future self as well as other people who may use your code) it is good practice to use comments. In `R` scripts, you can create a comment by starting a line with a `#`.
+
+In *RStudio*, to comment or uncomment one or more lines in a script you can also select them and use the keyboard shortcut <kbd>Ctrl + Shift + C</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Shift + C</kbd> (*Mac*).
+
+```{r comment, eval = FALSE}
+# this is a comment
+library(tidyverse)
+```
+
+---
+
+## Setup and workflows for `R` and *RStudio*
+
+In the following slides, we will present some suggestions for adopting a couple of settings and practices that help you develop and implement workflows for `R` and *RStudio* that minimize mess and increase reproducibility.
+
+In this session, we will only cover the basics that are necessary for establishing such workflows. If you are interested in some further information on setting up and maintaining your installation of `R` and *RStudio* as well as the optimization of workflows, and troubleshooting, you can check out the [appendix slides with additional materials](https://jobreu.github.io/r-intro-gesis-2021/slides/1_3_Appendix_Setup&Workflow.html) that we have created on these subjects.
+
+*Note*: Most of the recommendations in the following (as well as in the additional materials) are largely based on the freely available online book [What They Forgot to Teach You About R](https://rstats.wtf/).
+
+---
+
+## Working directory
+
+The working directory is where `R` will look for and save files by default.
+
+You can check your current working directory with the following command:
+
+```{r checkwd, eval = F}
+getwd()
+```
+
+In *RStudio*, the current working directory is also displayed at the top of the `Console` tab.
+
+There are two ways in which you can set/change your working directory:
+
+- using the *RStudio* GUI
+- using functions
+
+---
+
+## Setting the working directory via the *RStudio* GUI
+
+The *RStudio* menu `Session` -> `Set Working Directory` which provides different options:
+
+- "To Project Directory": can be used if you have an `.Rproj` file (more on that later)
+
+- "To Source File Location": sets the working directory to the location where the currently active source file - typically an `R` script - is stored 
+
+- "To FilesPane Location": sets the working directory to the directory that is currently visible in the `Files` tab
+
+- "Choose Directory": opens a file browser window that lets you choose a directory
+
+To increase the reproducibility of your work, however, using functions in scripts is generally the better approach.
+
+---
+
+## Setting the working directory using functions
+
+You can set a working directory with the following command (of course, you need to replace the file path with the correct one for your system):
+
+```{r setwd, eval = F}
+setwd("C:/Users/user/Documents/analysis")
+```
+
+---
+
+## Interlude: File paths
+
+There are absolute (example: "C:/Users/user/Documents/example.R") and relative file paths (example: "./r-scripts/example.R"). Relative file paths are relative to the current working directory. Common shorthand options for relative file paths are `.` for the current (working) directory, `..` for one folder level up (parent folder), and `~` for the home directory (which is the default working directory in `R`).
+
+To facilitate the reuse of your code on other systems (by you or others), it is generally preferable to use relative file paths.
+
+*Note*: `R` uses `Unix`-style file paths with `/`, while *Windows* uses `\` in file paths. However `\\` also works in `R`. There is a [Stackoverflow post](https://stackoverflow.com/questions/17605563/efficiently-convert-backslash-to-forward-slash-in-r) discussing several ways of dealing with that. A helpful tool in this context is [*Path Copy Copy*](https://pathcopycopy.github.io/) which is an add-on for the *Windows* file explorer that lets you copy file paths in different formats.
+
+---
+
+## Special features of *RStudio*
+
+There are quite a few features of *RStudio* that can make your life as an `R` user much easier. We will briefly discuss four of them in the following:<sup>1</sup>
+
+- *RStudio* projects
+
+- Keyboard shortcuts
+
+- Autocomplete for code
+
+- Customization options
+
+.footnote[
+[1] If you want to discover some more of the benefits of using *RStudio*, you can check out the [appendix slides](https://jobreu.github.io/r-intro-gesis-2021/slides/1_3_Appendix_Setup&Workflow.html).
+]
+
+---
+
+## *RStudio* projects
+
+*RStudio* projects are helpful tool for developing a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html) that can enhance reproducibility.
+
+You can create a project via the *RStudio* menu: `File` -> `New Project`. *RStudio* projects are associated with `.Rproj` files that contain some specific settings for the project. If you double-click on a `.Rproj` file, this opens a new instance of *RStudio* with the working directory and file browser set to the location of that file (the repository/folder for this workshop contains an `.Rproj` file, if you want to try this out).
+
+Explaining *RStudio* projects in detail is beyond the scope of this course, but there are good tutorials available, e.g., on the [*RStudio* support site](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) or in the [respective chapter in *What They Forgot to Teach You About R*](https://rstats.wtf/project-oriented-workflow.html#rstudio-projectsl).
+
+---
+
+## Keyboard shortcuts in *RStudio*
+
+*RStudio* offers a wide range of useful [keyboard shortcuts](https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts). You can access a *Keyboard Shortcut Quick Reference* in *RStudio* via `Help` -> `Keyboard Shortcuts Help`. There even is a keyboard shortcut for accessing the keyboard shortcuts help (very meta): <kbd>Alt + Shift + K</kbd> (*Windows* & *Linux*)/<kbd>Option + Shift + K</kbd> (*Mac*).
+
+One *RStudio* keyboard shortcut that is particularly helpful for writing `R` code is the one for the assignment operator: <kbd>Alt + -</kbd> (*Windows* & *Linux*)/<kbd>Option + -</kbd> (*Mac*). 
+
+---
+
+## Autocomplete in *RStudio*
+
+Once you start typing a command in *RStudio* (in the console or a script), *RStudio* will make autocomplete suggestions (for functions but also other objects). You can cycle through these suggestions using ↑ and ↓ on your keyboard. If you move your mouse cursor to one of the suggestions, *RStudio* displays an excerpt from the help file of that function. You can accept a suggestion by selecting it and pressing <kbd>Tab</kbd>. 
+
+```{r rstudio-autocomplete, out.width = "100%", echo=FALSE}
+woRkshoptools::include_picture("./rstudio_autocomplete.png")
+```
+
+---
+
+## General settings for *RStudio*
+
+By default, `R` stores your workspace and command history when closing a session (and also restores the former upon startup). While this can be helpful, this creates files that you probably will not use, and can also be a barrier for adopting reproducible workflows.<sup>1</sup>
+
+To avoid that, there are some general settings in *RStudio* that you might want to change via `Tools` -> `Global Options` -> `General`. 
+
+```{r, rstudio-settings, out.width = "40%", echo=FALSE}
+woRkshoptools::include_picture("./rstudio_general_settings_highlighted.png")
+```
+
+.footnote[
+[1] Again, if you want to know more, have a look at the [appendix slides](https://jobreu.github.io/r-intro-gesis-2021/slides/1_3_Appendix_Setup&Workflow.html).
+]
+
+---
+
+## Basic workflow and setup recommendations
+
+- use `R` scripts to store your code
+
+- save/export important output in appropriate file formats (more on that in the following session on *Data Import & Export*)
+
+- (try to) use relative file paths in your scripts
+
+- eventually consider adopting a project-based workflow (using `.Rproj` files)
+
+---
+
+## Troubleshooting 101
+
+In case you get an error message or if your `R` session crashes, there are a couple of things you can do/try out:
+
+- copy the error message into your preferred search engine
+
+- abort `R` process: `Session` -> `Terminate R` in the *RStudio* menu or by clicking the stop shield icon in the upper right corner of the console
+
+- Restart `R` (*RStudio*  menu: `Session` -> `Restart R`) or *RStudio*
+
+- re-install packages
+
+```{r it, out.width = "50%", echo = F}
+woRkshoptools::include_picture("./it_off_on.jpg")
+```
+.center[
+<small><small>Source: [https://s.unhb.de/DqKxb](https://s.unhb.de/DqKxb)</small></small>
+]
+
+---
+
+## Common sources of errors in your `R` code
+
+- typos (e.g., capitalization in package names)
+
+- missing or unmatched `(`, `'`, or `"` (often at the end of a command)
+
+- `\` instead of `/` in file paths (e.g., when copied from the *Windows* explorer)
+
+- packages not installed or loaded
+
+- code (chunks) executed in the wrong order
+
+```{r r-break-gif, out.width = "25%", echo = F}
+woRkshoptools::include_picture("./breakr.gif")
+```
+.center[
+<small><small>GIF by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
+]
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Exercise_1_1_2_Getting_StaRted.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Exercise_1_1_2_Getting_StaRted.html)
+
+---
+
+# Extracurricular activities
+
+- Check out [appendix slides with additional materials](https://jobreu.github.io/r-intro-gesis-2021/slides/1_3_Appendix_Setup&Workflow.html) for this session
+
+- Watch the talk[ talk by David Smith on the history of `R`](https://youtu.be/iq_biXEIx-U) on *YouTube*
+
+- Explore the [*#rstats* hashtag on Twitter](https://twitter.com/search?q=%23rstats&src=typed_query)

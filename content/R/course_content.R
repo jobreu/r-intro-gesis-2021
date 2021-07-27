@@ -47,7 +47,7 @@ course_content_2 <-
   kableExtra::row_spec(9, color = "gray") %>% 
   kableExtra::row_spec(11, color = "gray") %>%
   kableExtra::row_spec(13, color = "gray") %>% 
-  kableExtra::row_spec
+  kableExtra::row_spec(7, extra_css = "border-bottom: 1px solid")
 
 course_content_3 <-
   tibble::tribble(
