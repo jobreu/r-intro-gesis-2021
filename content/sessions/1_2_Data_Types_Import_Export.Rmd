@@ -385,16 +385,16 @@ Even before checking the codebook for a dataset (if there is one) it always help
 .small[
 ```{r class-dim}
 # object type
-class(gp_covid)
+class(fancy_data)
 
 # number of rows and columns
-dim(gp_covid)
+dim(fancy_data)
 
 # number of rows
-nrow(gp_covid)
+nrow(fancy_data)
 
 # number of columns
-ncol(gp_covid)
+ncol(fancy_data)
 ```
 ]
 
@@ -405,17 +405,17 @@ ncol(gp_covid)
 You can also print the first 6 lines of the dataframe with `head()`. You can easily change the number of lines by providing the number as the second argument to the `head()` function.
 
 ```{r head}
-head(gp_covid, 10)
+head(fancy_data, 3)
 ```
 
 ---
 
 ## Dataframe check 1, 2, 1, 2!
 
-If we want some more (detailed) information about the dataset, we can use the `base R` function `str()`.
+If we want some more (detailed) information about the dataset or object, we can use the `base R` function `str()`.
 
 ```{r str, eval = F}
-str(gp_covid)
+str(fancy_data)
 ```
 
 .right[`r emo::ji("left_arrow_curving_right")`]
@@ -434,7 +434,7 @@ str(gp_covid)
 As you saw on the previous slide, the output of `str()` can be a bit hard to read (especially for larger datasets). A good alternative that creates a more clearly laid output is the `glimpse()` function from the `dplyr` package.
 
 ```{r glimpse, eval = F}
-glimpse(gp_covid)
+glimpse(fancy_data)
 ```
 
 .right[`r emo::ji("left_arrow_curving_right")`]
@@ -453,13 +453,12 @@ glimpse(gp_covid)
 If you want to have a look at your full dataset, you can use the `View()` function. In *RStudio*, this will open a new tab in the source pane through which you can explore the dataset (including a search function). You can also click on the small spreadsheet symbol on the right side of the object in the environment tab to open this view. 
 
 ```{r view, eval = F}
-View(gp_covid)
+View(fancy_data)
 ```
 
 ```{r, view-pic, out.width = "65%", echo = F}
 woRkshoptools::include_picture("./rstudio_view.png")
 ```
-
 
 ---
 
