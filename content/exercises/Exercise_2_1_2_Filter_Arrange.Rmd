@@ -65,13 +65,13 @@ Let's briefly turn back to `base R` for this task: Sort the `gp_covid` data set 
 ```
 
 ```{block, opts.label = "clues"}
-You need the `base R` function `order()` here. You can check your result using `head()`. To limit the amount of output, you can subset columns using [] within the `head()` command (household is the 13th variable in the data set, so you could, e.g., subset columns 4:13).
+You need the `base R` function `order()` here. You can check your result using `head()`. To limit the amount of output, you can subset columns using [] within the `head()` command (household is the 13th variable in the data set, so you could, e.g., subset columns 6:13).
 ```
 
 ```{r fourth-exercise, solution = TRUE}
 gp_covid <- gp_covid[order(desc(gp_covid$household)),]
 
-head(gp_covid[, 4:13])
+head(gp_covid[, 6:13])
 ```
 
 ```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
