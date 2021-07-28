@@ -1,0 +1,334 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Data Wrangling Advanced"
+author: "Johannes Breuer & Stefan Jünger"
+date: "2021-08-03"
+presenter: Stefan
+---
+layout: true 
+
+```{r child = "../config/sessions_setup.Rmd"}
+```
+
+---
+
+## Data wrangling continued `r ji("cowboy_hat_face")`
+
+While in the last sessions we focused on the bread-and-butter tasks of the data preparation business, in this part we will focus on the more 'programmy' side of things.
+
+- altering the content of a whole set of variables
+- conditional variable transformation
+- formulating logical requests to our data
+- writing loops
+
+---
+
+class: middle
+
+**We will largely remain in the world of the `tidyverse` since it makes the steps of wrangling data so transparent and straightforward. However, we will also show that you can easily combine **
+
+---
+
+## Load the data
+
+Again, we will work with the *Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* as `.csv` file.
+
+```{r load-gesis-panel-data}
+gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
+```
+
+---
+
+---
+
+## Quickly define missing values
+
+```{r set-missings}
+library(sjlabelled)
+
+gp_covid <-
+  gp_covid %>%
+  set_na(na = c(-99, -77, -33, 98))
+```
+
+---
+
+## Variables of interest
+
+Say, we are interested in the (dis)trust towards several authorities during the Corona crisis. There are 9 items on this topic. Let's create some quick on 3 of them.
+
+```{r quick-table}
+table(gp_covid$hzcy044a)
+table(gp_covid$hzcy047a)
+table(gp_covid$hzcy052a)
+```
+
+What if we want to conduct some data reduction method (e.g., PCA) and need the variables in reverse order for interpretation purposes?
+
+---
+
+## Recode data **across** defined variables 
+
+The `dplyr` package provides a (new) handy tool to exactly this: `across()`. This function can be used to apply another function to multiple variables at once.
+
+```{r recode-across}
+gp_covid <- 
+  gp_covid %>% 
+  mutate(
+    across(
+      hzcy044a:hzcy052a,
+      ~recode(
+        .x,
+        `5` = 1, # `old value` = new value
+        `4` = 2,
+        `2` = 4,
+        `1` = 5
+      )
+    )
+  )
+```
+
+---
+
+class: middle
+
+```{r quick-table-2}
+table(gp_covid$hzcy044a)
+table(gp_covid$hzcy047a)
+table(gp_covid$hzcy052a)
+```
+
+---
+
+## Using `across()` logical conditions
+
+Sometimes we are interested in variables that meet certain conditions. For example, for an anylsis, we want to z-standardize all numeric variables in a dataset. Let's create a temporary subset of our data to exemplify such efforts.
+
+```{r create-tmp-dataset}
+gp_covid_tmp <-
+  gp_covid %>% 
+  select(doi, hzcy044a:hzcy052a)
+
+gp_covid_tmp %>% 
+  sample_n(5)  # randomly sample 5 cases from the df
+```
+
+---
+
+## z-standardize all numeric variables
+
+The `base R` function to z-standardize a variable is `scale()`.
+
+```{r scale-vars}
+gp_covid_tmp <-
+  gp_covid_tmp %>% 
+  mutate(
+    across(
+      is.numeric,
+      ~scale(.x)
+    )
+  )
+
+gp_covid_tmp %>% 
+  sample_n(5)
+```
+
+---
+
+## `dplyr::across()`
+
+```{r, across-cartoon, out.width = "95%", echo = F}
+include_picture("across_blank.png")
+```
+<small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
+
+---
+
+## Aggregate variables across rows
+
+Something we might want to do for our analyses is to create aggregate variables, such as sum or mean scores for a set of items.
+As `dplyr` operations are applied to columns, whereas such aggregations relate to rows (i.e., respondents), we need to make use of the function `rowwise()`. Say, for example, we want to compute a sum score for all measures that respondents have reported to engage in to prevent an infection with or the spread of the Corona virus.
+
+```{r rowwise-sum-display, eval = F}
+gp_covid <- 
+  gp_covid %>% 
+  rowwise() %>% #<<
+  mutate(
+    sum_measures = 
+      sum(
+        c_across(hzcy044a:hzcy052a),
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup()
+```
+
+---
+
+## Aggregate variables
+
+```{r rowwise-sum}
+gp_covid <- 
+  gp_covid %>% 
+  rowwise() %>% #<<
+  mutate(
+    sum_measures = 
+      sum(
+        c_across(hzcy044a:hzcy052a),
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup()
+```
+
+Three things to note here: 
+
+1. `c_across()` is a special version of `across()`for rowwise operations. 
+
+2. We use the `ungroup()` function at the end to ensure that `dplyr` verbs will operate the default way when we further work with the `gpc` object. We do not cover grouping in this course (which is especially valuable for summarizing data), but you can check out the [documentation for `group_by()`](https://dplyr.tidyverse.org/reference/group_by.html) to learn more about this.
+
+3. If you only need sums or means, a somewhat faster alternative is using the base `R` functions `rowSums()` and `rowMeans()` in combination with `mutate()` (and possibly also `across()` plus selection helpers). For an explanation why this can be faster, you can read the [online documentation for `rowwise()`](https://dplyr.tidyverse.org/articles/rowwise.html).
+
+---
+
+## Aggregate variables
+
+```{r rowwise-sum-output}
+gp_covid %>% 
+  select(hzcy044a:hzcy052a) %>% 
+  glimpse()
+```
+
+---
+
+## Aggregate variables
+
+Rowwise transformations work the same way for means. Here, we create a mean score for the items that ask how much people trust specific people or institutions in dealing with the Corona virus. 
+
+```{r rowwise-mean}
+gp_covid <- 
+  gp_covid %>%  
+  rowwise() %>% 
+  mutate(
+    mean_trust = 
+      mean(
+        c_across(hzcy044a:hzcy052a), 
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup()
+```
+
+---
+
+## Aggregate variables
+
+```{r rowwise-mean-output}
+gp_covid %>% 
+  select(hzcy044a:hzcy052a, mean_trust) %>% 
+  glimpse()
+```
+
+---
+
+## Conditional transformation
+
+Sometimes, things are a bit more complicated. Simple recoding is insufficient when we need to base new variables based on the values of old variable(s).
+
+---
+
+## Simple conditional transformation
+
+The simplest version of a conditional variable transformation is using an `ifelse()` statement.
+
+```{r mutate-ifelse}
+gp_covid <- 
+  gp_covid %>% 
+  mutate(
+    high_education = 
+      ifelse(education_cat == 3, "high", "not so high")
+  )
+
+gp_covid %>% 
+  select(education_cat, high_education) %>% 
+  sample_n(5)
+```
+
+.small[
+*Note*: A more versatile option for creating dummy variables is the [`fastDummies` package](https://jacobkap.github.io/fastDummies/).
+]
+
+---
+
+## Advanced conditional transformation
+
+For more flexible (or complex) conditional transformations, the `case_when()` function from `dyplyr` is a powerful tool.
+
+```{r case-when}
+gp_covid <- 
+  gp_covid %>% 
+  mutate(
+    pol_leaning_cat = 
+      case_when(
+        between(political_orientation, 0, 3) ~ "left",
+        between(political_orientation, 4, 7) ~ "center",
+        political_orientation > 7 ~ "right"
+      )
+  )
+
+gp_covid %>% 
+  select(political_orientation, pol_leaning_cat) %>% 
+  sample_n(5)
+```
+
+---
+
+## Conditional transformation based on multiple values
+
+```{r case-when-2}
+gp_covid <- 
+  gp_covid %>% 
+  mutate(
+    pol_leaning_edu = 
+      case_when(
+        between(political_orientation, 0, 3) & high_education == "high" ~ "left high",
+        between(political_orientation, 4, 7) & high_education == "high" ~ "center high",
+        political_orientation > 7 & high_education == "high" ~ "right high",
+        TRUE ~ "not so high"
+      )
+  )
+
+gp_covid %>% 
+  select(political_orientation, high_education, pol_leaning_edu) %>% 
+  sample_n(5)
+```
+
+---
+
+## `dplyr::case_when()`
+
+A few things to note about `case_when()`:
+- you can have multiple conditions per value
+- conditions are evaluated consecutively
+- when none of the specified conditions are met for an observation, by default, the new variable will have a missing value `NA` for that case
+- if you want some other value in the new variables when the specified conditions are not met, you need to add `TRUE ~ value` as the last argument of the `case_when()` call
+- to explore the full range of options for `case_when()` check out its [online documentation](https://dplyr.tidyverse.org/reference/case_when.html) or run `?case_when()` in `R`/*RStudio*
+
+---
+
+## `dplyr::case_when()`
+
+```{r, case-when-cartoon, out.width = "95%", echo = F}
+include_picture("dplyr_case_when.png")
+```
+<small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
+
+---
+
+## Get a bit more programmy
+
+So far, all of the previous tasks share two characteristics
+- based on the structure of the whole dataset
+- the output is again the whole dataset
+
+Particularly in data analysis, our aim is often to extract information from a dataset (e.g., summary statistics, regression estimates).
