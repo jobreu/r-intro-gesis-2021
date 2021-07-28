@@ -1,0 +1,92 @@
+---
+title: 'Exercise 2_1_2: Filtering & arraning rows'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+In this set of exercises, we will practice filtering and rearranging the order of rows.
+
+As for the previous set of data wrangling exercises, before we can begin, we need to load the `tidyverse` package(s) and import the data. Also for these exercises, it is advisable to open the [codebook for the data set](https://dbk.gesis.org/dbksearch/download.asp?id=67378).
+
+```{r read-data, message = F}
+library(tidyverse)
+
+gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+As a first exercise, using `base R`, let's create a new data set named `gp_covid_married` that only contains data from respondents who reported being married.
+```
+
+```{block, opts.label = "clues"}
+The variable representing marital status is named `marstat` and the value indicating that the respondent is married is 1. Remember that there are 2 options in `base R` for filtering rows (the same ones as for selecting columns).
+```
+
+```{r first-exercise, solution = TRUE}
+# Option 1
+gp_covid_married <- gp_covid[gp_covid$marstat == 1, ]
+
+# Option 2
+gp_covid_married <- subset(gp_covid, marstat == 1)
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, let's use the `dplyr` function for filtering rows: Create an object named `gp_covid_afd_voters` that only contains respondents who report that they intend to vote in the next German federal election and that they intend to vote for the right-wing populist party *AfD* (Alternative fuer Deutschland). 
+```
+
+```{block, opts.label = "clues"}
+The names of the variables we need here are `intention_to_vote` and `choice_of_party` and the values we want to filter for are 2 (Yes), and 6 (AfD), respectively.
+```
+
+```{r second-exercise, solution = TRUE}
+gp_covid_afd_voters <- gp_covid %>% 
+  filter(intention_to_vote == 2,
+         choice_of_party == 6)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Using the same function from `dplyr`, create another subset of cases called `gp_covid_middle_aged` that only includes respondents aged 36 to 50.
+```
+
+```{block, opts.label = "clues"}
+The variable we need for this is called `age_cat` and the values of that variable we are looking for are 4 to 6. You can use the helper function `between()` here (remember that the values you provide to this function are inclusive).
+```
+
+```{r third-exercise, solution = TRUE}
+gp_covid_middle_aged <- gp_covid %>% 
+  filter(between(age_cat, 4, 6))
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Let's briefly turn back to `base R` for this task: Sort the `gp_covid` data set in descending order of the `household` variable. You can overwrite the original `gp_covid` object for this task. Have a look at the resulting dataframe to check if your code worked.
+```
+
+```{block, opts.label = "clues"}
+You need the `base R` function `order()` here. You can check your result using `head()`. To limit the amount of output, you can subset columns using [] within the `head()` command (household is the 13th variable in the data set, so you could, e.g., subset columns 4:13).
+```
+
+```{r fourth-exercise, solution = TRUE}
+gp_covid <- gp_covid[order(desc(gp_covid$household)),]
+
+head(gp_covid[, 4:13])
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+Let's rearrange the order of rows again, this time using a function from the `dplyr` package. To restore the original order of the `gp_covid` data set, sort in ascending order of the `id` variable. As for the previous task, check whether your code work, but this time using a (short) pipe chain and a `dplyr` function for catching a glimpse of your data.
+```
+
+```{block, opts.label = "clues"}
+The `dplyr` function you are looking for is in another castle... Just kidding (and apologies for the silly "Super Mario" reference here... that's what happens when you work with pipes more than a plumber does), it's `arrange()`. 
+```
+
+```{r fifth-exercise, solution = TRUE}
+gp_covid <- gp_covid %>% 
+  arrange(id)
+
+gp_covid %>% 
+  select(id:household) %>% 
+  glimpse()
+```

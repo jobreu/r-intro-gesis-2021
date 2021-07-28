@@ -1,0 +1,138 @@
+---
+title: 'Exercise 2_1_1: Selecting & renaming variables'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+As in the presentation, we will use data from the [Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany](https://www.gesis.org/gesis-panel/coronavirus-outbreak/public-use-file-puf) for this exercise. You should (have) download(ed) the dataset in `.csv` format in a folder caller `data` within the folder containing the materials for this workshop. Also remember that it is helpful to consult the [codebook for the data set](https://dbk.gesis.org/dbksearch/download.asp?id=67378).
+
+That being sad, let's get wrangling...
+
+...but before we can do that, we need to load the `tidyverse` package(s) and import the data.
+
+```{r read-data, message = F}
+library(tidyverse)
+
+gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Before we apply any changes to our data set, let's first catch a glimpse of it (hint hint). 
+```
+
+```{block, opts.label = "clues"}
+The clue for this task is already "hidden" in the text of the task ;-)
+```
+
+```{r first-exercise, solution = TRUE}
+gp_covid %>% 
+  glimpse()
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Using `base R`, create a new object called `gp_covid_trust` that contains all variables that assess how much people trust specific people or institutions in dealing with the Corona virus. To find the required variable names, you can check the [codebook]((https://dbk.gesis.org/dbksearch/download.asp?id=67378)) (search for "trust") or have a look at the clue for this task.
+```
+
+```{block, opts.label = "clues"}
+The first variable we want to select for our subset is named `hzcy044a`, and the last one is `hzcy052a`. They appear consecutively in the data set. Remember that there are two options for selecting columns in `base R`: One is subsetting using [], the other is the `subset()` function.
+```
+
+```{r second-exercise, solution = TRUE}
+# Option 1
+gp_covid_trust <- gp_covid[, c("hzcy044a",
+                               "hzcy045a",
+                               "hzcy046a",
+                               "hzcy047a",
+                               "hzcy048a",
+                               "hzcy049a",
+                               "hzcy050a",
+                               "hzcy051a",
+                               "hzcy052a")]
+
+# Option 2
+gp_covid_risk  <- subset(gp_covid, TRUE, select = c(hzcy044a:hzcy052a))
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use a function from the `dplyr` package to create a new object named `gp_covid_info` that only contains the (binary) variables that asked about the use of different sources of information about the Corona virus. Again, you can consult the codebook to find the right variable names (search for "media consumption") or have a look at the clue for this task, instead.
+```
+
+```{block, opts.label = "clues"}
+The first variable we want to select for our subset is named `hzcy084a`, and the last one is `hzcy095a`. They appear consecutively in the data set.
+```
+
+```{r third-exercise, solution = TRUE}
+gp_covid_info <- gp_covid %>% 
+  select(hzcy084a:hzcy095a)
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Again, using a function from the `tidyverse` package `dplyr`, select only the character variables from the `gp_covid` data set and assign them to an object named `gp_covid_char`.
+```
+
+```{block, opts.label = "clues"}
+You need to use the selection helper `where()` for this task.
+```
+
+```{r fourth-exercise, solution = TRUE}
+gp_covid_char <- gp_covid %>% 
+  select(where(is.character))
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+After creating subsets of variables, let's now rename those variables. 
+
+First, rename the variables `hzcy084a` to `info_nat_pub_br`, `hzcy085a` to `info_nat_pr_br`, and `hzcy086a` to `info_nat_np` using `base R`. 
+
+Then rename the variables `hzcy087a` `hzcy088a` `hzcy089a` `hzcy090a` `hzcy091a` `hzcy092a` `hzcy093a`, and `hzcy095a` to `info_loc_pub_br`, `info_loc_pr_br`, `info_loc_np`, `info_fb`, `info_other_sm`, `info_personal`, `info_other`, and `info_none` using a function from `dplyr`. 
+
+When using the `dplyr` function for renaming the variables, assign the result to the same object name as before (i.e., overwrite the `gp_covid_info` object).
+```
+
+```{block, opts.label = "clues"}
+The `base R` function we need here is `colnames()`, and the `dplyr` function is `rename()`. Remember that the correct syntax the `rename()` function is `new_name = old_name`.
+```
+
+```{r fifth-exercise, solution = TRUE}
+# base R
+colnames(gp_covid_info)[colnames(gp_covid_info) == "hzcy084a"] <- "info_nat_pub_br"
+colnames(gp_covid_info)[colnames(gp_covid_info) == "hzcy085a"] <- "info_nat_pr_br"
+colnames(gp_covid_info)[colnames(gp_covid_info) == "hzcy086a"] <- "info_nat_np"
+
+# tidyverse (dplyr)
+gp_covid_info <- gp_covid_info %>% 
+  rename(info_loc_pub_br = hzcy087a,
+         info_loc_pr_br = hzcy088a,
+         info_loc_np = hzcy089a,
+         info_fb = hzcy090a,
+         info_other_sm = hzcy091a,
+         info_personal = hzcy092a,
+         info_other = hzcy093a,
+         info_none = hzcy095a)
+```
+
+```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
+As the final task in this set of exercises, do the previous selection and renaming object using `dplyr` functions again for the `gp_covid_info` object, but this time in one step.
+```
+
+```{block, opts.label = "clues"}
+You can also rename variables within the `select()` command.
+```
+
+```{r sixth-exercise, solution = TRUE}
+gp_covid_info <- gp_covid %>% 
+  select(info_nat_pub_br = hzcy084a,
+         info_nat_pr_br = hzcy085a,
+         info_nat_np = hzcy086a,
+         info_loc_pub_br = hzcy087a,
+         info_loc_pr_br = hzcy088a,
+         info_loc_np = hzcy089a,
+         info_fb = hzcy090a,
+         info_other_sm = hzcy091a,
+         info_personal = hzcy092a,
+         info_other = hzcy093a,
+         info_none = hzcy095a)
+```
