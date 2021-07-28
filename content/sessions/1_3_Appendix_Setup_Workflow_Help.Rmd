@@ -1,0 +1,373 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Appendix: Extended Setup & Workflow"
+author: "Johannes Breuer & Stefan Jünger"
+date: "2021-08-02"
+presenter: Johannes
+---
+layout: true 
+
+```{r child = "../config/sessions_setup.Rmd"}
+```
+
+---
+
+## Further information on `R` and *RStudio* setup and workflows
+
+These slides contain some additional information on setting up and developing workflows for `R` and *RStudio*. The information contained in these slides is, admittedly, a lot to digest for `R` novices, but there is no need to worry: You do not need to fully understand and remember all of it now, but helps a lot to at least be aware of the terms and concepts mentioned in the following as this also facilitates understanding how `R` works, what can go wrong, and how to deal with problems that might arise.
+
+---
+
+## Other sources for `R` packages
+
+A source of `R` packages that is less relevant for the social and behavioral sciences is [*Bioconductor*](https://www.bioconductor.org/) that mostly provides packages for working with genomic data (however, these, e.g., include some packages for computer vision).
+
+---
+
+## Space of names `r ji("spades")`
+
+Packages are developed (and maintained) by different people and teams and - according to [METACRAN](https://www.r-pkg.org/) - there are currently (end of July 2021) almost 18,000 packages available on *CRAN*. Also, there are clear limits for creativity in naming functions. Hence, different packages can use the same function names. This can create what is called a "namespace conflict". 
+
+---
+
+## Masking `r ji("mask")`
+
+If you load a package and some of its functions have the same names as those from packages you loaded before in your current `R` session, it "masks" these functions.
+
+```{r mask-example, message=TRUE}
+library(dplyr)
+```
+
+---
+
+## Avoiding/resolving namespace conflicts
+
+The order in which packages are loaded (in a session) matters as the masking of functions happens consecutively. You can, however, still access masked functions.
+
+```{r access-masked-functions, eval = F}
+stats::filter() # package_name::function_name()
+```
+
+This is also a way of accessing functions from a package without loading it with the `library()` command.
+
+You can also unload a package, but this generally is/should not be the preferred option.
+
+```{r unload-pkg}
+detach("package:dplyr", unload = TRUE)
+```
+
+---
+
+## Updating packages
+
+You can update all packages you have installed with the following command:
+
+```{r update-all-pkgs, eval = F}
+update.packages()
+```
+
+If you want to update individual packages, the easiest way is to install them again (the usual way).
+
+Another, less commonly used, option for updating specific packages is the following:
+
+```{r update-individual-pkgs, eval = F}
+update.packages(oldPkgs = c("correlation", "effectsize"))
+```
+
+---
+
+## Uninstalling packages
+
+If you want to uninstall one or more packages, you can do so as follows:
+
+```{r uninstall-pkgs, eval = F}
+# uninstall one package
+remove.packages("correlation")
+
+# uninstall multiple packages
+remove.packages(c("correlation", "effectsize"))
+```
+
+Normally, it is not necessary to uninstall packages. However, it may (have to be) used for troubleshooting in some cases.
+
+---
+
+## Commenting `R` scripts
+
+A neat trick in *RStudio* is that if you end a comment preceding a block of code with `####` (or more `#` or `----` or more dashes), you create a section in your script that can be collapsed and expanded in the *RStudio* script pane. This also creates a small interactive table of contents for the script at the bottom of the script pane. You can also use the keyboard shortcut <kbd>Ctrl + Shift + R</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Shift + R</kbd> (*Mac*) to insert code sections.
+
+---
+
+## Commenting `R` scripts
+
+```{r, rstudio-scripts-expanded, out.width = "100%", echo=FALSE}
+woRkshoptools::include_picture("./script_sections_expanded_highlighted.png")
+```
+
+---
+
+## Commenting `R` scripts
+
+```{r, rstudio_scripts_collapsed, out.width = "100%", echo=FALSE}
+woRkshoptools::include_picture("./script_sections_collapsed_highlighted.png")
+```
+
+---
+
+## Customization options in *RStudio*
+
+*RStudio* offers a wide range of [customization options](https://support.rstudio.com/hc/en-us/articles/200549016-Customizing-RStudio). In the following, we will briefly discuss two of them:
+
+- pane layout
+
+- appearance
+
+---
+
+## *RStudio* pane layout
+
+You can adjust the size, minimize, and maximize the different panes in *RStudio* .
+You can also customize the pane layout in *RStudio* by via `Tools` -> `Global Options` -> `Pane Layout`.
+
+```{r rstudio-panes, out.width = "40%", echo=FALSE}
+woRkshoptools::include_picture("./rstudio_pane_layout.png")
+```
+
+However, (for this workshop) we would advise that you keep the standard settings here.
+
+---
+
+## *RStudio* appearance
+
+Via `Tools` -> `Global Options` -> `Appearance` you can change the looks of *RStudio* by choosing a theme and font (+ font size).
+
+```{r rstudio-appearance, out.width = "50%", echo=FALSE}
+woRkshoptools::include_picture("./rstudio_appearance.png")
+```
+
+---
+
+## Themes and fonts
+
+*RStudio* offers various themes. These include light and dark themes. In addition to just looking different, themes can highlight specific code parts (in different colors). If you want more themes than the ones offered by default in *RStudio*, the package [`rsthemes`](https://github.com/gadenbuie/rsthemes) has a good selection. There also is a [colorblind-safe *RStudio* theme with code highlighting](https://github.com/DesiQuintans/Pebble-safe).
+
+--
+
+There also are specific monospaced programming fonts with ligatures that you can you with *RStudio*, such as [`JetBrains Mono`](https://www.jetbrains.com/lp/mono/) or [`Fira Code`](https://github.com/tonsky/FiraCode).
+
+--
+
+Of course, most of the time, the choice of themes and fonts for an IDE is largely a matter of personal taste/preferences.
+
+---
+
+## `R` workspace
+
+In addition to the `Environment` tab in *RStudio*, you can view the content of your workspace via the `ls()` command.
+
+You can remove objects from your workspace with the `rm()` function. Note, however, that this cannot be undone, so you have to create the object again in case you need it (again).
+
+Unless you [change the default settings in *RStudio* as suggested in the "Getting Started" session](https://jobreu.github.io/r-intro-gesis-2021/slides/1_1_Getting_Started.html#67), it will save the workspace in a file called `.RData` in your current working directory and restore the workspace when you restart it. 
+
+---
+
+## `R` workspace
+
+While saving your workspace can be useful, this should not be your main (or default) way of saving your work. Instead, you should use scripts to store your code (including any functions you define) and save any output (including relevant intermediary results; especially if they take a substantial amount of time to produce) in files with an appropriate format (we will discuss this in more detail in the session on importing and exporting data). This increases reproducibility and also makes it easier to share your work (or collaborate on it) with others. Also, you will eventually probably work on more than one project, so you would need to use multiple workspaces which can get messy quite quickly.
+
+---
+
+## `R` workspace
+
+If you explicitly want to save your whole workspace (e.g., because you notice that your computer is about to crash or your battery will be depleted and you have no time left to save/export individual files), you can do so by clicking the small blue disk icon in the `Environment` tab in *RStudio* or with the `save.image()` command.
+
+---
+
+## `R` workspace
+
+Because many people (by default) save and restore their workspaces in `R`, you see the following command at the beginning if many `R` scripts:
+
+```{r rm-ls, eval = F}
+rm(list = ls())
+```
+
+This removes all user-created objects from the (global) workspace. Now, imagine you have not saved/exported all relevant objects from your workspace and you run a script that contains this command...
+
+Also, this command does not affect what packages have been loaded, the working directory, or any other options for `R` that may have been set to non-default values.
+
+Hence, `rm(list = ls())` (and the need to use it) should be avoided if possible. A much better way of ensuring that you start with a blank slate at the beginning of your `R` session is to use the [*RStudio* settings described in the "Getting Started" session](https://jobreu.github.io/r-intro-gesis-2021/slides/1_1_Getting_Started.html#67).
+
+---
+
+## Command history
+
+The command history contains all commands you have executed in the current session (in the console or from scripts). In *RStudio* you can view them in the `History` tab which includes buttons for restoring/opening, and saving a command history, exporting selecting commands from the history to the console or a source file (typically an `R` script), removing individual entries, and cleaning the whole history. You can also search your command history.
+
+```{r rstudio-history, out.width = "75%", echo=FALSE}
+woRkshoptools::include_picture("./rstudio_history.png")
+```
+
+---
+
+## Command history
+
+You can also view your command history with the `history()` function (in *RStudio* this will activate the `History` tab).
+
+By default, *R* saves the command history in a `.Rhistory` file in your current working directory upon exiting. You can also manually save and restore the command history using `savehistory()` and `loadhistory()`. 
+
+*Note*: You can open the `.Rhistory` file with any text editor.
+
+Similar to the workspace, the command history should not be the main/default way of saving your work. This should be done via scripts.
+
+---
+
+## `.Renviron`
+
+`.Renviron` files can be used for storing sensitive information like passwords or API keys that you frequently need to use/access in your `R` code as well as for setting [environment variables](https://en.wikipedia.org/wiki/Environment_variable).
+
+There are two types of `.Renviron` files:
+- a user-wide one
+- project-specific ones
+
+---
+
+## `.Renviron`
+
+The easiest way to edit the user-wide `.Renviron` file is to use the `edit_r_environ()` function from the [`usethis` package](https://usethis.r-lib.org/index.html). You can create a project-specific `.Renviron` file by running the command `usethis::edit_r_environ("project")` in the session of your project.
+
+*Note*: Keep in mind that the use a user-wide `.Renviron` file can reduce the reproducibility of your scripts as it is only available on your system.
+
+---
+
+## `.Rprofile`
+
+The `.Rprofile` file contains `R` code that is run when `R` starts. The `.Rprofile` can, e.g., be used to display a personalized welcome message or set a default *CRAN* mirror, but there are many other [customization options](https://www.jumpingrivers.com/blog/customising-your-rprofile/) as well.
+
+The easiest option for editing the `.Rprofile` file is to the `edit_r_profile()` function from the [`usethis` package](https://usethis.r-lib.org/index.html).
+
+Again, this option should be used with caution as it can reduce the reproducibility of your scripts.
+
+If you want to know more: The [chapter on the `R` startup process in *What They Forgot to Teach You About R*](https://rstats.wtf/r-startup.html) contains some more information on the `.Rprofile` file.
+
+---
+
+## Additional workflow and setup recommendations
+
+- avoid saving and restoring your whole workspace
+
+- only use the command history as a helper (not for storing your code)
+
+- use customization options via `.Renviron` and `.Rprofile` sparingly
+
+---
+
+## How to find help?
+
+There are many ways for finding help for you `R`-problems, including but not limited to:
+
+- package help files
+
+- package vignettes
+
+- (additional) package documentation
+
+- forums & mailings lists
+
+- `R` packages (sic!)
+
+There is a helpful [short tutorial on *Getting Help with R* on the R Project website](https://www.r-project.org/help.html).
+
+---
+
+## Help files
+
+To access the help file for a specific function you can use `?function_name` (NB: this only works if the package containing the function has been loaded). In *RStudio*, this will activate the `Help` tab. While some (or much) of the content of these help files may be confusing for `R` newbies, one thing that often helps is to look at the *Examples* at the end of help file.
+
+You can also explore all help files for a particular package with `help(package = "packagename")`. 
+
+---
+
+## Vignettes
+
+Many `R` packages also provide so-called vignettes which are documents that provide some more detailed explanations and examples of some of the functionalities of a package.
+
+You first need to check whether a package contains vignettes and if so, what their titles are. With this information, you can then access a specific vignette. In *RStudio*, the vignette will be displayed in the `Help` tab.
+
+```{r vignettes, eval = F}
+# check if/which vignettes included in package
+browseVignettes("effectsize")
+
+# open vignette from the list for that package
+vignette("interpret")
+```
+
+---
+
+## Package documentation
+
+Packages on *CRAN* include (PDF) Reference Manuals (see the [*CRAN* website for the `usethis` package](https://cran.r-project.org/web/packages/usethis/index.html) for an example) that include descriptions of all functions included in the package.
+
+Some packages also provide their own websites with detailed additional documentation (the [`quanteda` package for text analysis](https://quanteda.io/) is a good example here).
+
+If packages are hosted on *GitHub*, the associated repository normally also includes some documentation for the package. If you encounter an issue while using a package that is hosted on *GitHub*, you can also check out the `Issues` section in the *GitHub* repository for that package. 
+
+---
+
+## Forums & mailing lists
+
+There are many `R`-related forums and mailing lists. Two important (and helpful) forums for `R` are [*Stack Overflow*](https://stackoverflow.com/) and the [*RStudio Community*](https://community.rstudio.com/). 
+
+Chances are high that somebody has already asked (and answered) the question(s) you are interested in on *Stack Overflow*. In the unlikely case that this is not the case, you can post your question there. Again, *What They Forgot to Teach You About R* provides some [useful guidance on that](https://rc2e.com/gettingstarted#recipe-id269). If you encounter a specific problem, using a reproducible example (reprex) can make things easier. The [`reprex` package](https://reprex.tidyverse.org/index.html) can be helpful here.
+
+The *R Project* provides an [overview of `R` mailing lists](https://www.r-project.org/mail.html). There also is a [searchable archive for these mailing lists](https://r.789695.n4.nabble.com/).
+
+---
+
+## Understanding error messages
+
+If you receive an error message and don't (fully) understand what it means, you can simply enter it into your preferred search engine. Usually, this yields some helpful results. Alternatively, you can also directly copy the error message into the search field on *Stack Overflow*.
+
+If copying and pasting is not your thing, you can also use the [`searcher`](https://github.com/r-assist/searcher) or the [`errorist` package](https://github.com/r-assist/errorist) to search for error messages (in different places) directly from `R`. The `searcher` package can also be used to search for other things (besides error messages) from `R`.
+
+---
+
+## Coding styles
+
+What helps to increase the comprehensibility and reusability of code is to follow a specific coding style. There are quite a few things that can be regulated by coding style conventions, such as...
+- line length (see the ["sacred 80 column rule"]( https://www.emacswiki.org/emacs/EightyColumnRule))
+- indentation
+- variable/object naming
+- comments
+- assignment rules
+
+`R` is pretty flexible in styling (compared, e.g., to `Python`, which has strict rules for indentation) which makes it even more necessary to think about these conventions.
+
+---
+
+## Coding styles
+
+Two popular coding style guides for `R` are:
+
+- [*Google's R style guide](https://google.github.io/styleguide/Rguide.html)
+
+- [the `tidyverse` style guide](https://style.tidyverse.org/)
+
+---
+
+## Coding in style `r ji("sunglasses")`
+  
+The [`styler`](http://styler.r-lib.org/) package, which includes an *RStudio* add-in, makes it easy to implement the `tidyverse` style guide.
+
+```{r install & load styler, eval = F, echo = T}
+install.packages("styler")
+library(styler)
+
+```
+
+From the package documentation:
+- `style_file()` styles .R and/or .Rmd files.
+- `style_dir()` styles all .R and/or .Rmd files in a directory.
+
+```{r, out.width = "50%", echo = FALSE}
+woRkshoptools::include_picture("./styler_addin.png")
+```
