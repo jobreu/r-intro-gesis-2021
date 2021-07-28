@@ -1,6 +1,6 @@
 ---
 title: "Introduction to R for Data Analysis"
-subtitle: "Getting Started with R and RStudio"
+subtitle: "Data Wrangling Basics"
 author: "Johannes Breuer & Stefan Jünger"
 date: "2021-08-03"
 presenter: Johannes
