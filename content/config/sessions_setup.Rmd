@@ -16,10 +16,23 @@ options(warn = -1,
         htmltools.dir.version = FALSE,
         htmltools.preserve.raw = FALSE)
 
-xaringanExtra::use_xaringan_extra(c("tile_view", "clipboard"))
+xaringanExtra::use_xaringan_extra(c("tile_view"))#, "clipboard"))
 xaringanExtra::use_extra_styles(
   hover_code_line = TRUE,
   mute_unhighlighted_code = FALSE
 )
 ```
 
+```{r xaringanExtra-clipboard, echo=FALSE}
+htmltools::tagList(
+  xaringanExtra::use_clipboard(
+    button_text = 
+      "<div style=\"font-size: 9px;\"><i class=\"fa fa-clipboard fa-xs\"></i></div>",
+    success_text = 
+      "<div style=\"font-size: 9px;\"><i class=\"fa fa-check fa-xs\" style=\"color: #90BE6D\"></i></div>",
+    error_text = 
+      "<div style=\"font-size: 9px;\"><i class=\"fa fa-times-circle fa-xs\" style=\"color: #F94144\"></i></div>"
+  ),
+  rmarkdown::html_dependency_font_awesome()
+)
+```
