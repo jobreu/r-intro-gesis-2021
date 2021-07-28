@@ -64,7 +64,7 @@ gp_covid <- gp_covid %>%
 ```
 
 ```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
-After recoding a set of values as `NA` for specific values, let's now do the same for the whole `gp_covid` dataframe.
+After recoding a set of values as `NA` for one variable, let's now do the same for the whole `gp_covid` dataframe. This time, however, we do not want to recode 98 as `NA` as it is a valid value for the `id` variable.
 ```
 
 ```{block, opts.label = "clues"}
@@ -75,8 +75,7 @@ This time, we do not need the `mutate()` function.
 gp_covid <- gp_covid %>% 
   na_if(-99) %>% 
   na_if(-77) %>% 
-  na_if(-33) %>% 
-  na_if(98)
+  na_if(-33)
 ```
 
 ```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
@@ -91,7 +90,7 @@ The function we are looking for can also be included in a pipe chain and takes a
 library(sjlabelled)
 
 gp_covid <- gp_covid %>% 
-  set_na(na = c(-99, -77, -33, 98))
+  set_na(na = c(-99, -77, -33))
 ```
 
 ```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
