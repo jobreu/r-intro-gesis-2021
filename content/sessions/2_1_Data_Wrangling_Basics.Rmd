@@ -850,6 +850,14 @@ gp_covid %>%
 
 ---
 
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_1_2_Filter_Arrange.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_2_1_2_Filter_Arrange.html)
+
+---
+
 ## Creating & transforming variables
 
 The simplest case of adding a new variable is creating a constant. You might, e.g., want to do that to indicate the number of the survey wave in a longitudinal data set. This is how you can do this in `base R`:
@@ -1195,9 +1203,9 @@ woRkshoptools::include_picture("./lubridate.png")
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day2_2_Data_Wrangling_Exercise_1_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_1_3_Mutate_Recode_Missings.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day2_2_Data_Wrangling_Exercise_1_solution.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_2_1_3_Mutate_Recode_Missings.html)
 
 ---
 
