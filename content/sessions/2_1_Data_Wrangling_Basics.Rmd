@@ -176,26 +176,6 @@ woRkshoptools::include_picture("./wide-long.png")
 ```
 <small><small>Source: https://github.com/gadenbuie/tidyexplain#tidy-data</small></small>
 
----
-
-## Tibbles
-
-.pull-left[
-Tibbles are basically just `R data.frames` but nicer.
-
-- only the first ten observations are printed
-  - output is tidier!
-  
-- you get some additional metadata about rows and columns that you would normally only get when using `dim()` and other functions
-
-You can check the [tibble vignette](https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html) for technical details.
-]
-
-.pull-right[
-```{r tibble-pic, echo = FALSE, out.width="60%"}
-woRkshoptools::include_picture("./tibble.png")
-```
-]
 
 ---
 

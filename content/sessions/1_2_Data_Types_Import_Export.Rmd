@@ -228,19 +228,32 @@ class: middle
 
 ---
 
-## `tibbles`
-`data.frames` tend to be pretty large, and printing them on your screen can get difficult. As part of the `tidyverse`, tibbles facilitate printing (and adding more metadata to the columns of a `data.frame`). Instead of using `data.frame()` for our data creation we could have been using `tibble()`. Or we convert an existing `data.frame`, which looks like that:
+## Tibbles
 
-```{r as_tibbles, eval = FALSE}
-library(tibble)
-as_tibble(fancy_data)
+.pull-left[
+Tibbles are basically just `R data.frames` but nicer.
+
+- only the first ten observations are printed
+  - output is tidier!
+  
+- you get some additional metadata about rows and columns that you would normally only get when using `dim()` and other functions
+
+You can check the [tibble vignette](https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html) for technical details.
+]
+
+.pull-right[
+```{r tibble-pic, echo = FALSE, out.width="60%"}
+woRkshoptools::include_picture("./tibble.png")
 ```
-
-.right[`r emo::ji("left_arrow_curving_right")`]
+]
 
 ---
+
 class: middle
-```{r ref.label = "as_tibbles", echo = FALSE}
+
+```{r as_tibbles}
+library(tibble)
+as_tibble(fancy_data)
 ```
 
 ---
