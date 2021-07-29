@@ -1,0 +1,88 @@
+---
+title: 'Exercise 2_2_1: Across the Tidyverse'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+```{r read-data, message = F}
+library(tidyverse)
+library(sjlabelled)
+
+gp_covid <- 
+  read_csv2("./data/ZA5667_v1-1-0.csv") %>%
+  set_na(na = c(-99, -77, -33, 98))
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use `across()` to dichotomize the trust variables `hzcy044a:hzcy052a`. The value `1` should remain, all others should be `0`.
+```
+
+```{block, opts.label = "clues"}
+You have to wrap it into the `mutate()` function and then use `recode()`.
+```
+
+```{r first-exercise, solution = TRUE}
+gp_covid <- 
+  gp_covid %>% 
+  mutate(
+    across(
+      hzcy044a:hzcy052a,
+      ~recode(
+        .x,
+        `5` = 0,
+        `4` = 0,
+        `2` = 0,
+        `1` = 1
+      )
+    )
+  )
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Please check if all went as expected.
+```
+
+```{block, opts.label = "clues"}
+There are several ways of doing that.
+
+1. Either print tables like on the slides using the `table()` function.
+2. Or use `select()` to select only the manipulated columns and print the whole data frame using `View()`, `glimpse()` or the plain console output.
+
+```
+
+```{r second-exercise, solution = TRUE}
+table(gp_covid$hzcy044a)
+table(gp_covid$hzcy047a)
+table(gp_covid$hzcy052a)
+
+gp_covid %>% 
+  select(hzcy044a:hzcy052a) %>% 
+  glimpse()
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use the `median()` function to calculate an aggregated variable of all trust variables for all observations in the data.
+```
+
+```{block, opts.label = "clues"}
+For this task you need to first use `rowwise()` on your data and calculate the values, amongst others, applying the `c_across()` function. Oh, and don't forget to finally use `ungroup`.
+```
+
+```{r third-exercise, solution = TRUE}
+gp_covid <- 
+  gp_covid %>% 
+  rowwise() %>% #<<
+  mutate(
+    median_trust = 
+      median(
+        c_across(hzcy044a:hzcy052a),
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup()
+
+table(gp_covid$median_trust)
+```

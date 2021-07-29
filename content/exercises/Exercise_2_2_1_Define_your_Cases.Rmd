@@ -1,0 +1,59 @@
+---
+title: 'Exercise 2_2_2: Define your Cases'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+```{r read-data, message = F}
+library(tidyverse)
+library(sjlabelled)
+
+gp_covid <- 
+  read_csv2("./data/ZA5667_v1-1-0.csv") %>%
+  set_na(na = c(-99, -77, -33, 98))
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Create a new character string (!) variable based on the `age_cat` variable that indicates younger people (values 0 to 9) and the elderly (value of 10). 
+```
+
+```{block, opts.label = "clues"}
+You need the `case_when()` function for that purpose. Consider using a `tidyselect` helper such as `between()`
+```
+
+```{r first-exercise, solution = TRUE}
+gp_covid <- 
+  gp_covid %>% 
+  mutate(
+    elderly = 
+      case_when(
+        between(age_cat, 0, 9) ~ "young folks",
+        age_cat == 10 ~ "elderly"
+      )
+  )
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Repeat the previous task with the differentation between married and unmarried people using the `marstat` variable.
+```
+
+```{block, opts.label = "clues"}
+Your variable should have 4 distinct values. You can concatenate logical operations using the `&` operator.
+```
+
+```{r second-exercise, solution = TRUE}
+gp_covid <- 
+  gp_covid %>% 
+  mutate(
+    elderly_married = 
+      case_when(
+        between(age_cat, 0, 9) & marstat == 1 ~ "young folks, unmarried",
+        between(age_cat, 0, 9) & marstat == 2 ~ "young folks, married",
+        age_cat == 10 & marstat == 1 ~ "elderly, unmarried",
+        age_cat == 10 & marstat == 2 ~ "elderly, married"
+      )
+  )
+```
