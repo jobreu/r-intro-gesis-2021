@@ -36,12 +36,14 @@ include_picture("./data-science.png")
 ]
 <small><small>Source: http://r4ds.had.co.nz/</small></small>
 
+.small[
 - **Import**: read in data in different formats (e.g., .csv, .xls, .sav, .dta)
 - **Tidy**: clean data (1 row = 1 case, 1 column = 1 variable), rename & recode variables, etc.
 - **Transform**: prepare data for analysis (e.g., by aggregating and/or filtering)
 - **Visualize**: explore/analyze data through informative plots
 - **Model**: analyze the data by creating models (e.g, linear regression model) 
 - **Communicate**: present the results (to others)
+]
 
 ---
 
@@ -502,7 +504,7 @@ woRkshoptools::include_picture("./mem_use_report.png")
 
 ---
 
-## The two workhorses of `R`: Functions and packages `r ji("horse")`
+## The two workhorses `r ji("horse")` of `R`: Functions and packages `r ji("package")`
 
 If you want to do anything in `R`, you need to use functions, and functions are provided through packages. We will go through the basics of functions and packages in `R` in the following.
 

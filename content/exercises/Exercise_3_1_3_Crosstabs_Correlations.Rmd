@@ -1,0 +1,106 @@
+---
+title: 'Exercise 3_1_3: Crosstabs & correlations'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+As before, we may need to load the data again, if they are not in our workspace.
+
+```{r load}
+corona_survey <- readRDS("./data/corona_survey.rds")
+```
+
+In case you have not done so yet, please also install the following `janitor` and `correlation`.
+
+```{r pkgs, eval = F}
+if (!require(summaryrtools)) install.packages("janitor")
+if (!require(summaryrtools)) install.packages("correlation")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+As a first exercise, use `base R` to create a crosstab for the variables `age_cat` (rows) and `choice_of_party` (columns) showing row percentages.
+```
+
+```{block, opts.label = "clues"}
+We need to combine `round()`, `table()`, and `prop.table()` here, add an argument to `prop.table()` to get row totals, and transform the results to represent percentages.
+```
+
+```{r first-exercise, solution = TRUE}
+round(prop.table(table(corona_survey$age_cat, corona_survey$choice_of_party), 1)*100, 2)
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, let's use the `janitor` package to get the same results. 
+```
+
+```{block, opts.label = "clues"}
+We want to create a `tably()` object and add some additional functions to get the row percentages. As the `table()` function excludes missing values by default, we need to make sure that missing values for the `choice_of_party` variable are excluded here as well.
+```
+
+```{r second-exercise, solution = TRUE}
+library(janitor)
+
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  tabyl(age_cat, choice_of_party) %>% 
+  adorn_percentages(denominator = "row") %>% 
+  adorn_pct_formatting(digits = 2)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+As a final exercise on crosstabs, compute a chi-square test for the `tabyl` we have created before. 
+```
+
+```{block, opts.label = "clues"}
+We do not need the percentage sign or the row percentages for this.
+```
+
+```{r third-exercise, solution = TRUE}
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  tabyl(age_cat, choice_of_party) %>% 
+  chisq.test()
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Let's turn to correlations: Use the `correlation` package to calculate and print correlations between the following variables: `risk_self`, `risk_surround`, `sum_measures`, `sum_sources`
+```
+
+```{block, opts.label = "clues"}
+The name of the function you need is the same as that of the package we use here.
+```
+
+```{r fourth-exercise, solution = TRUE, message=FALSE}
+library(correlation)
+
+corona_survey %>% 
+  select(risk_self,
+         risk_surroundings,
+         sum_measures,
+         sum_sources) %>% 
+  correlation()
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+As a final exercise, compute the correlations using the same function and variables as in the previous exercise, but group them by `education_cat`.
+```
+
+```{block, opts.label = "clues"}
+You need to use `select()` from `dplyr` and `correlation()` from the package with the same name.
+```
+
+```{r fifth-exercise, solution = TRUE, message=FALSE}
+library(correlation)
+
+corona_survey %>% 
+  select(education_cat,
+         risk_self,
+         risk_surroundings,
+         sum_measures,
+         sum_sources) %>% 
+  group_by(education_cat) %>% 
+  correlation()
+```

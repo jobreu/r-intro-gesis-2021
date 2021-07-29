@@ -173,11 +173,14 @@ woRkshoptools::include_picture("./tidy_data.png")
 
 ## Wide vs. long format
 
-```{r wide-long-pic, echo = FALSE, out.width="80%"}
+```{r wide-long-pic, echo = FALSE, out.width="75%"}
 woRkshoptools::include_picture("./wide-long.png")
 ```
 <small><small>Source: https://github.com/gadenbuie/tidyexplain#tidy-data</small></small>
 
+.small[
+*Note*: The functions `pivot_wider()` and `pivot_longer()` from the [`tidyr` package](https://tidyr.tidyverse.org/) are easy-to-use options from changing data from long to wide format and vice versa.
+]
 
 ---
 

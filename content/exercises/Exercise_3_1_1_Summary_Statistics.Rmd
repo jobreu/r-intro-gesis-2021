@@ -1,0 +1,104 @@
+---
+title: 'Exercise 3_1_1: Summary statistics'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+For this exercise, we will use the same subset of the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data as in the lecture. If you have stored that data set as an `.rds` file as shown in the slides, you can simply load it with the following command
+
+Just run the following code to go through the wrangling pipeline. Remember that the `.csv` file should be stored in the `data` folder in the directory with the course materials.
+
+```{r load}
+corona_survey <- readRDS("./data/corona_survey.rds")
+```
+
+If you have not saved the wrangled data as an `.rds` file yet, you need to go through the data wrangling pipeline shown in the EDA slides (again).
+
+Also, in case you have not done so yet, please also install `summarytools` and `psych` as we will need them for the exercises (in addition to `base R` and the `tidyverse` packages). The following code chunk will check if you have these packages installed and install them, if that is not the case.
+
+```{r pkgs, eval = F}
+if (!require(summaryrtools)) install.packages("summarytools")
+if (!require(summaryrtools)) install.packages("psych")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Using a `base R` function, print some basic summary statistics for the variables `sum_sources` and `sum_measures`.
+```
+
+```{block, opts.label = "clues"}
+We can use the `dplyr` function for selecting variables and pipe the result into the required function.
+```
+
+```{r first-exercise, solution = TRUE}
+corona_survey %>% 
+  select(starts_with("sum")) %>% 
+  summary()
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Using a function from the `psych` package, print the summary statistics for all variables that assess how much people trust specific people or institutions in dealing with the Corona virus. The summary statistics should include IQR but no measures of skew (and kurtosis).
+```
+
+```{block, opts.label = "clues"}
+All names of the variables we are interested in here start with "trust". You can find information about the arguments of the `describe()` function in its help file (`?describe`).
+```
+
+```{r second-exercise, solution = TRUE}
+library(psych)
+
+corona_survey %>% 
+  select(starts_with("trust")) %>% 
+  describe(skew = FALSE,
+           IQR = TRUE)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use a function from the `summarytools` package to get summary statistics for the following variables in your dataset: `left_right`, `sum_measures`, `mean_trust`. Unlike in the lecture, however, we now want all stats (not just the "common" ones).
+```
+
+```{block, opts.label = "clues"}
+You can check the arguments for the function we need via `?descr`.
+```
+
+```{r third-exercise, solution = TRUE, message = FALSE, warning = FALSE}
+library(summarytools)
+
+corona_survey %>% 
+  select(left_right,
+         sum_measures,
+         mean_trust) %>%
+  descr()
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, let's use functions from `dplyr` to create grouped summary statistics. Compute separate means for the variables `risk_self` and `risk_surroundings` for the different age groups in the data set. The resulting summary variables should be called `risk_self_mean` and `risk_surroundings_mean`. You shold exclude respondents with missing values for the variables of interest.
+```
+
+```{block, opts.label = "clues"}
+You need to group and summarize the data. There are (at least) two different ways of doing this.
+```
+
+```{r fourth-exercise, solution = TRUE}
+# This is the option that requires more typing but is easier to code
+corona_survey %>% 
+  select(age_cat,
+         starts_with("risk")) %>% 
+  drop_na() %>% 
+  group_by(age_cat) %>% 
+  summarize(risk_self_mean = mean(risk_self),
+            risk_surroundings_mean = mean(risk_surroundings))
+
+# This is the more elegant but somewhat more difficult to code option
+# corona_survey %>%
+#   select(age_cat,
+#          starts_with("risk")) %>%
+#   drop_na() %>%
+#   group_by(age_cat) %>%
+#   summarize(across(starts_with("risk"),
+#                    list(mean = mean),
+#                    .names = "{col}_{fn}")) %>%
+#   ungroup()
+```

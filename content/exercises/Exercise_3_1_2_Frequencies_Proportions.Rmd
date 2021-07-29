@@ -1,0 +1,66 @@
+---
+title: 'Exercise 3_1_2: Frequencies & proportions'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+We will continue to work with the same data as in the previous set of exercises. By now, you should (hopefully) have saved them as an `.rds` file and, hence, be able to easily load them (in case they are not already/still in your current `R` workspace/working environment).
+
+```{r load}
+corona_survey <- readRDS("./data/corona_survey.rds")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Using `base R`, print a simple table with the frequencies of the variable `education_cat`. Also include the counts for missing values.
+```
+
+```{block, opts.label = "clues"}
+The argument for including missing values in the resulting table is `useNA = "always"`.
+```
+
+```{r first-exercise, solution = TRUE}
+table(corona_survey$education_cat, useNA = "always")
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Next, use the same `base R` function to get the proportions for the variable `sex` rounded to four decimal places.
+```
+
+```{block, opts.label = "clues"}
+You need to wrap `table()` into two other functions: One for creating the proportion table and another one for rounding the decimal places.
+```
+
+```{r second-exercise, solution = TRUE}
+round(prop.table(table(corona_survey$sex)), 4)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, use functions from the `dplyr` package to get the frequencies and proportions for the `sex` variable (without worrying about the number of decimal places this time).
+```
+
+```{block, opts.label = "clues"}
+We first need to count the cases and then transform the resulting variable to get proportions.
+```
+
+```{r third-exercise, solution = TRUE}
+corona_survey %>% 
+  count(sex) %>%
+  mutate(proportion = n/sum(n)) %>% 
+  ungroup()
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Use a function from the `summarytools` package to display the counts and percentages for the categories in the `age_cat` variable. The output should not include information about the totals.
+```
+
+```{block, opts.label = "clues"}
+Check the help file for the function to see how to exclude the totals from the output.
+```
+
+```{r fourth-exercise, solution = TRUE}
+freq(corona_survey$age_cat,
+     totals = FALSE)
+```
