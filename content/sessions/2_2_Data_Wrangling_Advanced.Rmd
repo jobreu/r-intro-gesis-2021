@@ -25,7 +25,7 @@ While in the last sessions we focused on the bread-and-butter tasks of the data 
 
 class: middle
 
-**We will largely remain in the world of the `tidyverse` since it makes the steps of wrangling data so transparent and straightforward. However, we will also show that you can easily combine **
+**We will switch between the world of `base R` and the `tidyverse` as it also a good lesson that it is not necessary to rely either on one of them. Yet, for both we cannot be comprehensive, which is why we will show routines that may be important for your first steps after the course and for the rest of the week.**
 
 ---
 
@@ -36,8 +36,6 @@ Again, we will work with the *Public Use File (PUF) of the GESIS Panel Special S
 ```{r load-gesis-panel-data}
 gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
 ```
-
----
 
 ---
 
@@ -100,7 +98,7 @@ table(gp_covid$hzcy052a)
 
 ---
 
-## Using `across()` logical conditions
+## Using `across()` across logical conditions
 
 Sometimes we are interested in variables that meet certain conditions. For example, for an anylsis, we want to z-standardize all numeric variables in a dataset. Let's create a temporary subset of our data to exemplify such efforts.
 
@@ -115,7 +113,7 @@ gp_covid_tmp %>%
 
 ---
 
-## z-standardize all numeric variables
+## Example: z-standardize all numeric variables
 
 The `base R` function to z-standardize a variable is `scale()`.
 
@@ -138,7 +136,7 @@ gp_covid_tmp %>%
 ## `dplyr::across()`
 
 ```{r, across-cartoon, out.width = "95%", echo = F}
-include_picture("across_blank.png")
+woRkshoptools::include_picture("across_blank.png")
 ```
 <small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
 
@@ -149,12 +147,12 @@ include_picture("across_blank.png")
 Something we might want to do for our analyses is to create aggregate variables, such as sum or mean scores for a set of items.
 As `dplyr` operations are applied to columns, whereas such aggregations relate to rows (i.e., respondents), we need to make use of the function `rowwise()`. Say, for example, we want to compute a sum score for all measures that respondents have reported to engage in to prevent an infection with or the spread of the Corona virus.
 
-```{r rowwise-sum-display, eval = F}
+```{r rowwise-sum}
 gp_covid <- 
   gp_covid %>% 
   rowwise() %>% #<<
   mutate(
-    sum_measures = 
+    sum_trust = 
       sum(
         c_across(hzcy044a:hzcy052a),
         na.rm = TRUE
@@ -166,20 +164,6 @@ gp_covid <-
 ---
 
 ## Aggregate variables
-
-```{r rowwise-sum}
-gp_covid <- 
-  gp_covid %>% 
-  rowwise() %>% #<<
-  mutate(
-    sum_measures = 
-      sum(
-        c_across(hzcy044a:hzcy052a),
-        na.rm = TRUE
-      )
-  ) %>% 
-  ungroup()
-```
 
 Three things to note here: 
 
@@ -195,13 +179,13 @@ Three things to note here:
 
 ```{r rowwise-sum-output}
 gp_covid %>% 
-  select(hzcy044a:hzcy052a) %>% 
+  select(hzcy044a:hzcy052a, sum_trust) %>% 
   glimpse()
 ```
 
 ---
 
-## Aggregate variables
+## Example: Aggregate variables based on means
 
 Rowwise transformations work the same way for means. Here, we create a mean score for the items that ask how much people trust specific people or institutions in dealing with the Corona virus. 
 
@@ -221,7 +205,7 @@ gp_covid <-
 
 ---
 
-## Aggregate variables
+class: middle
 
 ```{r rowwise-mean-output}
 gp_covid %>% 
@@ -231,9 +215,17 @@ gp_covid %>%
 
 ---
 
-## Conditional transformation
+class: center, middle
 
-Sometimes, things are a bit more complicated. Simple recoding is insufficient when we need to base new variables based on the values of old variable(s).
+# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
+class: middle
+
+**Sometimes, things are a bit more complicated. Simple recoding is insufficient when we need to base new variables based on the values of old variable(s). Such procedures are can be called conditional transformation.**
 
 ---
 
@@ -325,10 +317,360 @@ include_picture("dplyr_case_when.png")
 
 ---
 
+class: center, middle
+
+# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
 ## Get a bit more programmy
 
 So far, all of the previous tasks share two characteristics
 - based on the structure of the whole dataset
 - the output is again the whole dataset
 
-Particularly in data analysis, our aim is often to extract information from a dataset (e.g., summary statistics, regression estimates).
+Particularly in data analysis, our aim is often to extract information from a dataset (e.g., summary statistics, regression estimates). We now will learn a bit more about
+- writing functions
+- if-else loops
+- for loops and the like
+- modern `tidyverse` implementations
+
+---
+
+## Functional Programming: In `R`, everything's a function (more or less)
+
+So you might already be familiar with using functions in `R` (at least we have used them heavily on the previous slides). Functions are applied as shown here:
+
+```{r fancy-function, eval = FALSE}
+fancy_function(data)
+```
+
+They can be nested, for example:
+
+```{r nested-functions}
+log(sum(c(1, 2, 3)))
+```
+
+---
+
+## Defining your own function is straightforward
+
+First, let's create a simple function that adds `1` to an entered number.
+
+```{r own-function}
+add_one <- function (a_number) {
+  a_number + 1
+}
+```
+
+Now, we can simply apply it to some data as in any other `R` function.
+
+```{r function-applied}
+add_one(2)
+add_one(99)
+```
+
+---
+
+## Extend the sum function
+
+```{r sum-na}
+sum_na <- function (x) {
+  sum(x, na.rm = TRUE)
+}
+```
+
+---
+
+## Feed it into `mutate()` and `across()`
+
+```{r sum-na-across}
+gp_covid <- 
+  gp_covid %>% 
+  rowwise() %>%
+  mutate(
+    new_sum_trust = 
+      sum_na(c_across(hzcy044a:hzcy052a))
+  ) %>% 
+  ungroup()
+
+gp_covid %>% 
+  select(hzcy044a:hzcy052a, new_sum_trust) %>% 
+  glimpse()
+```
+
+---
+
+## if-else architecture in `R`
+
+Using if-else statements in `R` requires at least 3 steps:
+1. Starting the loop with `if()`
+2. Add the condition to be tested in the parentheses of the `if(condition)`
+3. Write a function or procedure on data in the curly brackets of the `if(condition){ ... }`
+
+For example:
+
+```{r simple-if}
+if (1 < 2) {
+  1 + 2
+}
+```
+
+---
+
+## Adding else statements
+In a fourth step, we can add an `else { ... }`
+
+```{r simple-if-else}
+if (1 > 2) {
+  1 + 2
+} else {
+  2 + 5
+}
+```
+
+So, the general architecture is like this:
+```{r eval = FALSE}
+if (condition) {
+  function_to_apply(data)
+} else {
+  other_function_to_apply(data)
+}
+```
+
+(We could also test for another condition in the else statements with `else if()`)
+
+---
+
+## Adding it to our function!
+
+```{r descriptives-na}
+descriptives_na <- function(x, statistic) {
+  if (statistic == "sum") {
+    sum(x, na.rm = TRUE)
+  } else if (statistic == "mean") {
+    mean(x, na.rm = TRUE)
+  } else {
+    stop("no valid statistic provided!")
+  }
+}
+```
+
+---
+
+## Trying it out
+
+```{r descriptives-na-sum}
+descriptives_na(c(1, 2), statistic = "sum")
+```
+
+```{r descriptives-na-mean}
+descriptives_na(c(1, 2), statistic = "mean")
+```
+
+```{r descriptives-na-mode, error = TRUE}
+descriptives_na(c(1, 2), statistic = "mode")
+```
+
+---
+
+class: center, middle
+
+# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
+## `for()` loops
+(Simple) loops using the `for()` function are some of the most useful tools in functional programming.
+
+They, e.g., enable iterating through input data and applying functions to each element of the data
+- it depends on the specific purpose what defines this element
+  - the elements can be rows, columns, list elements, etc.
+- hence, it is crucial to think about the iterator of the specific call
+
+---
+
+## Architecture of for-loops
+
+```{r eval = FALSE}
+for (iterator_name in data) {
+  function_to_apply(iterator_name)
+}
+```
+
+---
+
+## Calculating means of all trust variables
+
+```{r trust-means}
+variables_vector <- 
+  c(
+    "hzcy044a", "hzcy044a", "hzcy044a", "hzcy047a", "hzcy048a",
+    "hzcy049a", "hzcy050a", "hzcy051a", "hzcy052a"
+  )
+
+
+for (variable in variables_vector) {
+  print(
+    descriptives_na(
+      gp_covid[[variable]], 
+      statistic = "mean"
+    )
+  )
+}
+```
+
+---
+
+## The apply family
+The apply family is aimed to make your life a bit easier when writing `base R` loops.
+- provides a friendly interface to enter your data
+- data come out in a standard format
+- it may be faster than, e.g., writing a `for()` loop
+
+However, we won't cover all functions of this precious family
+- **`apply()`**
+- **`lapply()`**
+- **`sapply()`**
+- **`tapply()`**
+- `mapply()`, `rapply()`, & `vapply()` are left out
+
+---
+
+## apply()
+The `apply()` function is useful when you want to fire up a short command across either all columns (option `MARGIN = 2`) _or_ rows (option `MARGIN = 1`).
+
+```{r apply}
+# means across columns/variables
+apply(gp_covid[,20:24], 2, function (x) descriptives_na(x, statistic = "mean"))
+
+# means across rows/observations
+apply(gp_covid[1:10,20:24], 1, function (x) descriptives_na(x, statistic = "mean"))
+```
+
+While there are plenty of functions for building descriptive tables already out there (e.g., `psych::describe` ), this becomes handy when you want to create them yourself.
+
+---
+
+## lapply()
+`lapply()` is for more elaborated operations. However, there are no `MARGIN` options, so let's see what happens when we use similar to what we did before:
+
+```{r lapply_error}
+lapply(gp_covid[,20:24], function (x) descriptives_na(x, statistic = "mean"))
+```
+
+---
+
+## lapply() returns lists
+
+It might be a little bit uncomfortable, but `lapply()` returns each result of an iterated operation as a list element. Thus, the output of applying the function is a list. 
+
+Some people don't like lists as they separate information from each other.
+
+I like lists.
+
+---
+
+## sapply()
+
+`sapply()` is similar to `lapply()`. The minor but significant difference is that it returns vectors instead of lists. When you want to add the results of this function as a new column to your existing data, this comes in handy.
+
+```{r sapply}
+sapply(gp_covid[,20:24], function (x) descriptives_na(x, statistic = "mean"))
+```
+
+---
+
+## tapply()
+Finally, `tapply()` is useful when you want to perform an action across different groups in your data.
+
+```{r tapply}
+tapply(
+  gp_covid$political_orientation, 
+  gp_covid$sex,
+  function (x) descriptives_na(x, statistic = "mean")
+  )
+```
+
+---
+
+## Modern stuff from the `tidyverse`'s `purrr` package
+
+.pull-left[
+Thus far, our examples have not been that complicated
+- we had one specific task to perform and the input data were not complex
+]
+
+.pull-right[
+Sometimes, things are a bit more complicated
+- the data have to be wrangled before the actual loop
+]
+
+.pull-left[
+```{r purrr-logo, echo = FALSE, out.width = "50%"}
+woRkshoptools::include_picture("purrr_logo.png")
+```
+]
+
+.pull-right[
+**`purrr` provides a collection of functions that also integrate nicely into a
+`%>%` workflow.** 
+]
+
+---
+
+## A simple `map()` example
+
+```{r map}
+library(purrr)
+
+gp_covid %>% 
+  select(sex, hzcy044a:hzcy052a) %>% 
+  group_by(sex) %>% 
+  group_split(sex, .keep = FALSE) %>% 
+  map(~as.matrix(.x)) %>% 
+  map_dbl(~descriptives_na(.x, statistic = "mean"))
+```
+
+---
+
+## `purrr::map()`
+
+A few things to note about `map()`:
+- `map()` usually expects a list as input
+  - this is why we split our data into two lists
+- a function is applied to each list element with a preceding `~` operator
+- per default, `map()` returns the results also as a list
+  - yet, there are pre-defined `map()`-flavors that return other data types (e.g.,  the used `map_dbl()`)
+  - you may want to have a look at the help page using `?map` for a comprehensive overview
+  
+**We will re-use the `purrr` capabilities later this week when we wrangle multiple regression models at the same time.**
+
+---
+
+## `purrr::map()`
+
+```{r, map-cartoon, out.width = "95%", echo = F}
+include_picture("map_frosting.png")
+```
+<small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
+
+---
+
+class: center, middle
+
+# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
+# Extracurricular activities
+`R` can also be used for creating text-based adventure games. Play the fun short text adventure ["Castle of R"](https://github.com/gsimchoni/CastleOfR) which was designed to test your programming skills using `base R`.
+
+Also check out the [background](http://giorasimchoni.com/2017/09/10/2017-09-10-you-re-in-a-room-the-castleofr-package/) of the programming of the game/package.
+
