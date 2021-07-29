@@ -217,9 +217,9 @@ gp_covid %>%
 
 class: center, middle
 
-# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise]((https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_1_Across_the_Tidyverse.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](XXX)
+## [Solutions]((https://jobreu.github.io/r-intro-gesis-2021/solutionsExercise_2_2_1_Across_the_Tidyverse.html)
 
 ---
 
@@ -658,6 +658,18 @@ A few things to note about `map()`:
 include_picture("map_frosting.png")
 ```
 <small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
+
+---
+
+## Overview to the looping functions
+
+| Name           | For what?                                | belongs to  |
+|----------------|------------------------------------------|-------------|
+| `for()`        | raw interface to repeated tasks          | `base R`    |
+| `apply()` etc. | convenience functions for repeated tasks | `base R`    |
+| `map()` etc.   | integrates into `%>%` workflow           | `Tidyverse` |
+| ...            | ...                                      | ...         |
+| `while()`      | do something as long condition is met    | `base R`    |
 
 ---
 
