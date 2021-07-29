@@ -4,6 +4,8 @@ subtitle: "Data Visualization - Part 1"
 author: "Johannes Breuer & Stefan Jünger"
 date: "2021-08-03"
 presenter: Stefan
+editor_options: 
+  chunk_output_type: console
 ---
 layout: true 
 
@@ -17,22 +19,22 @@ While we know that all of you are familiar with the concept of data visualizatio
 
 In general:
 - Good plots can contribute to a better understanding of your analysis results
-  - Plots also help you to understand your data in the first place
-  
+- Plots also help you to understand your data in the first place
+
 - Generating a plot is easy as you will see
-  - ... Making good plots, however, can take a while
-  
+- ... Making good plots, however, can take a while
+
 ---
-  
+
 ## Plots in `R`
 - `R` is fun, and so is creating plots in `R`
 
 - Almost every plot type is supported in `R`
-  - either in your standard installation or in through additional packages
-  
+- either in your standard installation or in through additional packages
+
 - A large number of exports formats are supported
-  - `.png`, `.jpg`, `.tiff`, `.svg`, `.bmp`, `.pdf`, `.eps`, etc.
-  
+- `.png`, `.jpg`, `.tiff`, `.svg`, `.bmp`, `.pdf`, `.eps`, etc.
+
 ---
 
 ## We'll start rather basic
@@ -50,7 +52,7 @@ woRkshoptools::include_picture("trump.jpg")
 .pull-left[
 **`Base R` visualization**
 - Standard plotting procedures in R
-  - very short
+- very short
 ]
 
 .pull-right[
@@ -75,7 +77,16 @@ gp_covid <-
   haven::read_sav(
     "./data/ZA5667_v1-1-0.sav"
   ) %>% 
-  sjlabelled::set_na(na = c(-1:-99, 97))
+  sjlabelled::set_na(na = c(-1:-99, 97, 98)) %>% 
+  rowwise() %>%
+  mutate(
+    sum_trust = 
+      sum(
+        c_across(hzcy044a:hzcy052a),
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup()
 ```
 
 .pull-left[
@@ -310,7 +321,6 @@ Using similar procedures, we can add more and more stuff to our plot or edit its
 - legends
 - annotations
 - colors
-
 - etc. 
 
 We surely also apply different *plot types*, such as
@@ -320,6 +330,24 @@ We surely also apply different *plot types*, such as
 - densities
 - pie charts
 - etc.
+
+---
+
+## Example: A simple boxplot
+
+.pull-left[
+```{r boxplot, eval = FALSE}
+boxplot(
+  gp_covid$hzcy001a ~
+    as.factor(gp_covid$age_cat)
+)
+```
+]
+
+.pull-right[
+```{r ref.label = "boxplot", echo = FALSE}
+```
+]
 
 ---
 
@@ -483,27 +511,39 @@ woRkshoptools::include_picture("328_Hexbin_map_USA_4.png")
 
 ---
 
-## Histograms as in `base R`
-
-```{r echo = FALSE}
-gp_covid <- 
-  haven::read_sav(
-    "./data/ZA5667_v1-1-0.sav"
-  ) %>% 
-  sjlabelled::set_na(na = c(-1:-99, 97))
-```
+## Barplots as in `base R`
 
 .tinyish[
 .pull-left[
-```{r base_histogram, eval = FALSE}
+```{r base_barplot, eval = FALSE}
 ggplot(gp_covid, aes(x = age_cat)) + 
-  geom_histogram()
+  geom_bar()
 ```
 ]
 ]
 
 .pull-right[
-```{r ref.label = "base_histogram", echo = FALSE}
+```{r ref.label = "base_barplot", echo = FALSE}
+```
+]
+
+---
+
+## Boxplots as in `base R`
+
+.tinyish[
+.pull-left[
+```{r base_boxplot, eval = FALSE}
+ggplot(
+  gp_covid, 
+  aes(x = as.factor(age_cat), y = sum_trust)) + 
+  geom_boxplot()
+```
+]
+]
+
+.pull-right[
+```{r ref.label = "base_boxplot", echo = FALSE}
 ```
 ]
 
@@ -560,7 +600,7 @@ We may want to get used to it as this format has some benefits:
 - every element we aim to plot is an observation
 - no thinking required how a specific variable relates to an observation
 - most importantly, the long format is more parsimonious
-  - it requires less memory and less disk space
+- it requires less memory and less disk space
 ]
 
 .pull-right[
@@ -569,7 +609,7 @@ woRkshoptools::include_picture("long.png")
 ```
 <small><small>Source: https://github.com/gadenbuie/tidyexplain#tidy-data</small></small>
 ]
-  
+
 
 ---
 
@@ -582,7 +622,7 @@ We will systematically explore which elements are used in `ggplot` in this sessi
 
 ---
 
-## Scatterplot from previous sessions
+## Scatterplot from earlier
 
 .tinyish[
 .pull-left[
@@ -591,7 +631,7 @@ ggplot(
   data = gp_covid,
   aes(
     x = age_cat, 
-    y = hzcy001a
+    y = sum_trust
   )
 ) +
   geom_point()
@@ -606,7 +646,7 @@ ggplot(
 
 ---
 
-## Scatterplot from previous sessions with jitter
+## Scatterplot from earlier with jitter
 
 .tinyish[
 .pull-left[
@@ -615,7 +655,7 @@ ggplot(
   data = gp_covid,
   aes(
     x = age_cat, 
-    y = hzcy001a
+    y = sum_trust
   )
 ) +
   geom_jitter()
@@ -627,6 +667,8 @@ ggplot(
 ```{r ref.label = "jitter", echo = FALSE}
 ```
 ]
+
+---
 
 ## Creating your own plot
 We do not want to give a lecture on the theory behind data visualization (if you want that, we suggest having a look at the excellent book [*Fundamentals of Data Visualization*](https://serialmentor.com/dataviz/) by Claus O. Wilke).
@@ -674,68 +716,11 @@ ggplot()
 
 ---
 
-## Data input
-
-.pull-left[
-As we've already learned `ggplot()` expects data as input. We create some interesting plots using data from *Gapminder*.
-]
-
-.tinyish[
-.pull-right[
-```{r load-gapminder-data-display, eval = FALSE}
-gapminder_children <- 
-  readr::read_csv(
-    "./data/children_per_woman_total_fertility.csv"
-    ) %>% 
-  tidyr::pivot_longer(
-    -country, 
-    names_to = "year",
-    values_to = "children"
-  ) %>% 
-  dplyr::left_join(
-      readr::read_csv(
-    "./data/countries_continent.csv"
-      )
-  ) %>% 
-  dplyr::filter(year >= 1950) %>% 
-  dplyr::mutate(
-    year = as.numeric(year),
-    continent = as.factor(continent)
-    ) %>% 
-  tidyr::drop_na()
-```
-]
-```{r load-gapminder-data, echo = FALSE}
-gapminder_children <- 
-  readr::read_csv(
-    "./data/children_per_woman_total_fertility.csv"
-    ) %>% 
-  tidyr::pivot_longer(
-    -country, 
-    names_to = "year",
-    values_to = "children"
-  ) %>% 
-  dplyr::left_join(
-      readr::read_csv(
-    "./data/countries_continent.csv"
-      )
-  ) %>% 
-  dplyr::filter(year >= 1950) %>% 
-  dplyr::mutate(
-    year = as.numeric(year),
-    continent = as.factor(continent)
-    ) %>% 
-  tidyr::drop_na()
-```
-]
-
----
-
-## What now?
+## What now? Data input!
 
 .pull-left[
 ```{r ggplot_data, eval = FALSE}
-ggplot(data = gapminder_children)
+ggplot(data = gp_covid)
 ```
 ]
 
@@ -754,8 +739,8 @@ ggplot(data = gapminder_children)
 `ggplot` requires information about the variables to plot.
 
 ```{r ggplot_aes, eval = FALSE}
-ggplot(data = gapminder_children) +
-  aes(x = year, y = children)
+ggplot(data = gp_covid) +
+  aes(x = age_cat, y = sum_trust)
 ```
 ]
 
@@ -773,8 +758,8 @@ ggplot(data = gapminder_children) +
 Finally, `ggplot` needs information *how* to plot the variables.
 
 ```{r ggplot_geom, eval = FALSE}
-ggplot(data = gapminder_children) +
-  aes(x = year, y = children) +
+ggplot(data = gp_covid) +
+  aes(x = age_cat, y = sum_trust) +
   geom_point()
 ```
 ]
@@ -793,10 +778,10 @@ ggplot(data = gapminder_children) +
 We can also add more than one `geom`.
 
 ```{r ggplot_line, eval = FALSE}
-ggplot(data = gapminder_children) +
-  aes(x = year, y = children) +
-  geom_point() +
-  geom_smooth()
+ggplot(data = gp_covid) +
+  aes(x = age_cat, y = sum_trust) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE)
 ```
 ]
 
@@ -806,7 +791,7 @@ ggplot(data = gapminder_children) +
 ]
 
 
-**A smoothed regression line!** (The regression behind this operation is run automatically)
+**A regression line!** (without confidence intervals; the regression behind this operation is run automatically)
 
 ---
 
@@ -819,6 +804,26 @@ class: center, middle
 
 ---
 
+## Goind further: Working with grouping variables
+
+```{r left-right}
+gp_covid <-
+  gp_covid %>% 
+  sjlabelled::remove_all_labels() %>% 
+  mutate(
+    pol_leaning_cat = 
+      case_when(
+        between(political_orientation, 0, 3) ~ "left",
+        between(political_orientation, 4, 7) ~ "center",
+        political_orientation > 7 ~ "right"
+      ) 
+  ) %>% 
+  filter(pol_leaning_cat != "NA")
+```
+
+
+---
+
 ## Going further: adding group `aes`thetics
 
 .pull-left[
@@ -826,14 +831,14 @@ We can add different colors for different groups in our data.
 
 ```{r ggplot_group, eval = FALSE}
 ggplot(
-  data = gapminder_children,
+  data = gp_covid,
   aes(
-    x = year, 
-    y = children, 
-    group = continent
-    )
-  ) +
-  geom_smooth()
+    x = age_cat, 
+    y = sum_trust, 
+    group = pol_leaning_cat
+  )
+) +
+  geom_smooth(method = "lm")
 ```
 ]
 
@@ -851,16 +856,15 @@ We can also change the colors that are used in the plot.
 
 ```{r ggplot_group_man, eval = FALSE}
 ggplot(
-  data = gapminder_children,
+  data = gp_covid,
   aes(
-    x = year, 
-    y = children, 
-    color = continent,
-    group = continent
-    )
-  ) +
-  geom_smooth() +
-  scale_color_brewer(palette = "Paired")
+    x = age_cat, 
+    y = sum_trust, 
+    color = pol_leaning_cat,
+    group = pol_leaning_cat
+  )
+) +
+  geom_smooth(method = "lm", se = FALSE) 
 ```
 ]
 
@@ -878,15 +882,15 @@ The legend is drawn automatically, that's handy!
 .pull-left[
 ```{r ggplot_group_spectral, eval = FALSE}
 ggplot(
-  data = gapminder_children,
+  data = gp_covid,
   aes(
-    x = year, 
-    y = children, 
-    color = continent,
-    group = continent
-    )
-  ) +
-  geom_smooth() +
+    x = age_cat, 
+    y = sum_trust, 
+    color = pol_leaning_cat,
+    group = pol_leaning_cat
+  )
+) +
+  geom_smooth(method = "lm", se = FALSE) +
   scale_color_brewer(palette = "Spectral") 
 ```
 ]
@@ -912,16 +916,15 @@ Have this difference in mind when you use `scale_color_brewer` or `scale_fill_br
 .pull-left[
 ```{r ggplot_group_fill, eval = FALSE}
 ggplot(
-  data = gapminder_children,
+  data = gp_covid,
   aes(
-    x = year, 
-    y = children, 
-    color = continent,
-    group = continent,
-    fill = continent
-    )
-  ) +
-  geom_smooth() +
+    x = age_cat, 
+    y = sum_trust, 
+    color = pol_leaning_cat,
+    group = pol_leaning_cat
+  )
+) +
+  geom_smooth(method = "lm", se = FALSE) +
   scale_color_brewer(palette = "Spectral") +
   scale_fill_brewer(palette = "Dark2")
 ```
@@ -954,14 +957,14 @@ In general, the [`r-color-palettes` repository by Emil Hvitfeldt](https://github
 .pull-left[
 ```{r facet_wrap, eval = FALSE}
 ggplot(
-  data = gapminder_children,
+  data = gp_covid,
   aes(
-    x = year, 
-    y = children
-    )
-  ) +
-  geom_smooth(color = "black") +
-  facet_wrap(~continent, ncol = 3) +
+    x = age_cat, 
+    y = sum_trust
+  )
+) +
+  geom_smooth(color = "black", method = "lm", se = FALSE) +
+  facet_wrap(~pol_leaning_cat, ncol = 3) +
   theme_bw()
 ```
 ]
@@ -988,14 +991,14 @@ The most direct interface for manipulating your theme is the `theme()` argument.
 .pull-left[
 ```{r grid_layout, eval = FALSE}
 ggplot(
-  data = gapminder_children,
+  data = gp_covid,
   aes(
-    x = year, 
-    y = children
-    )
-  ) +
-  geom_smooth(color = "black") +
-  facet_wrap(~continent, ncol = 3) +
+    x = age_cat, 
+    y = sum_trust
+  )
+) +
+  geom_smooth(color = "black", method = "lm", se = FALSE) +
+  facet_wrap(~pol_leaning_cat, ncol = 3) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(), 
@@ -1012,26 +1015,26 @@ ggplot(
 
 ---
 
-## Example: changing  axis labels
+## Example: changing axis labels
 .pull-left[
 ```{r axis_labels-ggplot, eval = FALSE}
 ggplot(
-  data = gapminder_children,
+  data = gp_covid,
   aes(
-    x = year, 
-    y = children
-    )
-  ) +
-  geom_smooth(color = "black") +
-  facet_wrap(~continent, ncol = 3) +
+    x = age_cat, 
+    y = sum_trust
+  )
+) +
+  geom_smooth(color = "black", method = "lm", se = FALSE) +
+  facet_wrap(~pol_leaning_cat, ncol = 3) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(), 
     panel.grid.minor = element_blank(),
     strip.background = element_rect(fill = "white")
   ) + 
-  ylab("Number of Children") +
-  xlab("Year")
+  ylab("Trust Score") +
+  xlab("Age")
 ```
 ]
 
@@ -1097,12 +1100,12 @@ Yet, fiddling with this package can become quite complicated. One of my favorite
 ```{r one_row, eval = FALSE}
 library(patchwork)
 
-my_histogram <- 
+my_barplot <- 
   ggplot(
     gp_covid, 
     aes(x = age_cat)
   ) + 
-  geom_histogram()
+  geom_bar()
 
 my_boxplot <-  
   ggplot(
@@ -1111,7 +1114,7 @@ my_boxplot <-
   ) + 
   geom_boxplot()
 
-my_histogram | my_boxplot
+my_barplot | my_boxplot
 ```
 ]
 
@@ -1125,7 +1128,7 @@ my_histogram | my_boxplot
 ## Plotting in two columns
 .pull-left[
 ```{r one_column, eval = FALSE}
-my_histogram / my_boxplot
+my_barplot / my_boxplot
 ```
 ]
 
@@ -1139,7 +1142,7 @@ my_histogram / my_boxplot
 ## combine them with base R graphics
 .pull-left[
 ```{r combine_base, eval = FALSE}
-(my_histogram | ~hist(gp_covid$age_cat)) /
+(my_barplot | ~barplot(table(gp_covid$age_cat))) /
   (my_boxplot | ~boxplot(gp_covid$age_cat))
 ```
 ]
@@ -1157,57 +1160,6 @@ You can also annotate plots with titles, subtitles, captions, and tags.
 You can nest plots and introduce more complex layouts.
 
 I'd recommend, if you're interested, to check out the [`patchwork` repository on *GitHub*](https://github.com/thomasp85/patchwork) since everything is really well-documented there.
-
----
-
-## Shortcuts in `ggplot`
-
-`ggplot2` is powerful...
-- yet, it is admittedly somewhat complicated to use in the beginning
-- and it has a steep learning curve
-
-However, there are some convenient shortcuts that you can use for creating simple plots.
-
----
-
-## `qplot()` or `quickplot()`
-
-.pull-left[
-```{r qplot_example, eval = FALSE}
-qplot(
-  x = gapminder_children$year, 
-  y = gapminder_children$children,
-  geom = "point",
-  group = gapminder_children$continent
-  )
-```
-]
-
---
-
-.pull-right[
-```{r ref.label = "qplot_example", echo = FALSE}
-```
-]
-
----
-
-## `qplot()` or `quickplot()`
-
-.pull-left[
-```{r qplot_example_2, eval = FALSE}
-qplot(
-  x = gapminder_children$year, 
-  y = gapminder_children$children,
-  geom = c("point", "smooth")
-  )
-```
-]
-
-.pull-right[
-```{r ref.label = "qplot_example_2", echo = FALSE}
-```
-]
 
 ---
 
@@ -1229,6 +1181,68 @@ Or:
 
 ```{r eval = FALSE}
 ggsave("nice_plot.tiff", nice_plot, dpi = 300)
+```
+
+---
+
+class: middle
+
+## Now, what about visualizing explorative statistics?
+
+Here are a few examples.
+
+---
+
+## Plotting structure of missing data
+
+```{r missing-plot}
+library(visdat)
+
+vis_miss(gp_covid[,1:20])
+```
+
+---
+
+## Fancier barplots I
+
+```{r fancy_barplot_i}
+library(scales)
+
+gp_covid %>% 
+  ggplot(aes(x = education_cat, 
+             fill = education_cat)) + 
+  geom_bar(aes(y = (..count..)/sum(..count..))) +
+  scale_y_continuous(labels = scales::percent) +
+  ylab("Relative Frequencies")
+```
+
+---
+
+## Fancier barplots II
+
+```{r fancy_barplot_ii}
+gp_covid %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  ggplot(aes(x = choice_of_party, 
+             fill = choice_of_party)) + 
+  geom_bar(aes(y = (..count..)/sum(..count..))) +
+  scale_y_continuous(labels=scales::percent) +
+  ylab("Relative Frequencies")
+```
+
+---
+
+## Correlation plots
+
+```{r correlation-plot}
+library(GGally)
+
+gp_covid %>% 
+  select(hzcy044a:hzcy052a) %>% 
+  ggcorr(
+    label = TRUE,
+    label_round = 2
+  )
 ```
 
 ---
