@@ -1,0 +1,35 @@
+---
+title: 'Exercise 2_2_3: If I had a Function'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Write a function with the name `standardize`that normalizes the values of a given vector with the following formula:
+
+$$(x - \bar{x}) / S$$,
+
+where $x$ is each input value, $\bar{x}$ is the sample mean value and $S$ the sample standard deviation.
+```
+
+```{block, opts.label = "clues"}
+`R`'s standard deviation function is `sd()`. Don't forget to use the option `na.rm = TRUE` and be careful when setting the brackets around the formula.
+```
+
+```{r first-exercise, solution = TRUE}
+standardize <- function (x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+```
+
+```{r}
+vector <- sample(1:100, 30)
+
+standardize(vector)
+
+if (class(standardize)) == 
+```
+
