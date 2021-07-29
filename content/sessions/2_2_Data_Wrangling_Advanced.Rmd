@@ -46,7 +46,7 @@ library(sjlabelled)
 
 gp_covid <-
   gp_covid %>%
-  set_na(na = c(-99, -77, -33, 98))
+  set_na(na = c(-99, -77, -33, 97, 98))
 ```
 
 ---
@@ -150,7 +150,7 @@ As `dplyr` operations are applied to columns, whereas such aggregations relate t
 ```{r rowwise-sum}
 gp_covid <- 
   gp_covid %>% 
-  rowwise() %>% #<<
+  rowwise() %>%
   mutate(
     sum_trust = 
       sum(
@@ -217,9 +217,9 @@ gp_covid %>%
 
 class: center, middle
 
-# [Exercise]((https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_1_Across_the_Tidyverse.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_1_Across_the_Tidyverse.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions]((https://jobreu.github.io/r-intro-gesis-2021/solutionsExercise_2_2_1_Across_the_Tidyverse.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutionsExercise_2_2_1_Across_the_Tidyverse.html)
 
 ---
 
@@ -319,9 +319,9 @@ include_picture("dplyr_case_when.png")
 
 class: center, middle
 
-# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_2_Define_your_Cases.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](XXX)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_2_2_2_Define_your_Cases.html)
 
 ---
 
