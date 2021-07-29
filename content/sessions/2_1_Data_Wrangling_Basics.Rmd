@@ -130,7 +130,7 @@ Of course, it is possible to combine `base R` and `tidyverse` code. However, in 
 ```{r install-tidyverse, eval = F}
 install.packages("tidyverse")
 ```
-**Load core `tidyverse` packages** (NB: To save time and reduce namespace conflicts it can make sense to load the `tidyverse` packages individually)
+**Load core `tidyverse` packages** (NB: To save time and reduce namespace conflicts you can also load `tidyverse` packages individually)
 ```{r load-tidyverse, message = T}
 library("tidyverse")
 ```
@@ -146,6 +146,8 @@ While there is much more to the `tidyverse` than this, three important concepts 
 2. Tibbles
 
 3. Pipes
+
+We already discussed tibbles in the session on *Data Import & Export*, so we will focus on tidy data and pipes here.
 
 ---
 
@@ -301,6 +303,27 @@ The `tidyverse` examples in the following will make use of functions from the [`
 
 ---
 
+## First look `r ji("eyes")`
+
+The `dplyr` package provides a function for getting a first good look at your data, that is especially helpful when working with data sets that contain many columns/variables. The function `glimpse()` prints a dataframe/tibble in a way that represents columns as rows and rows as columns and also provides some additional information about the dataframe and its columns.
+
+```{r glimpse, eval=FALSE}
+gp_covid %>% 
+  glimpse()
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.tinyish[
+```{r ref.label = "glimpse", echo = FALSE}
+```
+]
+
+---
+
 ## Selecting variables
 
 We might want to reduce our dataframe (or create a new one) to only include a subset of specific variables. Say, for example, we want to select only the variables that measure the risk of becoming infected with or spreading the Corona virus from our full data set. There are two options for doing this with `base R`:
@@ -365,11 +388,13 @@ gp_covid_risk <- gp_covid %>%
 head(gp_covid_risk)
 ```
 
+*Note*: You can also use this shorthand notation for the `select` argument of the `base R` function `subset()`.
+
 ---
 
 ## Selecting a range of variables
 
-Same as for `base R`, you can also use the numeric index of variables in combination with `select()`.
+Same as for `base R`, you can also use the numeric index of variables in combination with `select()` from `dplyr`.
 
 ```{r select-index}
 gp_covid_demo <- gp_covid %>% 
@@ -563,6 +588,14 @@ glimpse(gp_covid_risk)
 woRkshoptools::include_picture("./dplyr_relocate.png")
 ```
 <small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_1_1_Select_Rename.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_2_1_1_Select_Rename.html)
 
 ---
 
@@ -817,6 +850,14 @@ gp_covid %>%
 
 ---
 
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_1_2_Filter_Arrange.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_2_1_2_Filter_Arrange.html)
+
+---
+
 ## Creating & transforming variables
 
 The simplest case of adding a new variable is creating a constant. You might, e.g., want to do that to indicate the number of the survey wave in a longitudinal data set. This is how you can do this in `base R`:
@@ -896,6 +937,7 @@ One situation in which we might want to transform variables or create new ones, 
 
 Say, for example, we want to recode the item from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* that measures trust in scientists with regard to dealing with the Coronavirus so that it represents distrust instead. In that case, we could combine the two `dplyr` functions `mutate()` and `recode()`.
 
+.small[
 ```{r recode}
 gp_covid <- gp_covid %>% 
   mutate(hzcy052aR = recode(hzcy052a,
@@ -908,6 +950,7 @@ gp_covid %>%
   select(hzcy052a, hzcy052aR) %>% 
   head()
 ```
+]
 
 ---
 
@@ -1107,7 +1150,7 @@ There are many functions for working with factors in `base R`, such as `factor()
 woRkshoptools::include_picture("./forcats.png")
 ```
 
-There is a good [introduction on the `tidyverse` website by Emily Robinson](https://forcats.tidyverse.org/articles/forcats.html) and *RStudio* also offers a [`forcats` cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/factors.pdf).
+*Note*: There is a good [introduction to working with factors using `forcats` by Vebash Naidoo](https://sciencificity-blog.netlify.app/posts/2021-01-30-control-your-factors-with-forcats/) and *RStudio* also offers a [`forcats` cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/factors.pdf).
 
 ---
 
@@ -1160,9 +1203,9 @@ woRkshoptools::include_picture("./lubridate.png")
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day2_2_Data_Wrangling_Exercise_1_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_1_3_Mutate_Recode_Missings.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day2_2_Data_Wrangling_Exercise_1_solution.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_2_1_3_Mutate_Recode_Missings.html)
 
 ---
 

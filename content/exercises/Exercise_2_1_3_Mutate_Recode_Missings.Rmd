@@ -1,0 +1,125 @@
+---
+title: 'Exercise 2_1_3: Transforming variables, recoding, and missings'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+In this final set of exercises for the data wrangling basics, we will transform and recode variables, and work with missing data. In the following exercises, we will focus on data wrangling functions from the `tidyverse`.
+
+Same procedure as before: Load the `tidyverse` package(s) and import the data and have the [codebook](https://dbk.gesis.org/dbksearch/download.asp?id=67378) ready.
+
+```{r read-data, message = F}
+library(tidyverse)
+
+gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+To begin with, let's use the `dplyr`function for creating and transforming variables to create a new variable representing political orientation named `pol_orientation_new` that ranges from 1 to 11 instead of from 0 to 10 as is the case for the original variable `political_orientation`.
+```
+
+```{block, opts.label = "clues"}
+We simply need to add 1 to the existing variable.
+```
+
+```{r first-exercise, solution = TRUE}
+gp_covid <- gp_covid %>% 
+  mutate(pol_orientation_new = political_orientation + 1)
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+By combining the function used for the previous task with another one from the `dplyr` package, recode the values of the variable measuring trust in the federal government with regard to dealing with the Corona virus into a new variable named `distrust_gov` that captures distrust instead of trust.
+```
+
+```{block, opts.label = "clues"}
+The name of the variable we want to transform is `hzcy048a`. Disregarding missing values for the moment, its values range from 1 to 5. Remember that the correct syntax for recoding values with the corresponding `dplyr` function is old value (enclosed in backticks) = new value.
+```
+
+```{r second-exercise, solution = TRUE}
+gp_covid <- gp_covid %>% 
+  mutate(distrust_gov = recode(hzcy048a,
+                               `5` = 1,
+                               `4` = 2,
+                               `2` = 4,
+                               `1` = 5))
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+The variable we have just recoded still contains several values representing different types of missing values. Using the appropriate `dplyr` function, recode the following values as `NA` for the new `distrust_gov` variable: -99, -77, -33, and 98.
+```
+
+```{block, opts.label = "clues"}
+To to this, we need to combine `mutate()` with the `dplyr` function for recoding specific values as `NA`.
+```
+
+```{r third-exercise, solution = TRUE}
+gp_covid <- gp_covid %>% 
+  mutate(distrust_gov = na_if(distrust_gov, -99)) %>% 
+  mutate(distrust_gov = na_if(distrust_gov, -77)) %>% 
+  mutate(distrust_gov = na_if(distrust_gov, -33)) %>%
+  mutate(distrust_gov = na_if(distrust_gov, 98))
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+After recoding a set of values as `NA` for one variable, let's now do the same for the whole `gp_covid` dataframe. This time, however, we do not want to recode 98 as `NA` as it is a valid value for the `id` variable.
+```
+
+```{block, opts.label = "clues"}
+This time, we do not need the `mutate()` function.
+```
+
+```{r fourth-exercise, solution = TRUE}
+gp_covid <- gp_covid %>% 
+  na_if(-99) %>% 
+  na_if(-77) %>% 
+  na_if(-33)
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+As `na_if()` only takes only takes single values as its second argument (i.e., the value to replace with `NA`), let's use a function from the `sjlabelled` function to achieve the same thing with fewer lines of code.
+```
+
+```{block, opts.label = "clues"}
+The function we are looking for can also be included in a pipe chain and takes a vector of values to be recoded as `NA` as its second (required) argument. 
+```
+
+```{r fifth-exercise, solution = TRUE}
+library(sjlabelled)
+
+gp_covid <- gp_covid %>% 
+  set_na(na = c(-99, -77, -33))
+```
+
+```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
+How many of the respondents do not have a missing value for the variable `political_orientation`? To answer this question, please use a function from the `tidyr` package that allows you to exclude cases with missing values. Do not assign the result to a new object.
+```
+
+```{block, opts.label = "clues"}
+To count the number of cases, you can use the base `R` function `nrow()` at the end of your pipe.
+```
+
+```{r sixth-exercise, solution = TRUE}
+gp_covid %>% 
+  drop_na(political_orientation) %>% 
+  nrow()
+```
+
+```{block, box.title = "7", box.body = list(fill = "white"), box.icon = "fa-star"}
+As a final exercise for this session, let's recode the `marstat` variable into an unordered factor called `marstat_fac` that has 4 levels named after the different value labels listed in the codebook.
+```
+
+```{block, opts.label = "clues"}
+The value labels from the codebook are 1 = Married, 2 = Single, 3 = Divorced, 4 = Widowed. The `dplyr` function we need to use here (in combination with `mutate()`) is `recode_factor()`.
+```
+
+```{r seventh-exercise, solution = TRUE}
+gp_covid <- gp_covid %>% 
+  mutate(marstat_fac = recode_factor(marstat,
+                                     `1` = "Married",
+                                     `2` = "Single",
+                                     `3` = "Divorced",
+                                     `4` = "Widowed"))
+```
