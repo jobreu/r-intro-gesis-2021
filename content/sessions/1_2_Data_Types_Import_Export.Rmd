@@ -97,14 +97,14 @@ So character strings are meaningless, which means that there are no values assoc
 ---
 
 ## Factors
-If you're a *Stata* (or *SPSS*) user, you may already be quite familiar with factors. Factors are data types that assume that their values are not continuous, e.g., as in ordinal or nominal data. They are useful when inserted into regression models, as we will see later in this course.
+If you're a *Stata* (or *SPSS*) user, you may already be  familiar with factors. Factors are data types that assume that their values are not continuous, e.g., as in ordinal or nominal data.
 
 ```{r factor}
 factor(1.1)
 factor("Hi. I am a character string, the 1st of its kind!")
 ```
 
-Factors take numeric data or character strings as input as they simply convert them into so-called levels. This concept may be a little bit abstract for the time being. It's just essential to have heard about them before you learn more about them in the data wrangling session.
+Factors take numeric data or character strings as input as they simply convert them into so-called levels. This concept may be a little bit abstract for the time being. It's just essential to have heard about them before you learn more about them.
 
 ---
 
@@ -122,17 +122,23 @@ I'd say that logical values are at the heart of creating loops. For this purpose
 
 ## Logical operators
 Here are all (?) logical operators in `R`:
+
+.pull-left[
 - `<` 	less than
 - `<=` 	less than or equal to
 - `>` 	greater than
 - `>=` 	greater than or equal to
 - `== `	exactly equal to
 - `!=` 	not equal to
+]
+
+.pull-right[
 - `!x` 	Not x
 - `x | y` 	x OR y
 - `x & y `	x AND y
 - `isTRUE(x)` 	test if X is TRUE 
 - `isFALSE(x)` 	test if X is FALSE 
+]
 
 .footnote[https://www.statmethods.net/management/operators.html]
 
@@ -187,8 +193,7 @@ fancy_matrix <- matrix(1:16, nrow = 4)
 fancy_matrix
 ```
 
-You cannot store multiple data types, such as strings and numeric values in the same matrix.  Otherwise, your data will get coerced to a common type, as seen in the previous slide.
-- In fact, this is something that happens already within vectors.
+You cannot store multiple data types, such as strings and numeric values in the same matrix.  Otherwise, your data will get coerced to a common type, as seen in the previous slide. This is something that happens already within vectors:
 
 ```{r vector-coercion}
 c(1, 2, "evil string")
@@ -234,8 +239,7 @@ class: middle
 Tibbles are basically just `R data.frames` but nicer.
 
 - only the first ten observations are printed
-  - output is tidier!
-  
+  - the output is tidier!
 - you get some additional metadata about rows and columns that you would normally only get when using `dim()` and other functions
 
 You can check the [tibble vignette](https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html) for technical details.
@@ -249,7 +253,9 @@ woRkshoptools::include_picture("./tibble.png")
 
 ---
 
-class: middle
+## Tibble conversion
+
+
 
 ```{r as_tibbles}
 library(tibble)
@@ -375,6 +381,16 @@ fancy_data["who"]
 ```
 ]
 
+---
+
+## Difference between `[]` and `[[]]` 
+
+```{r echo = FALSE}
+woRkshoptools::include_picture("indexing_lists.png")
+```
+
+.footnote[https://twitter.com/hadleywickham/status/643381054758363136/photo/1]
+
 
 ---
 
@@ -414,18 +430,10 @@ head(fancy_data, 3)
 
 If we want some more (detailed) information about the dataset or object, we can use the `base R` function `str()`.
 
-```{r str, eval = F}
+```{r str}
 str(fancy_data)
 ```
 
-.right[`r emo::ji("left_arrow_curving_right")`]
-
----
-
-.smaller[
-```{r ref.label = "str", echo = F}
-```
-]
 
 ---
 
@@ -433,18 +441,10 @@ str(fancy_data)
 
 As you saw on the previous slide, the output of `str()` can be a bit hard to read (especially for larger datasets). A good alternative that creates a more clearly laid output is the `glimpse()` function from the `dplyr` package.
 
-```{r glimpse, eval = F}
+```{r glimpse}
 glimpse(fancy_data)
 ```
 
-.right[`r emo::ji("left_arrow_curving_right")`]
-
----
-
-.smaller[
-```{r ref.label = "glimpse", echo = F}
-```
-]
 
 ---
 
@@ -460,15 +460,7 @@ View(fancy_data)
 woRkshoptools::include_picture("./rstudio_view.png")
 ```
 
----
 
-## Difference between `[]` and `[[]]` 
-
-```{r echo = FALSE}
-woRkshoptools::include_picture("indexing_lists.png")
-```
-
-.footnote[https://twitter.com/hadleywickham/status/643381054758363136/photo/1]
 
 ---
 
@@ -707,6 +699,8 @@ gp_covid <-
 
 ---
 
+class: middle
+
 ```{r read-stata-example_output, echo = TRUE}
 gp_covid
 ```
@@ -727,17 +721,21 @@ It also provides capabilities to handle *SPSS*-defined missing values by setting
 ## There's more
 These were just some very first examples of applying functions from each package. They comprise even more functions for different data types.
 
-- `readr`
-  - `read_csv()`
-  - `read_tsv()`
-  - `read_delim()`
-  - `read_fwf()`
-  - `read_table()`
-  - `read_log()`
-- `haven`
-  - `read_sas()`
-  - `read_spss()`
-  - `read_stata()`
+pull-left[
+`readr`
+- `read_csv()`
+- `read_tsv()`
+- `read_delim()`
+- `read_fwf()`
+- `read_table()`
+- `read_log()`
+]
+pull-right[
+`haven`
+- `read_sas()`
+- `read_spss()`
+- `read_stata()`
+]
 
 Not to mention all the helper functions and options. For example, we can define the cells to read from an *Excel* file by specifying the option `range = "C1:E4"` in `read_excel()`
 
@@ -759,8 +757,6 @@ Not to mention all the helper functions and options. For example, we can define 
 - logical
   - indicated by `<lgl>`
   - specified by `col_logical()`
-  
-.center[**There's more, but we'll leave it at that for now.**]
 
 ---
 
@@ -775,7 +771,7 @@ Luckily, we can change the variable type...
 
 ## While loading the data in `read_csv`
 .tinyish[
-```{r readr-example-col-change}
+```{r readr-example-col-change, eval = FALSE}
 titanic <-
   read_csv(
     "./data/titanic.csv",
@@ -802,6 +798,9 @@ titanic
 .right[`r emo::ji("left_arrow_curving_right")`]
 
 ---
+
+class: middle
+
 .tinyish[
 ```{r ref.label = "readr-example-col-change", echo = FALSE}
 ```
@@ -811,7 +810,7 @@ titanic
 
 ## While loading the data in `read_csv`
 .tinyish[
-```{r readr-example-col-changeD-display}
+```{r readr-example-col-changeD-display, eval = FALSE}
 titanic <-
   read_csv(
     "./data/titanic.csv",
@@ -838,6 +837,9 @@ titanic
 .right[`r emo::ji("left_arrow_curving_right")`]
 
 ---
+
+class: middle
+
 .tinyish[
 ```{r ref.label = "readr-example-col-changeD", echo = FALSE}
 ```
@@ -847,9 +849,9 @@ titanic
 
 ## After loading the data
 
-```{r readr_example_col_changeD_after, echo = TRUE}
+```{r readr_example_col_changeD_after, eval = FALSE, echo = TRUE}
 titanic <-
-  readr::type_convert(
+  type_convert(
     titanic,
     col_types = cols(
       PassengerId = col_double(),
@@ -883,6 +885,9 @@ What we often find in these data are labels. These labels are used to describe v
 Nowadays, if you use the `haven` package, labels are built-in. For example:
 
 ```{r}
+gp_covid <-
+  haven::read_sav("./data/ZA5667_v1-1-0.sav")
+
 gp_covid["age_cat"]
 ```
 
@@ -891,34 +896,24 @@ gp_covid["age_cat"]
 ## Advantages of using labelled data
 One could rejoice in not having to use a codebook any more, just like in *SPSS*. And I think by and large this is true, although just looking at code output for glimpsing at data is somewhat... geeky. 
 
-An advantage definitely is that you could re-use the labels in figures and plots, some packages do that automatically, such as the [`sjPlot`](https://strengejacke.github.io/sjPlot/) package.
+An advantage is definitely  that you could re-use the labels in figures and plots, some packages do that automatically, such as the [`sjPlot`](https://strengejacke.github.io/sjPlot/) package.
 
 Yet, primarily when you exchange your data with colleagues who do not use `R` or when you plan to publish your data (which you always should if that is possible), being able to export data you have manipulated in `R` is great.
-- ... and, yes, you can do that with labelled data as well.
 
 **However, be aware of the missing values hell that you may have to enter due to different missing values definitions in Stata and SPSS.**
 
 ---
 
-## Manipulating labels
-I used to be a data ingest and preparation guy at the *GESIS* Data Archive. For this job, I had to use *SPSS* or *Stata* for my work, albeit 'privately' I worked with `R` all the time for my dissertation. I would have let Elon Musk name my firstborn child<sup>1</sup>, if I could have been able to perform all these tasks in `R`.
-
-Luckily, the generation after me at least could start to use `R` now for labeling or relabelling data with additional packages. One of those is the `sjlabelled` package from Daniel Lüdecke.
-
-.footnote[
-[1]The name of his child is X Æ A-12
-]
-
----
-
 ## Getting labels
 
-### Variables 
+For variables.
+
 ```{r}
 sjlabelled::get_label(gp_covid$age_cat)
 ```
 
-### Values
+For values.
+
 .tinyish[
 ```{r}
 sjlabelled::get_labels(gp_covid$age_cat)
@@ -973,7 +968,7 @@ gp_data_subset <-
 sjlabelled::get_label(gp_data_subset)
 ```
 
-Ok, but that's already data wrangling, a topic for this afternoon.
+Ok, but that's already data wrangling, a topic for tomorow.
 
 ---
 
