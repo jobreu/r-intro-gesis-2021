@@ -1,0 +1,104 @@
+---
+title: "Exploring data from the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany"
+author: "R User"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float: true
+    code_folding: hide
+    theme: flatly
+    highlight: tango
+    code_download: true
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE)
+
+options(scipen = 15)
+```
+
+```{r load-wrangle-data, echo = FALSE}
+
+```
+
+# The data
+
+The data we use comes from the [Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany](https://www.gesis.org/gesis-panel/coronavirus-outbreak/public-use-file-puf). We have selected ... variables of interest for our analysis. The dataset includes data for *N* = ... respondents.
+
+
+## Missing data
+
+As not all of the respondents answered every question in the survey, we have missing data. Before we further explore the data, we want to know whether there are identifiable patterns of missingness in them.
+
+```{r vis-miss}
+
+```
+
+# Exploring the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset
+
+## Demographics
+
+We first want to look at gender, age (categories), education, and party affiliation in our sample.
+
+```{r demo-tables}
+
+```
+
+## Summary statistics
+
+Let's look at the summary statistic for the items on trust in institutions.
+
+```{r summarystats}
+
+```
+
+## Distribution of variables
+
+We want to explore how some of the data for the question on the perceived personal risk of getting infected with the Corona virus and political orientation (left-right) are distributed in our sample.
+
+```{r density-risk}
+
+```
+
+```{r density-lr}
+
+```
+
+## Party affiliation and trust in government
+
+How does trusting the government in dealing with the Corona virus differ between supporters of different parties? 
+
+```{r party-trust}
+
+```
+
+# Analyses
+
+## Correlations
+
+We want to explore the correlations between political orientation, number of preventive measures taken, trust in different institutions with regard to dealing with the Corona virus, and the sum of (a subset of) media sources people use to get current information about the Corona virus.
+
+```{r correlations}
+  
+```
+
+## Regression analysis
+
+We use a logistic regression model to explore how the willingness to obey a possible curfew (full lockdown) is predicted by mean trust in (selected) institutions and the perceived personal risk of getting infected with the Corona virus.
+
+```{r regression}
+
+```
+
+The unstandardized regression coefficient for the perceived personal risk of getting infected with the Corona virus is *b* = ... , while the coefficient for mean trust in institutions is *b* = ...
+
+### Regression plots
+
+```{r regression-plots}
+
+```
