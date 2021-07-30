@@ -8,9 +8,9 @@ date: 'Introduction to R for Data Analysis'
 ```
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Write a function with the name `standardize`that normalizes the values of a given vector with the following formula:
+Write a function with the name `standardize` that normalizes the values of a given vector with the following formula:
 
-$$(x - \bar{x}) / S$$,
+$$(x - \bar{x}) / S$$
 
 where $x$ is each input value, $\bar{x}$ is the sample mean value and $S$ the sample standard deviation.
 ```
@@ -25,11 +25,34 @@ standardize <- function (x) {
 }
 ```
 
-```{r}
+Please run the following code create a vector with 30 randomly selected values.
+
+```{r vector}
 vector <- sample(1:100, 30)
-
-standardize(vector)
-
-if (class(standardize)) == 
 ```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Feed the vector into your `standardize()` function to see if it works.
+```
+
+```{r second-exercise, solution = TRUE}
+standardize(vector)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Write an if-else statement that checks whether the first element of the standardized vector is smaller than 0. If this condition is true, "TRUE" should be printed. If this condition is false, "FALSE" should be printed.
+```
+
+```{block, opts.label = "clues"}
+Make use of logical operators (`<`) to check if a condition is true or false. For printing, you should use the `print()` function.
+```
+
+```{r third-exercise, solution = TRUE}
+if (standardize(vector)[1] < 0) {
+  print("TRUE")
+} else {
+  print("FALSE")
+}
+```
+
 
