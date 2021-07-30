@@ -1,0 +1,69 @@
+---
+title: 'Exercise 2_2_4: Purrr Joy of Writing Loops'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+Use the code below to re-define the `standardize()` function and to create a vector with standardized numbers.
+
+```{r provides-stuff}
+standardize <- function (x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+standardized_vector <-
+  standardize(sample(1:100, 30))
+```
+
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Loop through each element of the vector and add the number `pi` using a `for()`-loop.
+```
+
+```{block, opts.label = "clues"}
+There's a pre-defined value in R for `pi`. Just type `pi` and you'll receive 3.141593. Also, you need to wrap everything within the `print()` function.
+```
+
+```{r first-exercise, solution = TRUE}
+for (number in standardized_vector) {
+  print(number + pi)
+}
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Repeat the previous exercise but this time the results should be printed all at once in a vector. You would need the `sapply()` function for that.
+```
+
+```{block, opts.label = "clues"}
+You don't need the `print()` function anymore.
+```
+
+```{r second-exercise, solution = TRUE}
+sapply(standardized_vector, function (number) {
+  number + pi
+}) 
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, we want to have the same output as a list. What's your approach on doing this?
+```
+
+```{block, opts.label = "clues"}
+You can either use `lapply()` or `purrr::map`. 
+```
+
+```{r third-exercise, solution = TRUE}
+library(purrr)
+
+lapply(standardized_vector, function (number) {
+  number + pi
+}) 
+
+standardized_vector %>% 
+  map(~.x + pi)
+
+
+```
