@@ -1,0 +1,103 @@
+---
+title: 'Exercise 4_2_1: Plotting Diagnostics'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+In the following exercises, you will work on your own 'research question' using the GESIS Panel data. You can load the data first using my script (maybe it's useful for you in the following exercises):
+
+```{r load-gp-covid}
+library(haven)
+library(dplyr)
+library(sjlabelled)
+
+gp_covid <- 
+  read_sav(
+    "./data/ZA5667_v1-1-0.sav"
+  ) %>% 
+  set_na(na = c(-1:-99, 97, 98)) %>% 
+  rowwise() %>%
+  mutate(
+    mean_trust = 
+      mean(
+        c_across(hzcy044a:hzcy052a),
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup() %>% 
+  remove_all_labels() %>% 
+  mutate(
+    pol_leaning_cat = 
+      case_when(
+        between(political_orientation, 0, 3) ~ "left",
+        between(political_orientation, 4, 7) ~ "center",
+        political_orientation > 7 ~ "right"
+      ) %>% 
+      as.factor()
+  ) %>% 
+  filter(pol_leaning_cat != "NA")
+
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Please take a minute and choose a dependent variable (DV) and an independent variable (IV) from the [GESIS Panel codebook](https://dbk.gesis.org/dbksearch/download.asp?id=67378).
+```
+
+```{block, opts.label = "clues"}
+If you're really struggling finding a proper pair, what about:
+
+1. hzcy005a as DV and hzcy015a as IV
+2. hzcy026a as DV and age_cat as IV
+3. hzcy072a as DV and sex
+
+Be aware that you may have to conduct some recoding.
+```
+
+```{r first-exercise, solution = TRUE}
+# I will use option 2
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Run a linear regression model with your variables and `education_cat` as covariate If it is part of your variables take any other...). Then check visually if the residuals are normally distributed.
+```
+
+```{block, opts.label = "clues"}
+You need the `perfamance` and `see` package.
+```
+
+```{r second-exercise, solution = TRUE}
+library(dplyr)
+library(performance)
+library(see)
+
+gp_covid <-
+  gp_covid %>% 
+  dplyr::mutate(
+    curfew_yes_no = 
+      case_when(
+        hzcy026a == 2 ~ 0,
+        hzcy026a == 1 ~ 1,
+      )
+  )
+
+linear_model <-
+  lm(
+    curfew_yes_no ~ age_cat + education_cat,
+    data = gp_covid
+  )
+
+check_normality(linear_model) %>% 
+  plot()
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, use the whole battery of regression diagnostics with the `check_model()` command.
+```
+
+```{r third-exercise, solution = TRUE}
+check_model(linear_model)
+```
+

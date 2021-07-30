@@ -1,0 +1,87 @@
+---
+title: 'Exercise 4_2_2: Plotting a Regression'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+```{r load-gp-covid, include = FALSE}
+library(haven)
+library(dplyr)
+library(sjlabelled)
+
+gp_covid <- 
+  read_sav(
+    "./data/ZA5667_v1-1-0.sav"
+  ) %>% 
+  set_na(na = c(-1:-99, 97, 98)) %>% 
+  rowwise() %>%
+  mutate(
+    mean_trust = 
+      mean(
+        c_across(hzcy044a:hzcy052a),
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup() %>% 
+  remove_all_labels() %>% 
+  mutate(
+    pol_leaning_cat = 
+      case_when(
+        between(political_orientation, 0, 3) ~ "left",
+        between(political_orientation, 4, 7) ~ "center",
+        political_orientation > 7 ~ "right"
+      ) %>% 
+      as.factor()
+  ) %>% 
+  filter(pol_leaning_cat != "NA")
+
+gp_covid <-
+  gp_covid %>% 
+  mutate(
+    curfew_yes_no = 
+      case_when(
+        hzcy026a == 2 ~ 0,
+        hzcy026a == 1 ~ 1,
+      )
+  )
+```
+
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Re-use your analysis and run an interaction model between your IV and the other covariate. Plot the interaction as a coefficient plot.
+```
+
+```{block, opts.label = "clues"}
+For the coefficient plot, you can stick to `easystats`. 
+```
+
+```{r first-exercise, solution = TRUE}
+linear_model_interaction <-
+  lm(
+    curfew_yes_no ~ age_cat * education_cat,
+    data = gp_covid
+  )
+
+model_parameters(linear_model_interaction) %>% 
+  plot()
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Plot the interaction effect as a prediction.
+```
+
+```{block, opts.label = "clues"}
+For this purpose, you need the `plot_model()` function from `sjPlot`.
+```
+
+```{r second-exercise, solution = TRUE}
+library(sjPlot)
+
+plot_model(
+  linear_model_interaction,
+  type = "int"
+)
+```
