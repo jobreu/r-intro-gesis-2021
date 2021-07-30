@@ -753,6 +753,49 @@ as_flex_table() %>%
                path = "./output/gt_regression.docx")
 ```
 
+---
+
+## Generating text output
+
+Instead of or in addition to tables, we often want to report the results of our statistical analysis in textual form. To save us from typing and copy-pasting (too much), the [`report` package](https://easystats.github.io/report/) from the `easystats` collection offers some convenient functions. For example, we can easily produce some template text for the t-test we computed earlier on.
+
+```{r report-t-test}
+library(report)
+
+t.test(risk_self ~ sex, data = corona_survey) %>% 
+  report()
+```
+
+---
+
+## Generating text output
+
+We can do the same for the ANOVA...
+
+```{r report-anova}
+anova %>% 
+  report()
+```
+
+---
+
+## Generating text output
+
+... or our regression models.
+
+```{r report-regression, eval=FALSE}
+simple_linear_model_logistic %>% 
+  report()
+```
+
+
+---
+
+class: center, middle
+.small[
+```{r ref.label = "report-regression", echo = FALSE}
+```
+]
 
 ---
 
