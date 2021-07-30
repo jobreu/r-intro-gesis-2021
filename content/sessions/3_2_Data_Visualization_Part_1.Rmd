@@ -441,7 +441,7 @@ class: center, middle
 
 # [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_2_Handling_Multiple_Plots.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
-## [Solutions](Exercise_3_2_2_Handling_Multiple_Plots.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_2_Handling_Multiple_Plots.html)
 
 ---
 
@@ -798,9 +798,9 @@ ggplot(data = gp_covid) +
 class: center, middle
 
 
-# [Exercise](XXX) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_3_lotting_Repeats.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
-## [Solutions](XX)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_3_lotting_Repeats.html)
 
 ---
 
@@ -1269,6 +1269,6 @@ gp_covid %>%
 
 class: center, middle
 
-# [Exercise](XXX) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_4_Ggood_Plots.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
-## [Solutions](XXX)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_4_Ggood_Plots.html)
