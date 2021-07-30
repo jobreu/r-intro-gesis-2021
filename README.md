@@ -21,16 +21,27 @@ The open source software package `R` is free of charge and offers standard data 
 # Slides
 
 [Day 1: Getting Started](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/1_1_Getting_Started.html)             
+
 [Day 1: Data Types, Import, & Export](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/1_2_Data_Types_Import_Export.html)    
+
 [Day 1: Appendix - Setup and Workflow Help](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/1_3_Appendix_Setup_Workflow_Help.html)
-[Day 2: Data Wrangling Basics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_1_Data_Wrangling_Basics.html)        
+
+[Day 2: Data Wrangling Basics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_1_Data_Wrangling_Basics.html)     
+
 [Day 2: Data Wrangling Advanced](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_2_Data_Wrangling_Advanced.html)     
+
 [Day 2: Appendix - Relational Data](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_3_Appendix_Relational_Data.html)     
-[Day 3: Exploratory Data Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_1_Exploratory_Data_Analysis.html)    
-[Day 3: Data Visualization Part 1](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_2_Data_Visualization_Part_1.html)   
-[Day 4: Confirmatory Data Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/4_1_Confirmatory_Data_Analysis.html)   
+
+[Day 3: Exploratory Data Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_1_Exploratory_Data_Analysis.html)  
+
+[Day 3: Data Visualization Part 1](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_2_Data_Visualization_Part_1.html)  
+
+[Day 4: Confirmatory Data Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/4_1_Confirmatory_Data_Analysis.html) 
+
 [Day 4: Data Visualization Part 2](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/4_2_Data_Visualization_Part_2.html)   
+
 [Day 5: Reporting with R Markdown]()
+
 [Day 5: Outlook](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/5_2_Outlook.html)
 
 # Exercises
