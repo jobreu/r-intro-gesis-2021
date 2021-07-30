@@ -1,0 +1,840 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Confirmatory Data Analysis"
+author: "Johannes Breuer & Stefan Jünger"
+date: "2021-08-05"
+presenter: Johannes
+---
+layout: true 
+
+```{r child = "../config/sessions_setup.Rmd"}
+```
+
+---
+
+## Confirmatory data analysis
+
+Yesterday, we covered exploratory data analyses (EDA). In contrast to those, the purpose of confirmatory analyses is typically testing hypotheses. As for EDA, we will first discuss how to conduct confirmatory data analyses in this session, and the look at visualization options in the following session (this afternoon). Again, as this is not a statistics course - and because you probably (want to) use many different analysis methods (some of which we are probably not familiar with) - we will only cover some of the basics in this session. While we do cover some topics as well, our focus will be on regression.
+
+---
+
+## Content of this session
+.pull-left[
+**What we will cover**
+- Bivariate hypothesis testing
+
+- Using (more or less) simple regression models
+  - OLS, GLM, and the like
+  
+- How to re-use the results of these models
+
+- How to feed these results into tables
+]
+
+.pull-right[
+**What we won't cover**
+- Theory (and history) of hypothesis testing
+
+- Crazy complex models with elaborated estimators
+  - e.g., no multilevel models
+  - also no clustered standard errors
+  
+- Bayesian statistics
+]
+
+---
+
+## Data in this session
+
+In this session, we will, again, use the data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*. As before, we need to load the data.
+
+```{r load-gp-data, echo = FALSE}
+corona_survey <- readRDS("./data/corona_survey.rds")
+```
+
+*Note*: In case you have not saved the data set as an `.rds` file in the `data` folder yesterday (or cannot find/load it), you need to go through the wrangling steps presented at the beginning of the EDA slides (again).
+
+---
+
+## `R` is rich in statistical procedures
+
+Generally, if you seek to use a specific statistical method in `R`, chances are quite high that you can easily do that. As we said before: There's ~~an app~~ a package for that. After all, `R` is a statistical progamming language that was originally developed by statisticians.
+
+---
+
+## Formulas in statistical software
+
+Before we start analyzing data, we have to make ourselves familiar with some more terminology in `R`. As in other statistical languages, e.g., regression models require the definition of dependent and independent variables. For example, in *Stata* you would write:
+
+```{r eval = FALSE}
+y x1 x2 x3
+```
+
+*SPSS* is more literate by requiring you to state what your dependent variables are with the `/DEPENDENT` parameter.
+
+---
+
+## `R` is straightforward and literate
+
+`R` combines the best of two worlds: It is straightforward to write formulas and it is quite literate regarding what role a specific element of a formula plays.
+
+```{r eval = FALSE}
+y ~ x1 + x2 + x3
+```
+
+*Note*: Formulas represent a specific object class in `R`.
+
+```{r}
+class(y ~ x1 + x2 + x3)
+```
+
+---
+
+## Denoting the left-hand side with `~`
+
+In `R`, stating what your dependent variable is very similar to common mathematical notation:
+
+$$y \sim N(\theta, \epsilon)$$
+
+It states that a specific relationship is actually _estimated_, but we, fortunately, don't have to specify errors here.
+
+```{r eval = FALSE}
+y ~ x1 + x2 + x3
+```
+
+Yet, sometimes it may be a good idea to at least explicitly specify the intercept as here:
+
+```{r eval = FALSE}
+y ~ 1 + x1 + x2 + x3
+```
+
+---
+
+## Intercept
+
+We can also estimate models without an intercept:
+
+```{r eval = FALSE}
+y ~ x1 + x2 + x3 - 1
+```
+
+Or intercept-only models as well:
+
+```{r eval = FALSE}
+y ~ 1
+```
+
+---
+
+## Adding predictors with `+`
+You can add as many predictors/covariates as you want with the simple `+` operator. See:
+
+```{r eval = FALSE}
+y ~ 1 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 + x11 + x12 +
+  x13 + x14 + x15 + x16 + x17 + x18 + x19 + x20 + x21 + x22 + x23 + x24
+```
+
+There's also a shortcut for using all (remaining) variables in a data set as predictors:
+
+```{r eval = FALSE}
+y ~ .
+```
+
+---
+
+## Interaction effects with `*` and `:`
+
+What is more interesting, indeed, is adding interaction effects in a model. As this is the same as multiplying predictor variables, we also use the `*` sign for that.
+
+```{r eval = FALSE}
+y ~ x1 * x2
+```
+
+The code above creates a model formula that includes both the main effects of `x1` and `x2`, and their interaction denoted by `x1:x2`. We can even be more explicit and write that into the formula directly:
+
+```{r eval = FALSE}
+y ~ x1 + x2 + x1:x2
+```
+
+Later, we will see how all of this looks when we actually feed regression models with these formulas.
+
+---
+
+## Transforming variables within a formula
+
+One last point before we dive into doing some actual analysis is transforming your variables. This procedure is rather common in regression analysis. It is also straightforward to do in `R`. For simple transformations, such as log-transformation, this can be done as follows:
+
+```{r eval = FALSE}
+y ~ log(x)   # computes the log10 for x
+y ~ scale(x) # z-transformation of x
+```
+
+We could also change the data type of variables within a function, e.g., by converting a numeric variable to a factor using `as.factor(x)`. 
+
+---
+
+## Transforming variables within a formula
+
+If your variable is not enclosed by a specific function, you have to wrap the operation in the `I()` function. For example:
+
+```{r eval = FALSE}
+y ~ x + I(x^2) # add a quadratic term of x
+```
+
+.small[
+*Note*: Of course, there are also functions in `R` for transforming variables (e.g., standardizing or centering) before we use them in a formula. Besides the `base R` function `scale()`, e.g., the [`datawizard package`](https://easystats.github.io/datawizard/) provides a few functions for that.
+]
+
+---
+
+## Where to use formulas?
+
+The previous descriptions mainly refer to formulas used in regression models in `R`. However, formulas are also used in other hypothesis testing methods that distinguish between dependent and variables, such as t-tests or ANOVA. We will try out some of those in the following...
+
+---
+
+## Testing group differences in the distribution
+
+A very common methods for analyzing group differences are t-tests. You can use the `t.test()` function from `base R` function to easily perform such a test. 
+
+```{r t-test}
+t.test(risk_self ~ sex, data = corona_survey)
+```
+
+.small[
+*Note*: By default, `R` uses [Welch's t-test](https://en.wikipedia.org/wiki/Welch%27s_t-test) (instead of [Student's t-test](https://en.wikipedia.org/wiki/Student%27s_t-test)) which does not assume homogeneity of variance across groups.
+]
+
+---
+
+## Test of normality
+
+What if our data is not normally distributed in the first place, thus, violating one of the basic assumptions of performing t-tests? To check this, we can use a Shapiro-Wilk test of normality.
+
+```{r swt}
+shapiro.test(corona_survey$risk_self)
+```
+
+---
+
+## Alternative: Wilcoxon/Mann-Whitney test
+
+If the data are not normally distributed, the Wilcoxon/Mann-Whitney test can be a suitable alternative.
+
+```{r wilcox}
+wilcox.test(risk_self ~ sex, data = corona_survey)
+```
+
+---
+
+## Testing multiple groups with an ANOVA
+
+There are situations in which we want to test differences across multiple groups. The classic method to use for this is an analysis of variance (ANOVA) and its many variants (ANCOVA, MANOVA, etc.). Again, you can easily do that in `R` using the `aov()` function.
+
+```{r anova}
+anova <-  aov(risk_self ~ age_cat, data = corona_survey)
+
+anova
+```
+
+---
+
+## Testing multiple groups with an ANOVA
+
+To get some more detailed information, you need to use the `summary()` function we have already seen in the EDA session on the resulting `anova` object.
+
+```{r anova-summary}
+summary(anova)
+```
+
+---
+
+## Alternatives for ANOVA
+
+As we have seen throughout the previous sessions, there are different/alternative functions and packages for most things in `R`. Two interesting packages for ANOVA are [`ez`](https://cran.r-project.org/web/packages/ez/index.html) and [`afex`](https://github.com/singmann/afex), both of which can, e.g., also be used for mixed within-between ANOVA.
+
+---
+
+## ANOVA with `ez`
+
+```{r ez}
+library(ez)
+
+ez_anova = ezANOVA(data = corona_survey[!is.na(corona_survey$risk_self),],
+                   dv = risk_self,
+                   wid = id,
+                   between = age_cat)
+
+ez_anova
+```
+
+---
+
+## ANOVA with `afex`
+
+```{r afex}
+library(afex)
+
+afex_anova <- aov_ez(id = "id",
+                     dv = "risk_self",
+                     data = corona_survey,
+                     between = "age_cat")
+
+afex_anova
+```
+
+---
+
+## Effect sizes
+
+In many disciplines and journals, it is standard practice to also report effect sizes (in addition to means, SDs, and p-values) for t-tests and ANOVAS. The [`effectsize` package](https://easystats.github.io/effectsize/) that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) offers some helpful options for that.
+
+```{r cohens-d}
+library(effectsize)
+
+cohens_d(risk_self ~ sex, data = corona_survey)
+```
+
+---
+
+## Effect sizes
+
+```{r eta2}
+eta_squared(anova)
+```
+
+---
+
+## Simple linear regressions
+
+This may not come as a surprise at this point, but regression models are also easy to perform in `R`. The function for this is `lm()`. *Note*: To improve the readability of the output, we need to transform the `age_cat` factor.
+
+*Disclaimer*: We won't do many regression diagnostics and assume that our dependent variable is continuous for the OLS regression context here.
+
+```{r age-num}
+corona_survey <- corona_survey %>% 
+  mutate(age_cat_num = as.factor(as.numeric(age_cat)))
+```
+
+```{r linmodel, eval=FALSE}
+simple_linear_model <-  lm(risk_self ~ age_cat_num + sex + left_right,
+                           data = corona_survey)
+
+simple_linear_model
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "linmodel", echo = FALSE}
+```
+]
+
+---
+
+## Simple linear regressions
+
+As for the t-test, we can get some more detailed (and nicely formatted) output using the well-known `summary()` function.
+
+```{r summary-lm, eval = FALSE}
+summary(simple_linear_model)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "summary-lm", echo = FALSE}
+```
+]
+
+---
+
+## Dummy coding of categorical predictors
+
+As you have seen, `R` automatically converts factors in a regression model to dummy-coded variables, with the reference being the first value level. Hence, there is no need to create several variables with dummy codes and add them one by one to the regression formula. 
+
+You can inspect the contrast matrix using:
+
+.pull-left[
+```{r contrast-matrix, eval = FALSE}
+contrasts(corona_survey$age_cat_num)
+```
+]
+
+.pull-right[
+```{r ref.label = "contrast-matrix", echo = FALSE}
+```
+]
+
+---
+
+## Different coding example: Effect coding
+
+How to include a factor variable in a regression model can be changed in `R`. For a full overview of different options, you can, e.g., have a look at this [tutorial](https://stats.idre.ucla.edu/r/library/r-library-contrast-coding-systems-for-categorical-variables).
+
+Let's try one alternative option: The so-called effect coding or deviation coding, which compares the mean at a given level to the overall mean. You can create effect-coded dummies by changing the contrasts as follows:
+
+```{r effect-coding}
+contrasts(corona_survey$age_cat_num) <- contr.sum(10)
+```
+
+---
+
+## Effect coding contrast matrix
+
+```{r effect-constrast}
+contrasts(corona_survey$age_cat_num)
+```
+
+---
+
+## Effect coding regression
+
+```{r effect-coded-reg, eval = FALSE}
+simple_linear_model_effect_coded <- lm(risk_self ~ age_cat_num + sex + left_right, 
+                                       data = corona_survey)
+
+summary(simple_linear_model_effect_coded)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "effect-coded-reg", echo = FALSE}
+```
+]
+
+---
+
+## Generalized linear regression
+
+What we have seen so far are estimates for linear OLS regression models. A standard `R` installation provides a multitude of other estimators/link functions, so-called family objects, e.g., binomial logistic or Poisson regression models through the `glm()` function. See `?family` for an overview.
+
+Let's look at the the example of logistic regression. For this  purpose, we need to recode our subjective risk of infection variable into a binary one:
+
+```{r recode-risk}
+corona_survey <- corona_survey %>% 
+  mutate(risk_self_bin = case_when(risk_self > 4  ~ 1,
+                                   risk_self <= 4 ~ 0))
+
+table(corona_survey$risk_self_bin)
+```
+
+---
+
+## Logistic regression
+
+```{r log-reg, eval = FALSE}
+simple_linear_model_logistic <- glm(risk_self_bin ~ age_cat_num + sex + left_right,
+    family = binomial(link = "logit"),
+    data = corona_survey)
+
+summary(simple_linear_model_logistic)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "log-reg", echo = FALSE}
+```
+]
+
+---
+
+## Assessing model quality
+
+The [`performance` package](https://easystats.github.io/performance/) that is that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) offers some functions for assessing model quality, including different types of R². A commonly used metric for logistic regression models, e.g., is Nagelkerke's R².
+
+```{r nagelkerke}
+library(performance)
+
+r2_nagelkerke(simple_linear_model_logistic)
+```
+
+*Note*: The `performance` package also includes several helpful functions for model diagnostics.
+
+---
+
+## Changing the link function
+
+For the fun of it, let's change the link function in our regression model from logit to probit.
+
+```{r probit-reg, eval = FALSE}
+simple_linear_model_probit <- glm(risk_self_bin ~ age_cat_num + sex + left_right,
+                                  family = binomial(link = "probit"),
+                                  data = corona_survey)
+
+summary(simple_linear_model_probit)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class:middle
+.small[
+```{r ref.label = "probit-reg", echo = FALSE}
+```
+]
+
+---
+
+## Comparing models with an ANOVA
+
+We can also compare models with some standard tools. For example, to examine competing models, such as our logistic and probit regression, we can apply an ANOVA.
+
+```{r anova-glm-compare}
+anova(simple_linear_model_logistic, simple_linear_model_probit)
+```
+
+---
+
+## Comparing model performance
+
+The `performance` package we have previously used for calculating Nagelkerke's R² for our logistic regression model also provides a handy function for comparing model performance.
+
+```{r compare-perf}
+compare_performance(simple_linear_model_logistic, simple_linear_model_probit,
+                    metrics = c("AIC", "BIC", "R2"))
+```
+
+---
+
+## Other regression variants
+
+While `glm()` already provides quite a few estimators and link functions, depending on the distribution of your dependent variable, you may need more specialized regression models. Two interesting options in that regard are the [`MASS` package](https://cran.r-project.org/web/packages/MASS/index.html) for negative binomial regression or the [`pscl` package](https://cran.r-project.org/web/packages/pscl/index.html) for zero-inflated binomial regression or hurdle models.
+
+---
+
+## Handling regression results
+
+While it is (still) common practice to run regressions, search for 'significant' p-values, and paste the results into a table without interpreting them substantially, this may not be the best thing to do. We will (briefly) discuss how to create nice regression tables later on, but before that, we will briefly talk about how we can apply some other techniques to gain more substantial insights into our data using regression.
+
+To do that, we first need to look into how to work with a readily estimated regression object in `R`. This is also meant to show some of the mechanics of what is actually happening in the background when a regression is run in `R`.
+
+---
+
+## Accessing model results in `base R`
+
+Regression results are a specific type/class of objects in `R`. You can use the `str()` function to get an overview of the whole structure of the object (it's a list of different information). For starters, we may want to see what the first level of this list may provide by asking for the names of the included pieces of information:
+
+```{r names-lm}
+names(simple_linear_model)
+```
+
+---
+
+## Accessing coefficients
+
+We can also retrieve just the coefficients-
+
+```{r coef-lm}
+simple_linear_model$coefficients
+```
+
+---
+
+## Accessing standard errors
+
+`lm` objects are a little bit cumbersome to use as the information is deeply nested within the object. If you want to extract the standard errors, e.g., you can do so as follows:
+
+```{r se-lm}
+summary(simple_linear_model)$coefficients[,2]
+```
+
+---
+
+## Accessing confidence intervals
+
+The standard `summary()` doesn't supply confidence intervals. We can use the `confint()` command to produce them. For example, for the logistic regression:
+
+```{r confint-lm}
+confint(simple_linear_model_logistic)
+```
+
+---
+
+## Alternatives for accessing model information
+
+Addon-packages, e.g., for creating tables, usually gather information about models (such as standard errors or confidence intervals). However, there are also other, less tedious ways of directly accessing model parameters. One such option is the [`parameters` package](https://easystats.github.io/parameters/) that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/).
+
+```{r parameters, eval=FALSE}
+library(parameters)
+
+model_parameters(simple_linear_model)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class:middle
+.small[
+```{r ref.label = "parameters", echo = FALSE}
+```
+]
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day4_2_Confirmatory_Analysis_Exercise_1_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day4_2_Confirmatory_Analysis_Exercise_1_solution.html)
+
+---
+
+## (Simple) model predictions
+
+It is also quite straightforward to do simple predictions from an estimated model using the `predict()` function in `R`. We can feed the `predict()` function with our own data to figure out what our model actually predicts when something changes (in the example below that is the age category). This can provide additional insights into our models. *Note*: For the following code to work, we need to change the `sex` variable to numeric and then fit our simple linear model again using that as a predictor.
+
+.small[
+```{r predict}
+corona_survey <- corona_survey %>% 
+  mutate(sex_num = as.numeric(sex))
+
+simple_linear_model_new <-  lm(risk_self ~ age_cat_num + sex_num + left_right,
+                               data = corona_survey)
+
+predictions_data <-  data.frame(left_right = rep(mean(corona_survey$left_right, na.rm = TRUE), 2),
+                                sex_num = rep(mean(corona_survey$sex_num), 2),
+                                age_cat_num = as.factor(c(1, 10)))
+
+predict(object = simple_linear_model_new,
+        newdata = predictions_data,
+        interval = "confidence")
+```
+]
+
+---
+
+## More advanced post-estimation techniques
+
+In an OLS context, predictions of this kind are straightforward to interpret. For non-linear models, such as in logistic regression, this is more difficult:
+
+```{r pred-log}
+simple_linear_model_logistic_new <- glm(risk_self_bin ~ age_cat_num + sex_num + left_right,
+                                        family = binomial(link = "logit"),
+                                        data = corona_survey)
+
+predictions <-  predict(object = simple_linear_model_logistic_new,
+                        newdata = predictions_data)
+```
+
+Predictions have to be converted into probabilities:
+
+```{r exp}
+exp(predictions) / (1 + exp(predictions))
+```
+
+---
+
+## Average marginal effects (AME)
+
+AME provide a similar interpretation for a one-unit change as in OLS models: the average change of the dependent variable when all other variables are held constant (at their empirical value). The [`margins` package](https://cran.r-project.org/web/packages/margins/index.html) provides a simple function for AME.
+
+```{r ame, eval=FALSE}
+library(margins)
+
+margins(simple_linear_model_logistic)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "ame", echo = FALSE}
+```
+]
+
+---
+
+## Regression tables
+
+As we have seen in the session on *Exploratory Data Analysis*, there are different options for creating tables as output in `R`. The ones we have looked at in the EDA session, [`stargazer`](https://cran.r-project.org/web/packages/stargazer/index.html) and [`gtsummary`](http://www.danieldsjoberg.com/gtsummary/) can also be used for creating regression tables. The functions from these packages can also be used for comparing multiple regression models in one table.
+
+---
+
+## Regression tables with the `stargazer` package
+
+```{r stargazer, eval = FALSE}
+library(stargazer)
+
+stargazer(simple_linear_model,
+          simple_linear_model_effect_coded,
+          simple_linear_model_logistic,
+          simple_linear_model_probit,
+          type = "text",
+          dep.var.labels=c("Infection risk", "Infection risk binary"),
+          covariate.labels=c("Age category 1", "Age category 2", "Age category 3", "Age category 4",
+                             "Age category 5", "Age category 6", "Age category 7", "Age category 8", "Age category 9",
+                             "Sex (Female)", "Political orientation (left-right)"))
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: center, middle
+.small[
+```{r ref.label = "stargazer", echo = FALSE}
+```
+]
+
+---
+
+## Regression tables with the `stargazer` package
+
+As for the summary table, the `stargazer()` output can also be saved in various formats, such as `LaTeX`.
+
+.small[
+```{r stargazer-save, eval=FALSE}
+# If you have not done so before, you need to create a directory for output files first
+# dir.create("./output")
+
+stargazer(simple_linear_model,
+          simple_linear_model_effect_coded,
+          simple_linear_model_logistic,
+          simple_linear_model_probit,
+          type = "latex",
+          dep.var.labels=c("Infection risk", "Infection risk binary"),
+          covariate.labels=c("Age category 1", "Age category 2", "Age category 3", "Age category 4",
+                             "Age category 5", "Age category 6", "Age category 7", "Age category 8", "Age category 9",
+                             "Sex (Female)", "Political orientation (left-right)"),
+          out = "./output/stargazer_regression.tex")
+```
+]
+
+---
+
+## Regression tables with `gtsummary`
+
+```{r gts-reg, eval=FALSE}
+library(gtsummary)
+
+tbl_regression(simple_linear_model,
+               label = list(sex ~ "Sex",
+                            age_cat_num ~ "Age category",
+                            left_right ~ "Political orientation (left-right)"))
+```
+
+---
+
+## Regression tables with `gtsummary`
+
+We can also export the `gtsummary` output into a *Word* document using a function from the `flextable` package.
+
+```{r gts-reg-docx, eval=FALSE}
+# If you have not done so before, you need to create a directory for output files first
+# dir.create("./output")
+
+library(flextable)
+
+tbl_regression(simple_linear_model,
+               label = list(sex ~ "Sex",
+                            age_cat_num ~ "Age category",
+                            left_right ~ "Political orientation (left-right)")) %>% 
+as_flex_table() %>% 
+  save_as_docx("Results of the OLS regression model" = .,
+               path = "./output/gt_regression.docx")
+```
+
+
+---
+
+## tidy models with `broom`
+
+.pull-left[
+We have already entered the area of reporting statistical results. We will have a separate session on reporting on with `R Markdown` tomorrow. One thing to note at this point is that more and more developers in `R` were unsatisfied with the diverse output some of the standard regression procedures provide. The outputs may be helpful to look at, but it's not great for further processing. For that purpose, we need dataframes/tibbles.
+]
+
+.pull-right[
+```{r echo = FALSE, out.width = "70%"}
+woRkshoptools::include_picture("./broom.png")
+```
+]
+
+---
+
+## 3 functions of `broom`
+
+The [`broom`](https://broom.tidymodels.org/) package provides only 3 but very powerful main functions:
+- `tidy()`: creates a `tibble` from your model
+- `glance()`: information about your model as `tibble` ('model fit')
+- `augment()`: adds information, e.g., individual fitted values to your data
+
+*Note*: With `broom` you can also create a standardized output of other types of models, such as Latent Class Analysis (LCA) (with the package [`poLCA`](https://cran.r-project.org/web/packages/poLCA/index.html)). 
+
+---
+
+## `tidy()`
+
+```{r tidy}
+library(broom)
+
+tidy(simple_linear_model)
+```
+
+---
+
+## `glance()`
+
+```{r glance}
+glance(simple_linear_model)
+```
+
+---
+
+## `augment()`
+
+```{r augment, eval=FALSE}
+augment(simple_linear_model)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "augment", echo = FALSE}
+```
+]
+
+---
+
+## Outlook: Other modeling options
+
+As we said at the beginning of this session, we only looked at some of the basic confirmatory analysis methods. As you can imagine, however, `R` offers plenty of options more more complex statistical models as well. A few examples:
+
+- Structural equation models with [`lavaan`](https://lavaan.ugent.be/)
+- Multilevel/mixed-effects models with [`lme4`](https://cran.r-project.org/web/packages/lme4/index.html)
+- Bayesian regression models using [`brms`](https://paul-buerkner.github.io/brms/)
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day4_2_Confirmatory_Analysis_Exercise_2_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day4_2_Confirmatory_Analysis_Exercise_2_solution.html)
+
+---
+
+## Extracurricular activities
+
+As it is such a simple and useful package, we recommend exploring the `broom` package a bit further. Alex Hayes, one authors of the package, [gave an interesting talk at the *RStudio* Conference in 2019](https://rstudio.com/resources/rstudioconf-2019/solving-the-model-representation-problem-with-broom/).

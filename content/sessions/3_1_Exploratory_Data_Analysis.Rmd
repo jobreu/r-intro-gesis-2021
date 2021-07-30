@@ -1,0 +1,1133 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Exploratory Data Analysis"
+author: "Johannes Breuer & Stefan Jünger"
+date: "2021-08-04"
+presenter: Johannes
+---
+layout: true 
+
+```{r child = "../config/sessions_setup.Rmd"}
+```
+
+---
+
+## What is Exploratory Data Analysis (EDA)?
+
+After wrangling our data, the next thing we should do is exploring them. In practice, of course, these steps are often done iteratively. There is no single definition of what exploratory data analysis is and which steps and methods belong to this category. For example, while descriptive (or summary) statistics are almost always part of EDA, analysis methods like correlation, chi-square tests, or principal component analysis (PCA) can be part of exploratory or confirmatory analyses (which we will cover in the next session).
+
+---
+
+## What is Exploratory Data Analysis (EDA)?
+
+For this course, we specifically decided not to separate the analysis sessions into descriptive vs. inferential statistics (in parts also because, as we pointed out in the Introduction, this is not a statistics workshop), so we will also cover some inferential statistics in the EDA part. Instead, the distinction we make between EDA and confirmatory analysis is more akin to that between exploratory and confirmatory research: While the former can be employed to develop hypotheses, the goal of the latter typically is to test hypotheses.<sup>1</sup>
+
+.small[
+.footnote[
+[1] Of course, this does not mean that EDA techniques cannot be used to answer (exploratory) research questions.
+]
+]
+
+---
+
+## Exploring EDA
+
+As stated before, exploratory data analysis can take many shapes and forms. In this session, we will focus on the following:
+
+- summary statistics (for numeric variables)
+- frequencies & proportions (for categorical variables)
+- cross-tabulations & correlations
+- exploring missing values and checking for outliers
+
+*Note*: In this session, we will focus on numeric summaries and descriptions of our data. Notably, data visualization typically also is a big part of EDA. We will cover that in the following session on data visualization with `R`.
+
+---
+
+## Disclaimer: A flood `r ji("ocean")` of packages `r ji("package")`
+
+In the previous sessions, we have tried to focus on a small set of packages (mostly from `base R` and the `tidyverse`) and took a deep dive `r ji("goggles")` exploring their functionalities. In this session, however, we will do browse through quite a few packages for EDA. Admittedly, this can be a bit overwhelming. However, there is no need to worry: You do not need to remember all of the options and their differences right away. The topic of EDA is a very suitable example for demonstrating that there often are many `R` packages for the same tasks.
+
+---
+
+## Choosing packages `r ji("package")` for EDA
+
+Many of the EDA options that we are going to discuss in this session are quite similar across the different packages. However, there are differences, e.g., regarding the type of output they produce, their ease-of-use, and their flexibility. In practice, you will probably not need more than 1 to 3 packages for EDA most of the time. It is, however, worth exploring the different options to find packages that (best) suit your needs. Of course, what the best options are strongly depends on your goals and the output you want to get. For example: Do you only want to quickly check the data for yourself, create a report or documentation for internal use, or do you want to produce publication-ready output (tables, plots, etc.)?
+
+---
+
+## Data
+
+As using the full data set can become somewhat unwieldy for the examples in this section, we will create/use a subset of the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data. We will select a subset of variables on the following:
+- demographics
+- political orientation
+- risk perceptions regarding infection with and spreading of the Corona virus
+- personal prevention measures
+- trust in people and institutions with regard to dealing with the Corona virus
+- sources of information about the Corona virus
+
+---
+
+### Repetition: Data wrangling pipeline
+
+As a repetition and reminder, we will quickly go through a wrangling pipeline for these data in the following.
+
+*Note*: Of course, it is possible to do the whole wrangling in one pipe. However, to check if everything worked it is advisable to break up the pipe into smaller chunks (a nice tool for checking and debugging pipes that also provides an *RStudio* Addin is the package [`ViewPipeSteps`](https://github.com/daranzolin/ViewPipeSteps)). Also, splitting up the wrangling pipe steps allows us to show them on the slides.
+
+---
+
+## Wrangling pipeline: Select & rename 
+
+.small[
+```{r load-data, message = F}
+gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
+```
+
+```{r select-rename}
+corona_survey <- gp_covid %>% 
+  select(id,
+         sex:education_cat,
+         choice_of_party,
+         left_right = political_orientation,
+         risk_self =  hzcy001a,
+         risk_surroundings =  hzcy002a,
+         avoid_places =  hzcy006a,
+         keep_distance =  hzcy007a,
+         wash_hands = hzcy011a,
+         stockup_supplies =  hzcy013a,
+         reduce_contacts =  hzcy014a,
+         wear_mask = hzcy015a,
+         trust_rki = hzcy047a,
+         trust_government = hzcy048a,
+         trust_chancellor = hzcy049a,
+         trust_who = hzcy051a,
+         trust_scientists = hzcy052a,
+         info_nat_pub_br = hzcy084a,
+         info_nat_np = hzcy086a,
+         info_loc_np = hzcy089a,
+         info_fb = hzcy090a,
+         info_other_sm = hzcy091a)
+```
+]
+
+---
+
+## Wrangling pipeline: Missing values
+
+If you look at the [codebook](https://dbk.gesis.org/dbksearch/download.asp?id=67378) for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*, you will see that some of the variables we have selected have specific values that we should either code as missing values or exclude before we do any analyses (exploratory or otherwise).
+
+.small[
+```{r pipeline-missings}
+library(naniar)
+
+corona_survey <- corona_survey %>%
+  replace_with_na_all(condition = ~.x < 0) %>% 
+    replace_with_na(replace = list(choice_of_party = c(97,98),
+                                   risk_self = c(97),
+                                   risk_surroundings = c(97),
+                                   trust_rki = c(98),
+                                   trust_government = c(98),
+                                   trust_chancellor = c(98),
+                                   trust_who = c(98),
+                                   trust_scientists = c(98)))
+```
+]
+
+---
+
+## Wrangling pipeline: Change variable types & recode values
+
+.small[
+```{r var-type-recode}
+corona_survey <- corona_survey %>% 
+    mutate(sex = recode_factor(sex,
+                               `1`= "Male",
+                               `2` = "Female"),
+           education_cat = recode_factor(education_cat,
+                                       `1` = "Low",
+                                       `2` = "Medium",
+                                       `3`= "High",
+                                       .ordered = TRUE),
+           age_cat = recode_factor(age_cat,
+                                   `1`= "<= 25 years",
+                                   `2`= "26 to 30 years",
+                                   `3` = "31 to 35 years",
+                                   `4` = "36 to 40 years",
+                                   `5` = "41 to 45 years",
+                                   `6` = "46 to 50 years",
+                                   `7` = "51 to 60 years",
+                                   `8` = "61 to 65 years",
+                                   `9`= "66 to 70 years",
+                                   `10` = ">= 71 years",
+                                   .ordered = TRUE),
+           choice_of_party = recode_factor(choice_of_party,
+                                           `1`= "CDU/CSU",
+                                           `2`= "SPD",
+                                           `3` = "FDP",
+                                           `4` = "Linke",
+                                           `5` = "Gruene",
+                                           `6` = "AfD",
+                                           `7` = "Other"))
+```
+]
+
+---
+
+## Wrangling pipeline: Compute new aggregate variables
+
+```{r new-vars}
+corona_survey <- corona_survey %>%
+  rowwise() %>% 
+  mutate(sum_measures = sum(c_across(avoid_places:wear_mask)),
+         sum_sources = sum(c_across(info_nat_pub_br:info_other_sm)),
+         mean_trust = mean(c_across(trust_rki:trust_scientists), na.rm = T)) %>% 
+  ungroup()
+```
+
+---
+
+### Saving the wrangled data
+
+As we will use this reduced and wrangled data set again in the next sessions, we should save it (as an `.rds` file).
+
+```{r save-df}
+saveRDS(corona_survey, "./data/corona_survey.rds")
+```
+
+We can then (later on) load the data set again with
+
+```{r load-rds, eval=FALSE}
+corona_survey <- readRDS("./data/corona_survey.rds")
+```
+
+---
+
+## Explore your data: First look `r ji("eyes")`
+
+To get a first impression of the data set, we can use some of the functions we discussed in the sessions on *Data Import & Export* and *Data Wrangling Basics*, such as `dim()`, `head()`, or `str()` from `base R`, `glimpse()` from `dplyr`, or `View()` in *RStudio*.
+
+While looking at the the full data set can give us a general understanding of the data and their format and also show if (and how) we may need to wrangle them (further), it is difficult to make sense of the data just by looking at it.
+
+---
+
+## Summary statistics
+
+To make sense of quantitative data we can reduce their information to unique values.
+
+--
+
+.center[
+~ 
+
+**That's a simple definition of summary statistics**
+
+~]
+
+--
+
+As such, we can use summarizing functions of
+- location (e.g., the mean),
+- spread (e.g., standard deviation),
+- the shape of the distribution (e.g., skewness), and
+- relations between variables (e.g., correlation coefficients)
+
+---
+
+## Summary statistics: `summary()`
+
+A quick and easy way to check some summary statistics for your dataset is the `base R` function `summary()` which can be applied to individual variables...
+
+```{r summary}
+summary(corona_survey$left_right)
+```
+
+as well as whole dataframes:
+```{r summary-many, eval = F}
+summary(corona_survey[, 2:19])
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "summary-many", echo = F}
+
+```
+]
+
+---
+
+## Summary statistics: `psych::describe()`
+
+For more detailed summary statistics for the numeric variables you can use the `describe()` function from the [`psych` package](https://cran.r-project.org/web/packages/psych/index.html).
+
+```{r describe, eval = F}
+library(psych)
+
+corona_survey %>% 
+  select(where(is.numeric), -id) %>% 
+  describe()
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.tinyish[
+```{r ref.label = "describe", echo = F, message = F}
+
+```
+]
+
+---
+
+## Summary statistics: `summarytools::descr()`
+
+The [`summarytools` package](https://github.com/dcomtois/summarytools) provides a lot of functionalities for EDA, including the `descr()` function for summary statistics, which also provides quite a few options for customizing the output.
+
+```{r descr, eval = F}
+library(summarytools)
+
+corona_survey %>% 
+  select(left_right,
+         starts_with("trust"),
+         sum_measures,
+         sum_sources,
+         mean_trust) %>%
+  descr(stats = "common")
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "descr", echo = F, message = F, warning = F}
+
+```
+]
+
+---
+
+## Summary statistics with the `datawizard` package `r emo::ji("mage")`
+
+The [`datawizard` package](https://easystats.github.io/datawizard/) which we introduced as an interesting alternative or addition for data wrangling before also provides a function for summary statistics. Similar to `describe()` from `summarytools`, this function also offers several options for customizing the output.
+
+```{r datawiz-descr, eval=FALSE}
+library(datawizard)
+
+corona_survey %>% 
+  select(left_right,
+         starts_with("trust"),
+         sum_measures,
+         sum_sources,
+         mean_trust) %>%
+  describe_distribution(quartiles = TRUE)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "datawiz-descr", echo = F, message = F, warning = F}
+
+```
+]
+
+---
+
+## Summary statistics with `dplyr`
+
+`dplyr` provides a helpful function for creating summary statistics: `summarize()`
+
+`summarize()` is a vectorized function that can be used to create summary statistics for variables using functions like...
+
+- `mean()`
+- `sd()`
+- `min()`
+- `max()`
+
+- etc.
+
+---
+
+## Summary statistics with `dplyr`
+
+While creating summary statistics using `summarize()` from `dplyr()` requires writing more code, it is the most flexible option. Another nice benefit of `dplyr::summarize()` is that it produces a `tibble` which can be used for further analyses or for creating plots or tables.
+
+---
+
+## `dplyr::summarize()`
+
+.small[
+```{r summarize-example}
+corona_survey %>% 
+  summarize(
+    mean_trust_gov = mean(trust_government, na.rm = TRUE),
+    sd_trust_gov = sd(trust_government, na.rm = TRUE),
+    var_trust_gov = var(trust_government, na.rm = TRUE),
+    min_trust_gov = min(trust_government, na.rm = TRUE),
+    max_trust_gov = max(trust_government, na.rm = TRUE)
+  )
+```
+]
+
+---
+
+## `dplyr::group_by()`
+
+The `dplyr` function `group_by()` creates dataframes (tibbles) that are grouped by one or more variables. This can, e.g., be used to produce grouped summary statistics. As we have seen for the `rowwise()` function in the session on advanced data wrangling, we can end/undo the grouping via the `ungroup()` function.
+
+```{r group-by, eval=FALSE}
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  group_by(choice_of_party) %>% 
+   summarize(
+    mean_trust_gov = mean(trust_government, na.rm = TRUE),
+    sd_trust_gov = sd(trust_government, na.rm = TRUE),
+    var_trust_gov = var(trust_government, na.rm = TRUE),
+    min_trust_gov = min(trust_government, na.rm = TRUE),
+    max_trust_gov = max(trust_government, na.rm = TRUE)
+  ) %>% 
+  ungroup()
+  
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+
+```{r ref.label = "group-by", echo = F}
+
+```
+
+---
+
+## `dplyr::across()`
+
+To produce grouped summary statistics for multiple variables we can use the `dplyr` function `across()` which we already used in the session on advanced data wrangling. *Note*: We only use cases without missing data for any of the variables here (= listwise deletion).
+
+```{r across, eval=FALSE}
+corona_survey %>%
+  select(choice_of_party,
+         starts_with("trust")) %>% 
+  drop_na() %>% 
+  group_by(choice_of_party) %>%
+  summarize(across(starts_with("trust"), 
+                   list(mean = mean, 
+                        sd = sd), 
+                   .names = "{col}_{fn}")) 
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+
+```{r ref.label = "across", echo = F}
+
+```
+
+---
+
+## `dplyr::across()`
+
+```{r, across-cartoon, out.width = "95%", echo = F}
+woRkshoptools::include_picture(".//dplyr_across.png")
+```
+<small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-illustrations) </small></small>
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_1_1_Summary_Statisticss.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_1_1_Summary_Statistics.html)
+
+---
+
+## Frequencies: `table()`
+
+A simple way of looking at frequencies (e.g., for categorical variables) is the `base R` function `table()`.
+
+```{r table}
+table(corona_survey$choice_of_party)
+```
+
+If you also want to include `NA` in the frequency counts, you need to specify the argument `useNA = "always"`.
+
+```{r table-NA}
+table(corona_survey$choice_of_party, useNA = "always")
+```
+
+---
+
+## Proportions with `prop.table()`
+
+If you want proportions instead of raw counts, you can use the `base R` function `prop.table()`. **NB**: You need to apply this function to an output produced by `table()`. 
+
+.small[
+```{r prop-table}
+prop.table(table(corona_survey$choice_of_party))
+
+prop.table(table(corona_survey$choice_of_party, useNA = "always"))
+```
+]
+
+---
+
+## Proportions with `prop.table()`
+
+If you want fewer decimals places in the output, you can wrap the the `prop.table()` function in a `round()` call.
+
+```{r prop-round}
+round(prop.table(table(corona_survey$choice_of_party, useNA = "always")), 3) # rounded to 3 decimal places
+```
+
+Or if you want percentages...
+
+```{r prop-perc}
+round((prop.table(table(corona_survey$choice_of_party, useNA = "always")) * 100), 2)
+```
+
+---
+
+## Frequencies and proportions with `summarytools::freq()`
+
+The `summarytools` package which we used before for summary statistics also includes the `freq()` function for frequency tables.
+
+.small[
+```{r summarytools-freq, message = F}
+library(summarytools)
+
+freq(corona_survey$choice_of_party)
+```
+]
+
+---
+
+## Frequencies and proportions with `janitor::tabyl()`
+
+The [`janitor` package](https://github.com/sfirke/janitor) that we briefly mentioned in the session on *Data Wrangling Basics* also provides the `tabyl()` function for creating frequency and proportion tables:
+
+.small[
+```{r tabyl, message = F}
+library(janitor)
+
+party_stats <- corona_survey %>% 
+  tabyl(choice_of_party) %>% 
+  adorn_pct_formatting(digits = 2, 
+                       affix_sign = TRUE)
+
+party_stats
+```
+]
+
+---
+
+## Frequencies and proportions with `janitor::tabyl()`
+
+A nice thing about `tabyl()` is that is produces a dataframe which we can, e.g., use for plotting or creating tables (which we will discuss later on).
+
+```{r tabyl-class}
+class(party_stats)
+```
+
+---
+
+## Frequencies and proportions with `dplyr`
+
+We can also use `group_by()` and `summarize()` to get frequencies and proportions for variables in our dataset.
+
+```{r freqprop-dplyr}
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  group_by(choice_of_party) %>% 
+  summarize(n = n()) %>% 
+  mutate(proportion = n/sum(n)) %>% 
+  ungroup()
+```
+
+---
+
+## Frequencies and proportions with `dplyr`
+
+Instead of using `group_by` and `summarize()` to get frequency counts, we can also use `count()` from `dplyr` as a shorthand.
+
+```{r freqprop-count}
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  count(choice_of_party) %>% 
+  mutate(proportion = n/sum(n)) %>% 
+  ungroup()
+```
+
+---
+
+## Tables in `R`
+
+There are typically two types of outputs you can produce with `R` for further use in reports or publications: tables and plots. We will cover the creation of plots in the following session(s) on data visualization. However, as summary statistics, frequencies, and proportions are often presented in tables, we will briefly discuss how to create tables as output in `R` in the following.
+As with almost everything in `R`, there are many options (read: packages) for creating tables. We will show examples from three popular options:
+- [`stargazer`](https://cran.r-project.org/web/packages/stargazer/index.html)
+- [`gtsummary`](http://www.danieldsjoberg.com/gtsummary/) + [`flextable`](https://davidgohel.github.io/flextable/index.html)
+
+---
+
+## Summary tables with `stargazer`
+
+While there is an ever-growing list of `R` packages for creating tables with many new (promising) contenders (such as [`flextable`](https://davidgohel.github.io/flextable/index.html) or [`gt`](https://gt.rstudio.com/index.html)), `stargazer` is an established and widely-used tool for creating ACSII (plain text), `LaTeX`, and `HTML` table output. 
+
+---
+
+## Summary tables with `stargazer`
+
+If we, e.g., want to create a summary statistics table as text output (e.g., for printing in the `R` console), we can use `stargazer` for that. **NB**: As the main `stargazer()` function does not work with tibbles, we need to convert our data to a regular dataframe. 
+
+```{r stargazer-text}
+corona_survey %>% 
+  select(starts_with("trust")) %>% 
+  as.data.frame() %>% 
+  stargazer(type = "text",
+            digits = 2,
+            title="Descriptive statistics")
+```
+
+---
+
+## Summary tables with `stargazer`
+
+`stargarer` also supports `HTML` and `LaTeX` as output formats. We can also export the output for further use (e.g., with our `LaTeX` editor of choice).
+
+```{r stargazer-latex, eval=FALSE}
+# We create a directory for output files first
+dir.create("./output")
+
+corona_survey %>% 
+  select(starts_with("trust")) %>% 
+  as.data.frame() %>% 
+  stargazer(type = "latex",
+            digits = 2,
+            out = "./output/stargazer_summary.tex",
+            title="Descriptive statistics")
+```
+
+*Note*: If you look at the help file for the `stargazer()` function (via `?stargazer`), you will see that it provides a lot of customization options.
+
+---
+
+## Summary tables with `gtsummary`
+
+The `tbl_summary()` function from the [`gtsummary` package](http://www.danieldsjoberg.com/gtsummary/) can, e.g., be used to produce frequency table output. If you run the following code in *RStudio*, the table will be displayed in the `Viewer` pane and can then be exported from there as an image or an `HTML` file.
+
+```{r gts-display, eval=FALSE}
+corona_survey %>% 
+  select(sex, age_cat, education_cat) %>% 
+  tbl_summary()
+```
+
+*Note*: As with `stargazer`, `tbl_summary()` also provides various customization options and you can save its output in different formats, including `.html`, `.rtf`, and `.tex`.
+
+---
+
+## Summary tables with `gtsummary`
+
+You can also save the output of `tbl_summary()` directly in a *Word* file. For that to work, however, you also need to use a function from the [`flextable` package](https://davidgohel.github.io/flextable/index.html).  
+
+```{r gts-word, eval=FALSE}
+library(flextable)
+
+corona_survey %>% 
+  select(sex, age_cat, education_cat) %>% 
+  tbl_summary(label = list(sex ~ "Sex",
+                          age_cat ~ "Age category",
+                          education_cat ~ "Education category")) %>%
+  as_flex_table() %>% 
+  save_as_docx("Sample descriptives" = .,
+               path = "./output/gt_summary.docx")
+```
+
+*Note*: If you have not done this before, for this code to work, you need to create an `output` folder in your current working directory using `dir.create("./output")`.
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_1_2_Frequencies_Proportions.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_1_2_Frequencies_Proportions.html)
+
+---
+
+## Relationships between variables
+
+In addition to checking summary statistics for individual variables, another thing that you quite possibly also want to look at as part of your exploratory data analysis (EDA) are the relationships between (specific) variables in your data set. There are many ways to do so and the appropriate choice of methods, of course, depends on the types of variables you want to explore. In the following, we will briefly discuss some options for two methods of exploring relationships between variables:
+
+- crosstabulation (for categorical variables)
+
+- correlations (for numeric and/or binary variables)
+
+---
+
+## Crosstabs
+
+You can also use the `base R` functions `table()` and `prop.table()` we have used before for creating univariate frequency and proportion tables to generate crosstabs.
+
+```{r base-crosstabs}
+table(corona_survey$sex, corona_survey$choice_of_party) # rows, columns
+
+round(prop.table(table(corona_survey$sex, corona_survey$choice_of_party))*100, 2)
+```
+
+---
+
+## Crosstabs
+
+We can also calculate row or column percentages using these `base R` functions.
+
+```{r base-crosstabs-margins}
+round(prop.table(table(corona_survey$sex, corona_survey$choice_of_party), 1)*100, 2) # row percentages
+round(prop.table(table(corona_survey$sex, corona_survey$choice_of_party), 2)*100, 2) # column percentages
+```
+
+.small[
+*Note*: If you want to generate tables based on more than two variables, the `base R` function `ftable()` is a good option for prettier printing of results.
+]
+
+---
+
+## Crosstabs with `dplyr`
+
+We can also use functions from `dplyr` to create crosstabs including frequencies and proportions.
+
+```{r dplyr-crosstabs-freq}
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  count(sex, choice_of_party) %>% 
+  pivot_wider(names_from = choice_of_party,
+              values_from = n)
+```
+
+.small[
+*Note*: We have only briefly mentioned the function in the session on *Data Wrangling Basics* (when introducing the concept of tidy data), but - as you might guess from its name - the function `pivot_wider()`, which is part of the [`tidyr` package](https://tidyr.tidyverse.org/) changes the format of a data set from long to wide.
+]
+
+---
+
+## Crosstabs with `dplyr`
+
+We can also use functions from `dplyr` in a similar fashion as we have done for a single variable to create crosstabs including frequencies and proportions.
+
+```{r dplyr-crosstabs-prop}
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  count(sex, choice_of_party) %>% 
+  mutate(proportion = n/sum(n)*100) %>%
+  select(-n) %>% 
+  pivot_wider(names_from = choice_of_party,
+              values_from = proportion)
+```
+
+---
+
+## Other options for crosstabulation in `R`
+
+As with most things in `R`, there are many options for creating crosstabs. Some alternatives to the ones we presented before include the `CrossTable()` and `crosstab()` functions from the [`descr` package](https://cran.r-project.org/web/packages/descr/index.html) or the `ctable()` function from the [`summarytools` package](https://github.com/dcomtois/summarytools).
+
+A very versatile option for crosstabs is the `tabyl()` function from the `janitor` package that we have introduced before.
+
+---
+
+## Crosstabs with the `janitor` package
+
+The `tabyl()` function from the `janitor` package provides quite a few options for crosstabs. We will only show one example here, but you can learn more in the [`tabyl` vignette](https://cran.r-project.org/web/packages/janitor/vignettes/tabyls.html).
+
+.small[
+```{r tabyl-crosstabs}
+library(janitor)
+
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  tabyl(sex, choice_of_party) %>% 
+  adorn_totals(where = c("row","col")) %>% 
+  adorn_percentages(denominator = "row") %>% 
+  adorn_pct_formatting(digits = 2) %>% 
+  adorn_ns(position = "front")
+```
+]
+
+---
+
+## Chi-Square Test
+
+We can use the `summary()` function from `base R` in combination with `table()` to perform a chi-square test.
+
+```{r chi-square-base}
+summary(table(corona_survey$sex, corona_survey$choice_of_party))
+```
+
+---
+
+## Chi-Square Test
+
+The other packages that include functions for crosstabs mentioned before can also be used for chi-square tests: For example, the `janitor` package.
+
+```{r chi-sq-janitor}
+library(janitor)
+
+corona_survey %>% 
+  filter(!is.na(choice_of_party)) %>% 
+  tabyl(sex, choice_of_party) %>%
+  chisq.test()
+```
+
+---
+
+## Correlations
+
+Again, as with the crosstabs examples, there are many different options for calculating and displaying correlations in `R`. In addition to the `base R` functions, we will look at two packages in this part: [`corrr`](https://corrr.tidymodels.org/) and [`correlation`](https://github.com/easystats/correlation).
+
+*Note*: While we will not cover that in this session, `corrr` and `correlation` also offer some nice options for plotting correlations.
+
+---
+
+# Correlations with `base R`
+
+The `base R` function `cor()` computes the correlation coefficient(s) between two or more variables. This function can be used to calculate *Pearson's r*, *Kendall's tau*, and *Spearman's rho*. We also need to specify how we want to deal with missing values (e.g., use pairwise complete observations). For example, let's look at the correlations between the trust variables in our dataset:
+
+.small[
+```{r corr-base}
+trust <- corona_survey %>% 
+  select(starts_with("trust"))
+
+cor(trust,
+    use = "pairwise.complete.obs",
+    method = "pearson")
+```
+]
+
+---
+## Correlations with `base R`
+
+With `corr.test()` you can display the results of a significance test for a correlation.
+
+```{r corr-test}
+cor.test(trust$trust_rki, trust$trust_scientists, method = "pearson")
+```
+
+---
+
+## The `corrr` package
+
+The [`corrr` package](https://corrr.tidymodels.org/) is part of the [`tidymodels` suite of packages](https://www.tidymodels.org/) and provides various functions for displaying correlations. The main function is `correlate()` which produces a `tibble` as output.
+
+.small[
+```{r corr}
+library(corrr)
+
+correlate(trust)
+```
+]
+
+---
+
+## The `corrr` package
+
+The `corrr` package provides several functions for tweaking/optimizing the output of the `correlate()` function. Here's one example:
+
+.small[
+```{r corr-output-tweaks}
+trust %>% 
+  correlate() %>% 
+  rearrange() %>% 
+  shave() %>% 
+  fashion()
+```
+]
+
+---
+
+## The `correlation` package
+
+The [`correlation` package](https://github.com/easystats/correlation) is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) (also called the `Easyverse`). It provides a much wider range of correlation types than the `base R` function `cor()` and the `correlate()` function from the `corrr` package (e.g., biserial and tetrachoric correlations for factors). Its core is the `correlation()` function.
+
+```{r correlation, eval=FALSE}
+library(correlation)
+
+correlation(trust)
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+
+```{r ref.label = "correlation", echo = F}
+
+```
+
+---
+
+## The `correlation` package
+
+Among other things, the `correlation` package allows to calculate grouped/stratified correlations.
+
+```{r correlation-grouped, eval = F}
+corona_survey %>% 
+  select(sex, starts_with("trust")) %>% 
+  group_by(sex) %>% 
+  correlation()
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: center, middle
+
+.small[
+```{r ref.label = "correlation-grouped", echo = F}
+
+```
+]
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_1_3_Crosstabs_Correlations.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_1_3_Crosstabs_Correlations.html)
+
+---
+
+## Guilty by ~~association~~ correlation
+
+While correlation coefficients are useful for exploring relationships between variables, they can also be misleading. For example, if we do correlation analysis and we encounter a (Pearson's) correlation coefficient close to 0, we often think of relationships as pictured below.
+
+```{r dino-plot-1, out.width = "50%", echo = F}
+library(datasauRus)
+
+datasaurus_dozen %>% 
+  filter(dataset == "h_lines") %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_point() + 
+  theme_classic()
+```
+
+---
+
+## Guilty by ~~association~~ correlation
+
+This dataset has **the same correlation coefficient (Pearson's r of -0.06)** as the one on the previous slide:
+
+```{r dino-plot-2, out.width = "50%", echo = F}
+datasaurus_dozen %>% 
+  filter(dataset == "slant_up") %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_point() + 
+  theme_classic()
+```
+
+---
+
+## Guilty by ~~association~~ correlation `r emo::ji("T-Rex")`
+
+So does this one...
+
+```{r dino-plot-3, out.width = "60%", echo = F}
+datasaurus_dozen %>% 
+  filter(dataset == "dino") %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_point() + 
+  theme_classic()
+```
+
+---
+
+## Guilty by ~~association~~ correlation
+
+We could go on... The previous three examples all come from the [`datasauRus` package](https://github.com/lockedata/datasauRus) which essentially is an extension of [Anscombe's quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet) and includes 13 data sets with the same (Pearson) correlation between x and y.
+
+```{r dino-plot-4, out.width = "50%", echo = F}
+datasaurus_dozen %>% 
+ggplot(aes(x = x, y = y, colour = dataset)) +
+  geom_point() +
+  theme_void() +
+  theme(legend.position = "none") +
+  facet_wrap(~dataset, ncol=4)
+```
+
+---
+
+## Trust no singular value!
+
+Importantly, the x- and y-variables in these `datasaurus_dozen` data set also all have the same means and standard deviations.
+
+```{r datasaurus-summary-stats, eval=FALSE}
+datasaurus_dozen %>% 
+  group_by(dataset) %>%
+  summarize(
+    mean_x = mean(x), 
+    mean_y = mean(y), 
+    sd_x = sd(x), 
+    sd_y = sd(y), 
+    corr = cor(x, y, method = "pearson")
+  )
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+
+.small[
+```{r ref.label = "datasaurus-summary-stats", echo = F}
+
+```
+]
+
+---
+
+## Plot your data!
+
+The message from the `datasaurus_dozen` examples should be clear. Relying only on singular values that summarize the location or spread of a single variable or the association of two variables is not a good idea. To avoid reducing a ~~mountain to a molehill~~ dinosaur to a lack of correlation, it is important to plot your data as part of your EDA to explore:
+
+- univariate distributions
+
+- grouped univariate distributions (if you have and want to compare groups)
+
+- bivariate distributions
+
+For that reason (and also because it is fun and `R` has a lot to offer in that regard), we will dive right into data visualization with `R` in the next session...
+
+---
+
+## Missings & outliers
+
+Two things that can influence summary statistics as well as univariate and bivariate distributions are missings and outliers. Hence, before we can analyze our data, we should check whether we have clear patterns of missingness or extreme outliers in our data.
+
+---
+
+## Missing data
+
+In the *Data Wrangling Basics* session we have already discussed how we can define specific values as missings (`NA`) and how we can recode `NA` into something else. As we have seen in that session, the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset contains quite a few codes for different types of missing data. However, when we collect data ourselves or if we (re-)use datasets that are not as well-documented as the *GESIS Panel* data, we may need to explore potential patterns of missingness to see, if there may have been identifiable reasons why data for certain variables and/or observations are missing.
+
+---
+
+## Summarizing missingness
+
+The [`naniar` package](http://naniar.njtierney.com/index.html) that we have used for recoding values as `NA` in the *Data Wrangling Basics* session also provides a [collection of functions for summarizing missingness](http://naniar.njtierney.com/reference/miss_var_summary.html) in variables or whole data sets, of which we will show three examples in the following.
+
+```{r naniar-miss-summary}
+library(naniar)
+
+corona_survey %>% 
+  select(starts_with("trust")) %>% 
+  miss_var_summary(order = TRUE)
+```
+
+---
+
+## Summarizing missingness with `naniar`
+
+```{r naniar-complete-cases}
+corona_survey %>% 
+  pct_complete_case()
+```
+
+---
+
+## Summarizing missingness with `naniar`
+
+```{r naniar-miss-case-table}
+corona_survey %>% 
+  miss_case_table()
+```
+
+---
+
+## Outliers
+
+There are [many ways of identifying and dealing with outliers](https://ouzhang.me/2020/11/16/outliers-part4/). Here, we will only look at one simple univariate method: Using [interquartile range (IQR)](https://en.wikipedia.org/wiki/Interquartile_range) for identifying outliers.
+
+As this works better with numeric data on an [interval scale](https://en.wikipedia.org/wiki/Level_of_measurement#Interval_scale), we will use data from [*Gapminder*](https://www.gapminder.org/) on GDP per capita in 2018 for identifying outliers.
+
+```{r gapminder-data-display}
+gdp_pc_2018 <- read_csv("./data/gdppercapita_us_inflation_adjusted.csv") %>%
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "gdp_percap") %>% 
+  filter(year == "2018") %>% 
+  select(-year)
+```
+
+---
+
+## Detecting outliers: IQR
+
+For identifying univariate outliers we can specify lower and upper cutoffs, e.g., using the formula 25th percentile - 1.5 * interquartile range (IQR) for the lower and 75th percentile + 1.5 * IQR for the upper limit. In `R` this can be done as follows:
+
+.small[
+```{r iqr}
+q2575 <- quantile(gdp_pc_2018$gdp_percap, 
+                  probs=c(.25, .75), 
+                  na.rm = TRUE)
+
+iqr <- IQR(gdp_pc_2018$gdp_percap,
+           na.rm = TRUE)
+
+ul <-  q2575[2]+1.5*iqr  
+ll <- q2575[1]-1.5*iqr
+
+gdp_pc_2018_cut <- gdp_pc_2018 %>%
+  filter(gdp_percap <= ul)
+
+nrow(gdp_pc_2018) - nrow(gdp_pc_2018_cut)
+```
+]
+
+.small[
+**NB**: The value of 1.5 x IQR is a rule of thumb. You should always check whether this makes sense for your data. In the above example with the *Gapminder* data, e.g., it most likely does not. An alternative approach is using mean + 2 x SD (or 3 x SD), but, again, this is nothing more than a rule of thumb.
+]
+
+---
+
+## Other packages for EDA
+
+While we have covered quite a few packages (that can be used) for EDA in this session, there still are plenty of others that also provide some interesting functionalities. Some of these additional/alternative options are:
+- [`inspectdf`](https://alastairrushworth.github.io/inspectdf/)
+- [`skimr`](https://docs.ropensci.org/skimr/)
+- [`descriptr`](https://descriptr.rsquaredacademy.com/index.html)
+- [`DataExplorer`](https://boxuancui.github.io/DataExplorer/)
+- [`explore`](https://github.com/rolkra/explore)
+- [`dataReporter`](https://github.com/ekstroem/dataReporter)
+
+---
+
+## Automated EDA reports
+
+Some of the EDA packages provide functions for generating automated EDA reports, for example:
+- the `skim()` function from the [`skimr` package](https://docs.ropensci.org/skimr/)
+- the `make_report()` function from the [`dataReporter` package](https://github.com/ekstroem/dataReporter)
+- the `report()` function from the [`explore` package](https://github.com/rolkra/explore)
+
+The function `explore`() from the `explore` package also allows for interactive data exploration.
+
+As we have seen throughout this session, there are quite a few `R` packages (that can be used) for EDA. Some of them provide wrapper functions for generating automated EDA reports. Some of the options for this include:
+
+---
+
+# Extracurricular activities
+
+Further explore the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset and develop some ideas for interesting research questions that you could answer by analyzing it with `R`.
