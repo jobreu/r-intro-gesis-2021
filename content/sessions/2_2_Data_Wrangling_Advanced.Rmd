@@ -478,9 +478,9 @@ descriptives_na(c(1, 2), statistic = "mode")
 
 class: center, middle
 
-# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_3_If_I_had_a_Function.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](XXX)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_4_If_I_had_a_Function.html)
 
 ---
 
@@ -675,9 +675,9 @@ include_picture("map_frosting.png")
 
 class: center, middle
 
-# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_4_Purrr_Joy_of_Writing_Loops.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](XXX)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_2_2_4_Purrr_Joy_of_Writing_Loops.html)
 
 ---
 
