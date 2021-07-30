@@ -1,6 +1,6 @@
 ---
 title: "Introduction to R for Data Analysis"
-subtitle: "Data Wrangling Basics"
+subtitle: "Exploratory Data Analysis"
 author: "Johannes Breuer & Stefan Jünger"
 date: "2021-08-04"
 presenter: Johannes
@@ -640,7 +640,7 @@ corona_survey %>%
 
 ## Summary tables with `gtsummary`
 
-You can also save the output of `tbl_summary()` directly in a Word file. For that to work, however, you also need to use a function from the [`flextable` package](https://davidgohel.github.io/flextable/index.html).  
+You can also save the output of `tbl_summary()` directly in a *Word* file. For that to work, however, you also need to use a function from the [`flextable` package](https://davidgohel.github.io/flextable/index.html).  
 
 ```{r gts-word, eval=FALSE}
 library(flextable)
