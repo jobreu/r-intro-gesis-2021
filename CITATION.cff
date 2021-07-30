@@ -1,5 +1,5 @@
-# YAML 1.2
----
+cff-version: 1.2.0
+message: "If you use these materials, please cite them as follows."
 authors: 
   -
     affiliation: "GESIS - Leibniz Institute for the Social Sciences"
@@ -11,9 +11,6 @@ authors:
     family-names: "Jünger"
     given-names: Stefan
     orcid: "https://orcid.org/0000-0001-8100-7957"
-cff-version: "1.1.0"
-date-released: 2021-08-03
-message: "If you use these materials, please cite them as follows."
 title: "Workshop 'Introduction to R for Data Analysis'"
+date-released: 2021-08-03
 url: "https://github.com/jobreu/r-intro-gesis-2021"
-...
