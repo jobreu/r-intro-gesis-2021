@@ -77,18 +77,12 @@ In a nutshell, with `R Markdown` it is possible to produce dynamic documents whi
 --
 
 - render to many different output formats, including:
-
-  + HTML
-  
-  + Markdown
-  
-  + PDF
-  
-  + Microsoft Word
-  
+  + `HTML`
+  + `Markdown`
+  + `PDF`
+  + *Microsoft Word*
   + Open Document
-  
-  + RTF
+  + `RTF`
 
 For a [full list of supported output formats](https://rmarkdown.rstudio.com/docs/reference/index.html#section-output-formats) see the `rmarkdown` package documentation.
 
@@ -126,7 +120,7 @@ woRkshoptools::include_picture("./create_rmarkdown_menu.png")
 
 If you want to generate PDF output with `R Markdown`, you need `LaTeX`. If you have a `LaTeX` distribution like [`MiKTeX`](https://miktex.org/) or [`TeX Live`](https://www.tug.org/texlive/) on your system, you should be all set.
 
-If you do not have `LaTeX` installed, the easiest option - especially if you do not want to use plain `LaTeX` - is to install [`TinyTeX`](https://yihui.org/tinytex/) which is "a lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live". To do so you can use the [`tinytex` package](https://cran.r-project.org/web/packages/tinytex/index.html).
+If you do not have `LaTeX` installed, the easiest option - especially if you do not want to use plain `LaTeX` - is installing [`TinyTeX`](https://yihui.org/tinytex/) which is "a lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live". You can do that using the [`tinytex` package](https://cran.r-project.org/web/packages/tinytex/index.html).
 
 ```{r tinytex, eval = F}
 install.packages('tinytex')
@@ -134,12 +128,15 @@ install.packages('tinytex')
 tinytex::install_tinytex()
 ```
 
+.small[
 **Note**: As we can't cover `LaTeX` in this course and because - based on your system configuration (OS, admin rights, etc.) - properly setting up `LaTeX` can be a bit fiddly (especially if you do not use `tinytex`), we will focus on `HTML` output for this session.
+]
 
 ---
 
 ## Output formats
 
+.small[
 The `R Markdown` package supports various output types and formats, such as:
 
 - Documents
@@ -148,14 +145,13 @@ The `R Markdown` package supports various output types and formats, such as:
   + `RTF`
   + *OpenDocument*
   + *Microsoft Word*
-
+  
 - Presentations
   + ioslides (`HTML`)
   + slidy (`HTML`)
   + Beamer (`LaTeX`)
   + *Microsoft PowerPoint*
   
-.small[  
 *Note*: Some of these options require that additional software is installed (e.g., `LaTeX` for PDF, including Beamer presentations, *LibreOffice* for *OpenDocument*, or *Microsoft Office* for *Word* and *PowerPoint*).
 ]
 
@@ -163,6 +159,7 @@ The `R Markdown` package supports various output types and formats, such as:
 
 ## Things to do with `R Markdown`...
 
+.small[
 There are quite a few packages that offer extension output formats for `R Markdown`. For example:
 - [`pagedown`](https://github.com/rstudio/pagedown) for paginated `HTML` output that can be turned into PDF without the need to use `LaTeX` (can also be used to create [data-based CVs](https://github.com/nstrayer/cv))
 - [`officedown`](https://davidgohel.github.io/officedown/) for extended formatting and output options for *Microsoft Office* documents
@@ -175,6 +172,7 @@ There are quite a few packages that offer extension output formats for `R Markdo
 - [`vitae`](https://github.com/mitchelloharawild/vitae) for (data-based) Résumés and CVs
 - [`posterdown`](https://github.com/brentthorne/posterdown) for academic (conference) posters
 - [`flexdashboard`](https://rmarkdown.rstudio.com/flexdashboard/index.html) for interactive dashboards
+]
 
 ---
 
@@ -182,7 +180,7 @@ There are quite a few packages that offer extension output formats for `R Markdo
 
 When you create a new `R Markdown` document in *RStudio* the new document will include a basic template to which I added a few lines on inline code at the end in the example below.
 
-```{r, rmarkdown-example, out.width = "60%", echo = F}
+```{r, rmarkdown-example, out.width = "55%", echo = F}
 woRkshoptools::include_picture("./rmarkdown_example.png")
 ```
 
@@ -190,7 +188,7 @@ woRkshoptools::include_picture("./rmarkdown_example.png")
 
 ## Anatomy of an `R Markdown` document
 
-```{r, rmarkdown-annotated, out.width = "70%", echo = F}
+```{r, rmarkdown-annotated, out.width = "65%", echo = F}
 woRkshoptools::include_picture("./rmarkdown_example_annotated.png")
 ```
 
@@ -225,11 +223,11 @@ While it is not necessary to know `Markdown` to use `R Markdown` (though if you 
 ### Syntax
 
 ```
-**bold**
+***bold**
 
-*italics*
+**italics*
 
-***bold & italics***
+****bold & italics***
 
 ~~strikethrough~~
 ```
@@ -315,7 +313,7 @@ A new paragraph is started with a blank line before the text. **NB**: If you jus
 
 ## Code & formulas
 
-.column-left[
+.pull-left[
 ### Syntax
 
 ```
@@ -333,7 +331,7 @@ $$\sigma^{2} = \frac{\sum_{i=1}^{n}
 ]
 ]
 
-.column-right[
+.pull-right[
 ### Output
 
 `library(tidyverse)`
@@ -392,6 +390,10 @@ As the name says, code chunks in `R Markdown` documents include code. This is ty
 
 You can insert a code chunk via the `Insert` button (select `R`) or using the keyboard shortcut <kbd>Ctrl + Alt + I</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Option + I</kbd> (*Mac*). 
 
+---
+
+## Code chunks
+
 It is good practice to name code chunks. In the above example `{r cars}` specifies the language for the code `r` and a name `cars`. By naming code chunks it is, e.g., possible to reference them in other code chunks and they will also appear in the interactive ToC at the bottom of the tab for the `R Markdown` document. Chunk names may never be used twice in a single document and should not include spaces or underscores.
 
 ---
@@ -436,7 +438,7 @@ It is also possible to include comments in an `RMarkdown` document that will not
 
 To compile the `RMarkdown` document (in this case into a `HTML`) document, you simply need to click the `Knit` `r ji("yarn")` button. Doing this will generate the `HTML` file (by default) in the directory where the `.Rmd` file is stored. It will also open a preview window in *RStudio*.
 
-```{r, rmarkdown-preview, out.width = "60%", echo = F}
+```{r, rmarkdown-preview, out.width = "55%", echo = F}
 woRkshoptools::include_picture("./rmarkdown_preview.png")
 ```
 
@@ -445,6 +447,10 @@ woRkshoptools::include_picture("./rmarkdown_preview.png")
 ## Things to know about knitting in *RStudio*
 
 The knitting process happens in a new environment. The working directory for this will (by default) be the directory in which the `.Rmd` file is stored. This is important, e.g., for setting file paths in the `.Rmd` document. This also means that this process will not have access to any of the objects or functions you have created as well as packages you have loaded in the current session.
+
+---
+
+## Things to know about knitting in *RStudio*
 
 When you are new to `R Markdown` it makes sense to knit early and knit often to see if everything works and produces the results you expected (unless your document is computationally intensive and, hence, takes a long time to compile).
 
@@ -455,7 +461,9 @@ However, for computationally intensive tasks, you could consider setting the opt
 
 Behind the scenes, `R Markdown` uses [`knitr`](https://yihui.org/knitr/) to execute the code and create a `Markdown` (`.md`) document with the code and output included, and [`pandoc`](https://pandoc.org/) to convert to a range of different output formats. Again, both of them are included when you install *RStudio*.
 
-.center[<img src="./rmarkdown_process.png" width="80%">]
+```{r, rmarkdown-process, out.width = "70%", echo = F}
+woRkshoptools::include_picture("./rmarkdown_process.png")
+```
 <small><small>Figure by [Andrew Collier](https://github.com/datawookie)</small></small>
 
 ---
@@ -468,12 +476,11 @@ woRkshoptools::include_picture("./rmarkdown_wizards.png")
 <small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-Artworks) </small></small>
 
 ---
-
 ## Workflow
 
-When you use `R Markdown` to create documents it makes sense to adopt a [project-based workflow using *RStudio* projects]((https://rstats.wtf/project-oriented-workflow.html) to "have everything in one place" which facilitates sharing (or also simply moving/copying) your materials and increases reproducibility (for yourself and others).
+When you use `R Markdown` to create documents it makes sense to adopt a [project-based workflow using *RStudio* projects]((https://rstats.wtf/project-oriented-workflow.html) to "have everything in one place" which facilitates sharing and increases reproducibility (for yourself and others).
 
-```{r, rmarkdown-repro-cartoon, out.width = "75%", echo = F}
+```{r, rmarkdown-repro-cartoon, out.width = "70%", echo = F}
 woRkshoptools::include_picture("./reproducibility_court.png")
 ```
 <small><small>Artwork by [Allison Horst](https://github.com/allisonhorst/stats-Artworks) </small></small>
@@ -536,9 +543,9 @@ output:
 
 ## Visual `R Markdown` editor
 
-If [WYSIWIG](https://en.wikipedia.org/wiki/WYSIWYG) is more your thing, you can rejoice as new(er) versions of *RStudio* (v. 1.4 or higher) now offer a [Visual `R Markdown`](https://rstudio.github.io/visual-markdown-editing/#/) editor. If you have an `.Rmd` document open in *RStudio*, you can open the visual editor via the GUI,
+If [WYSIWIG](https://en.wikipedia.org/wiki/WYSIWYG) is more your thing, you can rejoice as new(er) versions of *RStudio* (v. 1.4 or higher) now offer a [Visual `R Markdown`](https://rstudio.github.io/visual-markdown-editing/#/) editor. If you have an `.Rmd` document open in *RStudio*, you can open the visual editor via the GUI (in the `Source` pane).
 
-```{r, visual-rmd-open, out.width = "50%", echo = F}
+```{r, visual-rmd-open, out.width = "85%", echo = F}
 woRkshoptools::include_picture("./rstudio_open_visual_rmd.png")
 ```
 
@@ -546,9 +553,9 @@ woRkshoptools::include_picture("./rstudio_open_visual_rmd.png")
 
 ## Visual `R Markdown` editor
 
-You can then use the visual editor in *RStudio* for editing your `R Markdown` document in a similar as you would, e.g., do in *Microsoft Word*.
+You can use the visual editor in *RStudio* for editing your `R Markdown` document similar to *Microsoft Word*.
 
-```{r, visual-rmd, out.width = "50%", echo = F}
+```{r, visual-rmd, out.width = "95%", echo = F}
 woRkshoptools::include_picture("./rstudio_visual_rmd.png")
 ```
 
@@ -614,7 +621,7 @@ Watch some of the short (~ 10 mins each) [tutorial videos on *YouTube* by Nick F
 
 Read the really accessible [blog post by Alison Hill](https://alison.rbind.io/blog/2020-12-new-year-new-blogdown/) or watch the [series of *YouTube* videos by Jennifer Sloane](https://www.youtube.com/playlist?list=PLpZT7JPM8_GbPiX4ibrP7ogl7GyEofZMj) and get started building your own personal `R`-powered website using [`blogdown`](https://pkgs.rstudio.com/blogdown/).
 
-Another good options for creating websites with `R Markdown` is [`distill`](https://rstudio.github.io/distill/), which is geared a bit more towards blogging. There are also plenty of tutorials on this online, such as this [blog post by Yury Zablotski](https://yuzar-blog.netlify.app/posts/2020-12-26-how-to-create-a-blog-or-a-website-in-r-with-distill-package/) or this [*YouTube* video tutorial by Lisa Lendway](https://www.youtube.com/watch?v=Fm3bsYCilEU).
+Another good option for creating websites with `R Markdown` is [`distill`](https://rstudio.github.io/distill/), which is geared a bit more towards blogging. There are also plenty of tutorials on this online, such as this [blog post by Yury Zablotski](https://yuzar-blog.netlify.app/posts/2020-12-26-how-to-create-a-blog-or-a-website-in-r-with-distill-package/) or this [*YouTube* video tutorial by Lisa Lendway](https://www.youtube.com/watch?v=Fm3bsYCilEU).
 
 ---
 

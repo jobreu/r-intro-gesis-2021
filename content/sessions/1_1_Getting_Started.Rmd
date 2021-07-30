@@ -51,7 +51,7 @@ include_picture("./data-science.png")
 
 **Minor spoiler alert!**
 
-By the end of this course, you should be able to produce a report like this one all by yourself, only using *R* & *RStudio*:
+By the end of this course, you should be able to produce a report like this one all by yourself, only using `R` & *RStudio*:
 
 [R Markdown Report](https://jobreu.github.io/r-intro-gesis-2021/exercises/explore_gapminder.html)
 
@@ -610,7 +610,7 @@ gsub
 
 The first (clumsy and silly) `R` function Johannes ever wrote...
 
-```{r darknight, eval = FALSE, echo = TRUE}
+```{r darknight, eval = FALSE}
 batman <- function() {
   suppressWarnings (
     if (!require("cowsay")) {
@@ -629,7 +629,8 @@ batman()
 
 ---
 class: middle
-```{r ref.label = "darknight", echo = FALSE}
+```{r batman-func, echo=FALSE, out.width="90%"}
+woRkshoptools::include_picture("./batman.png")
 ```
 
 ---
