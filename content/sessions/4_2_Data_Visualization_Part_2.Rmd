@@ -1,0 +1,672 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Data Visualization - Part 2"
+author: "Johannes Breuer & Stefan Jünger"
+date: "2021-08-05"
+presenter: Stefan
+editor_options: 
+  chunk_output_type: console
+---
+
+layout: true 
+
+```{r child = "../config/sessions_setup.Rmd"}
+```
+
+```{r load-gp-covid, include = FALSE}
+gp_covid <- 
+  haven::read_sav(
+    "./data/ZA5667_v1-1-0.sav"
+  ) %>% 
+  sjlabelled::set_na(na = c(-1:-99, 97, 98)) %>% 
+  rowwise() %>%
+  mutate(
+    mean_trust = 
+      mean(
+        c_across(hzcy044a:hzcy052a),
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup() %>% 
+  sjlabelled::remove_all_labels() %>% 
+  mutate(
+    pol_leaning_cat = 
+      case_when(
+        between(political_orientation, 0, 3) ~ "left",
+        between(political_orientation, 4, 7) ~ "center",
+        political_orientation > 7 ~ "right"
+      ) 
+  ) %>% 
+  filter(pol_leaning_cat != "NA")
+```
+
+---
+
+## Content of this session
+
+.pull-left[
+**What we will do**
+- Visual checks of model assumptions
+- Plotting coefficients
+- Plotting predictions
+- Plotting multiple models
+]
+
+.pull-right[
+**What we won't do**
+- Again, no crazy models
+- No bayesian statistics
+]
+
+---
+
+## Packages in this sessions
+
+.pull-left[
+We will again rely on packages from the `easystats` collection
+- `paramters`
+- `performance`
+- **`see`**
+]
+
+.pull-right[
+```{r easystats-pic, echo = FALSE}
+woRkshoptools::include_picture("logo_wall.png")
+```
+]
+
+.pull-left[
+While it's straightforward to use, it still has some limitations. From time to time we will therefore also switch to the `sjPlot` package
+]
+
+.pull-right[
+```{r sjPlot-pic, echo = FALSE}
+woRkshoptools::include_picture("sjplot_logo.png")
+```
+]
+
+---
+
+## Estimating a linear model (OLS)
+
+```{r linear-model}
+linear_model <-
+  lm(
+    mean_trust ~
+      age_cat + sex + education_cat + pol_leaning_cat,
+    data = gp_covid
+  )
+
+library(parameters)
+
+model_parameters(linear_model)
+```
+
+---
+
+## Quick inspection using `base R`
+
+.pull-left[
+```{r lm_summary_plot, eval = FALSE}
+par(mfrow = c(2, 2))
+plot(linear_model)
+```
+]
+
+.pull-right[
+```{r ref.label = "lm_summary_plot", echo = FALSE}
+```
+]
+
+---
+
+## Using `easystats`
+
+.pull-left[
+```{r easystats-performance, eval = FALSE}
+library(performance)
+library(see)
+
+check_normality(linear_model) %>% 
+  plot()
+```
+]
+
+.pull-right[
+```{r ref.label = "easystats-performance", echo = FALSE}
+```
+]
+
+---
+
+## QQ-Plot (`easystats`)
+
+.pull-left[
+```{r easystats-qq, eval = FALSE}
+check_normality(linear_model) %>% 
+  plot(type = "qq")
+```
+]
+
+.pull-right[
+```{r ref.label = "easystats-qq", echo = FALSE}
+```
+]
+
+---
+
+## Heteroscedasticity (`easystats`)
+
+.pull-left[
+```{r easystats-hetero, eval = FALSE}
+check_heteroscedasticity(linear_model) %>% 
+  plot()
+```
+]
+
+.pull-right[
+```{r ref.label = "easystats-hetero", echo = FALSE}
+```
+]
+
+---
+
+## Check outliers (`easystats`)
+
+.pull-left[
+```{r check-outliers, eval = FALSE}
+check_outliers(linear_model) %>% 
+  plot()
+```
+]
+
+.pull-right[
+```{r ref.label = "check-outliers", echo = FALSE}
+```
+]
+
+
+---
+
+## Coefficient plot (`easystats`)
+
+.pull-left[
+```{r easystats-coef-plot, eval = FALSE}
+library(parameters)
+
+model_parameters(linear_model) %>% 
+  plot()
+```
+]
+
+.pull-right[
+```{r ref.label = "easystats-coef-plot", echo = FALSE}
+```
+]
+
+---
+
+## Changing labels: it's `ggplot2`-based
+
+.pull-left[
+```{r labels-change, eval = FALSE}
+library(ggplot2)
+
+model_parameters(linear_model) %>% 
+  plot() +
+  scale_x_discrete(
+    labels = # in reversed order!
+      c(
+        "Pol. Right (Ref. Center)",
+        "Pol. Left (Ref. Center)", 
+        "Education", 
+        "Sex", 
+        "Age"
+      )
+  )
+```
+]
+
+.pull-right[
+```{r ref.label = "labels-change", echo = FALSE}
+```
+]
+
+---
+
+## Making it more dim and scientific
+
+.pull-left[
+```{r labels-change-2, eval = FALSE}
+library(ggplot2)
+
+model_parameters(linear_model) %>% 
+  
+  plot() +
+  scale_x_discrete(
+    labels = # in reversed order!
+      c(
+        "Pol. Right (Ref. Center)",
+        "Pol. Left (Ref. Center)", 
+        "Education", 
+        "Sex", 
+        "Age"
+      )
+  ) +
+  scale_colour_grey(start = 0, end = 0) + 
+    guides(color = "none")
+```
+]
+
+.pull-right[
+```{r ref.label = "labels-change-2", echo = FALSE}
+```
+]
+
+---
+
+## Predictions (`sjPlot`)
+
+.pull-left[
+```{r predictions, eval = FALSE}
+library(sjPlot)
+
+linear_model %>% 
+  plot_model(
+    type = "pred", 
+    terms = "age_cat"
+  )
+
+```
+]
+
+.pull-right[
+```{r ref.label = "predictions", echo = FALSE}
+```
+]
+
+---
+
+## Again, it's `ggplot2`-based
+
+.pull-left[
+```{r predictions-nicer, eval = FALSE}
+linear_model %>% 
+  plot_model(
+    type = "pred", 
+    terms = "age_cat"
+  ) +
+  xlab("Age") +
+  ylab("Trust") +
+  ggtitle("Linear Model") +
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r ref.label = "predictions-nicer", echo = FALSE}
+```
+]
+
+---
+
+## Estimating multiple models
+
+```{r median-split}
+gp_covid <-
+  gp_covid %>% 
+  mutate(
+    mean_trust_median = 
+      ifelse(
+        mean_trust <= median(mean_trust, na.rm = TRUE),
+        0,
+        1
+      )
+  )
+```
+
+---
+
+## Logistic regressions
+
+```{r log-reg}
+logistic_model <-
+  glm(
+    mean_trust_median ~
+      age_cat + sex + education_cat + pol_leaning_cat,
+    data = gp_covid,
+    family = binomial(link = "logit"),
+  )
+
+model_parameters(logistic_model)
+```
+
+---
+
+## Linear probability model
+
+```{r prob-reg}
+linear_probability_model <-
+  lm(
+    mean_trust_median ~
+      age_cat + sex + education_cat + pol_leaning_cat,
+    data = gp_covid,
+  )
+
+model_parameters(linear_probability_model)
+```
+
+---
+
+## Comparing model fits (`easystats`)
+
+.pull-left[
+```{r comparing-model-fit, eval = FALSE}
+library(performance)
+
+compare_performance(
+  linear_model,
+  logistic_model,
+  linear_probability_model
+) %>% 
+  plot()
+```
+]
+
+.pull-right[
+```{r ref.label = "comparing-model-fit", echo = FALSE}
+```
+]
+
+---
+
+## Comparing model parameters (`sjPlot`)
+
+.pull-left[
+```{r comparing-parameters, eval = FALSE}
+plot_models(
+  linear_model,
+  logistic_model,
+  linear_probability_model,
+  std.est = "std"
+)
+```
+]
+
+.pull-right[
+```{r ref.label = "comparing-parameters", echo = FALSE}
+```
+]
+
+---
+
+## Adjusting it within the function
+
+.pull-left[
+```{r comparing-parameters-adjusted, eval = FALSE}
+plot_models(
+  linear_model,
+  logistic_model,
+  linear_probability_model,
+  std.est = "std",
+  m.labels = 
+    c(
+      "Linear",
+      "Logistic", 
+      "Linear Probability"
+      ),
+  axis.labels = 
+      c(
+        "Pol. Right (Ref. Center)",
+        "Pol. Left (Ref. Center)", 
+        "Education", 
+        "Sex", 
+        "Age"
+      )
+) 
+```
+]
+
+.pull-right[
+```{r ref.label = "comparing-parameters-adjusted", echo = FALSE}
+```
+]
+
+---
+
+## But it's still a `ggplot2` object
+
+.pull-left[
+```{r comparing-parameters-adjusted-bw, eval = FALSE}
+plot_models(
+  linear_model,
+  logistic_model,
+  linear_probability_model,
+  # std.est = "std",
+  m.labels = 
+    c(
+      "Linear",
+      "Logistic", 
+      "Linear Probability"
+      ),
+  axis.labels = 
+      c(
+        "Pol. Right (Ref. Center)",
+        "Pol. Left (Ref. Center)", 
+        "Education", 
+        "Sex", 
+        "Age"
+      )
+) +
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r ref.label = "comparing-parameters-adjusted-bw", echo = FALSE}
+```
+]
+
+---
+
+## Plotting predictions from multiple models
+
+```{r extract-linear-predictions}
+linear_predictions <-
+  get_model_data(
+    linear_model,
+    term = "age_cat",
+    type = "pred"
+  )
+
+linear_predictions
+```
+
+---
+
+## Predictions from the other two models
+
+.pull-left[
+```{r extract-logistic-predictions}
+logistic_predictions <-
+  get_model_data(
+    logistic_model,
+    term = "age_cat",
+    type = "pred"
+  )
+```
+]
+
+.pull-right[
+```{r extract-lp-predictions}
+linear_probability_predictions <-
+  get_model_data(
+    linear_probability_model,
+    term = "age_cat",
+    type = "pred"
+  )
+```
+]
+
+---
+
+## Combining it in one table
+
+```{r table}
+library(dplyr)
+library(tibble)
+
+all_predictions <-
+  bind_rows(
+    linear_predictions %>% 
+      mutate(model = "Linear Model"),
+    logistic_predictions %>% 
+      mutate(model = "Logistic Model"),
+    linear_probability_predictions %>% 
+      mutate(model = "Linear Probability Model")
+  ) %>% 
+  as_tibble()
+```
+
+---
+
+## Plotting them with `facet_wrap()`
+
+.pull-left[
+```{r all-in-one, eval = FALSE}
+ggplot(
+  all_predictions, 
+  aes(x = x, y = predicted)
+  ) +
+  geom_line() +
+  geom_line(aes(y = conf.high), linetype = "dashed") +
+  geom_line(aes(y = conf.low), linetype = "dashed") +
+  facet_wrap(~model) +
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r ref.label = "all-in-one", echo = FALSE}
+```
+]
+
+---
+
+## Plotting only the binary models
+
+.pull-left[
+```{r only-two, eval = FALSE}
+only_two <-
+  ggplot(
+    all_predictions %>% 
+      filter(model != "Linear Model"), 
+    aes(x = x, y = predicted)
+  ) +
+  geom_line() +
+  geom_line(aes(y = conf.high), linetype = "dashed") +
+  geom_line(aes(y = conf.low), linetype = "dashed") +
+  facet_wrap(~model) +
+  theme_bw()
+
+only_two
+```
+]
+
+.pull-right[
+```{r ref.label = "only-two", echo = FALSE}
+```
+]
+
+---
+
+## The same logic for real AME
+
+```{r margins}
+library(margins)
+
+logistic_model_AME <-
+  cplot(
+    logistic_model,
+    what = "prediction",
+    draw = FALSE
+  )
+
+linear_probability_model_AME <-
+  cplot(
+    linear_probability_model,
+    what = "prediction",
+    draw = FALSE
+  )
+```
+
+---
+
+## Combining AME data
+
+```{r combine-data-again}
+all_AME <-
+  bind_rows(
+    logistic_model_AME %>% 
+      mutate(model = "Logistic Model"),
+    linear_probability_model_AME %>% 
+      mutate(model = "Linear Probability Model")
+  ) %>% 
+  as_tibble()
+```
+
+---
+
+## Plotting them again
+
+.pull-left[
+```{r only-two-AME, eval = FALSE}
+only_two_AME <- 
+  ggplot(
+    all_AME, 
+    aes(x = xvals, y = yvals)
+  ) +
+  geom_line() +
+  geom_line(aes(y = upper), linetype = "dashed") +
+  geom_line(aes(y = lower), linetype = "dashed") +
+  facet_wrap(~model) +
+  theme_bw()
+
+only_two_AME
+```
+]
+
+.pull-right[
+```{r ref.label = "only-two-AME", echo = FALSE}
+```
+]
+
+---
+
+## Combining them with previous predictions
+
+.pull-left[
+```{r patchwork-combining, eval = FALSE}
+library(patchwork)
+
+(only_two +
+  ggtitle("Simple Predictions") +
+    ylab("Predicted Trust Value") +
+    xlab("Age")) / 
+  (only_two_AME +
+  ggtitle("AME Predictions") +
+    ylab("Predicted Trust Value") +
+    xlab("Age"))
+  
+
+```
+]
+
+.pull-right[
+```{r ref.label = "patchwork-combining", echo = FALSE}
+```
+]
+
+
+
+
