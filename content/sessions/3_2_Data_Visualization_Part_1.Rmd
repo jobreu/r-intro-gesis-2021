@@ -96,7 +96,7 @@ barplot(table(gp_covid$hzcy001a))
 ]
 
 .pull-right[
-```{r ref.label = "graphics_hist", echo = FALSE}
+```{r ref.label = "graphics_barplot", echo = FALSE}
 ```
 ]
 
@@ -161,9 +161,12 @@ plot(
   jitter(gp_covid$age_cat, 2), 
   jitter(gp_covid$hzcy001a, 2),
   pch = 16,
-  main = "Relationship between Age and Subjective Risk of a COVID-19 Infection",
-  xlab = "Age of Respondents",
-  ylab = "Subjective Risk of Being Infected"
+  main = 
+    "Relationship Age and Subjective Risk of a COVID-19 Infection",
+  xlab = 
+    "Age of Respondents",
+  ylab = 
+    "Subjective Risk of Being Infected"
 )
 ```
 ]
@@ -183,10 +186,14 @@ plot(
   jitter(gp_covid$age_cat, 2), 
   jitter(gp_covid$hzcy001a, 2),
   pch = 16,
-  main = "Relationship between Age and Risk of Covid-19 Infection",
-  xlab = "Age of Respondents",
-  ylab = "Subjective Risk of Being Infected",
-  yaxt = "n"
+  main = 
+    "Relationship Age and Risk of Covid-19 Infection",
+  xlab = 
+    "Age of Respondents",
+  ylab = 
+    "Subjective Risk of Being Infected",
+  yaxt = 
+    "n"
 )
 axis(
   side = 2, 
@@ -215,7 +222,6 @@ axis(
 
 class: center, middle
 
-
 # [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_1_A_Simple_Plot.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
 ## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_1_A_Simple_Plot.html)
@@ -232,9 +238,12 @@ plot(
   jitter(gp_covid$age_cat, 2), 
   jitter(gp_covid$hzcy001a, 2),
   pch = 16,
-  main = "Relationship between Age and Subjective Risk of Covid-19 Infection",
-  xlab = "Age of Respondents",
-  ylab = "Subjective Risk of Being Infected",
+  main = 
+    "Relationship Age and Subjective Risk of Covid-19 Infection",
+  xlab = 
+    "Age of Respondents",
+  ylab = 
+    "Subjective Risk of Being Infected",
   yaxt = "n"
 )
 
@@ -316,13 +325,16 @@ my_scatterplot <- recordPlot()
 
 ## Where to go from here in `Base R`'s graphics?
 
+.pull-left[
 Using similar procedures, we can add more and more stuff to our plot or edit its elements:
 - regression lines
 - legends
 - annotations
 - colors
 - etc. 
+]
 
+.pull-right[
 We surely also apply different *plot types*, such as
 - histograms
 - barplots
@@ -330,6 +342,7 @@ We surely also apply different *plot types*, such as
 - densities
 - pie charts
 - etc.
+]
 
 ---
 
@@ -378,7 +391,7 @@ barplot(
 ---
 
 ## One last detail: the `par()` and `dev.off()` function
-`par()` stands for graphical parameters and is called before the actual plotting function. It prepares the graphics device in `R` and tells it: "Hey, plot(s) incoming!" A lot can be done within this function. The most commonly used options are for "telling" the device that 2, 3, 4, or `x` plots have to be printed.
+`par()` stands for graphical parameters and is called before the actual plotting function. It prepares the graphics device in `R`. The most commonly used options are for "telling" the device that 2, 3, 4, or `x` plots have to be printed.
 
 We have used the option `mfrow` before by telling it how many rows (the first value in the vector) and columns (the second value in the vector) we aim to plot. 
 
@@ -394,12 +407,9 @@ dev.off()
 
 ---
 
-## Exporting graphics
-It's nice that `R` provides such pleasant plotting opportunities.
+class: middle
 
-However, to include them in our papers, we need to export them.
-
-As said in the beginning, numerous export formats are available in `R`.
+**It's nice that `R` provides such pleasant plotting opportunities. However, to include them in our papers, we need to export them. As said in the beginning, numerous export formats are available in `R`.**
 
 ---
 
@@ -536,7 +546,10 @@ ggplot(gp_covid, aes(x = age_cat)) +
 ```{r base_boxplot, eval = FALSE}
 ggplot(
   gp_covid, 
-  aes(x = as.factor(age_cat), y = sum_trust)) + 
+  aes(
+    x = as.factor(age_cat), 
+    y = sum_trust)
+) + 
   geom_boxplot()
 ```
 ]
@@ -593,7 +606,6 @@ However, this makes it difficult to add extra features to your plot.
 
 ## Why the long format? `r emo::ji("horse")`
 `ggplot2` prefers data in the long data format (**NB**: of course, only if this is possible and makes sense for the dataset at hand)
-- in some scientific disciplines this format is only used for specialized analyses (e.g., time series analysis)
 
 .pull-left[
 We may want to get used to it as this format has some benefits:
@@ -672,8 +684,8 @@ ggplot(
 
 ## Creating your own plot
 We do not want to give a lecture on the theory behind data visualization (if you want that, we suggest having a look at the excellent book [*Fundamentals of Data Visualization*](https://serialmentor.com/dataviz/) by Claus O. Wilke).
-- creating plots is all about practice
-- ...and 'borrowing' code from others
+
+Creating plots is all about practice... and 'borrowing' code from others.
 
 .column-left-half[
 ```{r pseudo, eval = FALSE, echo = TRUE}
@@ -688,8 +700,7 @@ please +
 
 .column-right-half[
 Three components are important:
-- Plot initiation
-- data input
+- Plot initiation and data input
 - aesthetics definition
 - so-called geoms
 ]
@@ -700,7 +711,7 @@ Three components are important:
 Now, let's start from the beginning and have a closer look at the *grammar of graphics*.
 
 .pull-left[
-`ggplot()` is the most basic command to create a plot (similar as `plot()`:
+`ggplot()` is the most basic command to create a plot:
 
 ```{r ggplot_basic, eval = FALSE}
 ggplot()
@@ -804,7 +815,7 @@ class: center, middle
 
 ---
 
-## Goind further: Working with grouping variables
+## Going further: Working with grouping variables
 
 ```{r left-right}
 gp_covid <-
@@ -838,7 +849,7 @@ ggplot(
     group = pol_leaning_cat
   )
 ) +
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm", se = FALSE)
 ```
 ]
 
@@ -880,7 +891,7 @@ The legend is drawn automatically, that's handy!
 ## Using another palette
 
 .pull-left[
-```{r ggplot_group_spectral, eval = FALSE}
+```{r ggplot_group_dark2, eval = FALSE}
 ggplot(
   data = gp_covid,
   aes(
@@ -891,12 +902,14 @@ ggplot(
   )
 ) +
   geom_smooth(method = "lm", se = FALSE) +
-  scale_color_brewer(palette = "Spectral") 
+  scale_color_brewer(
+    palette = "Dark2"
+  ) 
 ```
 ]
 
 .pull-right[
-```{r ref.label = "ggplot_group_spectral", echo = FALSE}
+```{r ref.label = "ggplot_group_dark2", echo = FALSE}
 ```
 ]
 
@@ -911,32 +924,6 @@ Have this difference in mind when you use `scale_color_brewer` or `scale_fill_br
 
 ---
 
-## Choosing a fill color
-
-.pull-left[
-```{r ggplot_group_fill, eval = FALSE}
-ggplot(
-  data = gp_covid,
-  aes(
-    x = age_cat, 
-    y = sum_trust, 
-    color = pol_leaning_cat,
-    group = pol_leaning_cat
-  )
-) +
-  geom_smooth(method = "lm", se = FALSE) +
-  scale_color_brewer(palette = "Spectral") +
-  scale_fill_brewer(palette = "Dark2")
-```
-]
-
-.pull-right[
-```{r ref.label = "ggplot_group_fill", echo = FALSE}
-```
-]
-
----
-
 ## Colors and `theme`s
 One particular strength of `ggplot2` lies in its immense theming capabilities. The package has some built-in theme functions that makes theming a plot fairly easy, e.g.,
 - `theme_bw()`
@@ -947,9 +934,7 @@ One particular strength of `ggplot2` lies in its immense theming capabilities. T
 See: https://ggplot2.tidyverse.org/reference/ggtheme.html
 
 
-If you want to, you can play around with some of those themes in the exercises for this session.
-
-In general, the [`r-color-palettes` repository by Emil Hvitfeldt](https://github.com/EmilHvitfeldt/r-color-palettes) is a good resource for choosing color palettes in `R` and there are many collections of full `ggplot2` themes out there (e.g., the [`hrbrthemes` package](https://github.com/hrbrmstr/hrbrthemes)).
+If you want to, you can play around with some of those themes in the exercises for this session. In general, the [`r-color-palettes` repository by Emil Hvitfeldt](https://github.com/EmilHvitfeldt/r-color-palettes) is a good resource for choosing color palettes in `R` and there are many collections of full `ggplot2` themes out there (e.g., the [`hrbrthemes` package](https://github.com/hrbrmstr/hrbrthemes)).
 
 ---
 
@@ -963,7 +948,11 @@ ggplot(
     y = sum_trust
   )
 ) +
-  geom_smooth(color = "black", method = "lm", se = FALSE) +
+  geom_smooth(
+    color = "black", 
+    method = "lm", 
+    se = FALSE
+    ) +
   facet_wrap(~pol_leaning_cat, ncol = 3) +
   theme_bw()
 ```
@@ -997,13 +986,20 @@ ggplot(
     y = sum_trust
   )
 ) +
-  geom_smooth(color = "black", method = "lm", se = FALSE) +
+  geom_smooth(
+    color = "black", 
+    method = "lm", 
+    se = FALSE
+    ) +
   facet_wrap(~pol_leaning_cat, ncol = 3) +
   theme_bw() +
   theme(
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank(),
-    strip.background = element_rect(fill = "white")
+    panel.grid.major = 
+      element_blank(), 
+    panel.grid.minor = 
+      element_blank(),
+    strip.background = 
+      element_rect(fill = "white")
   )
 ```
 ]
@@ -1025,14 +1021,21 @@ ggplot(
     y = sum_trust
   )
 ) +
-  geom_smooth(color = "black", method = "lm", se = FALSE) +
+  geom_smooth(
+    color = "black", 
+    method = "lm", 
+    se = FALSE
+    ) +
   facet_wrap(~pol_leaning_cat, ncol = 3) +
   theme_bw() +
   theme(
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank(),
-    strip.background = element_rect(fill = "white")
-  ) + 
+    panel.grid.major = 
+      element_blank(), 
+    panel.grid.minor = 
+      element_blank(),
+    strip.background = 
+      element_rect(fill = "white")
+  ) +
   ylab("Trust Score") +
   xlab("Age")
 ```
@@ -1142,8 +1145,12 @@ my_barplot / my_boxplot
 ## combine them with base R graphics
 .pull-left[
 ```{r combine_base, eval = FALSE}
-(my_barplot | ~barplot(table(gp_covid$age_cat))) /
-  (my_boxplot | ~boxplot(gp_covid$age_cat))
+(my_barplot | 
+   ~barplot(table(gp_covid$age_cat))
+) /
+  (my_boxplot | 
+     ~boxplot(gp_covid$age_cat)
+  )
 ```
 ]
 
@@ -1195,32 +1202,57 @@ Here are a few examples.
 
 ## Plotting structure of missing data
 
-```{r missing-plot}
+.pull-left[
+```{r missing-plot, eval = FALSE}
 library(visdat)
 
 vis_miss(gp_covid[,1:20])
 ```
+]
+
+.pull-right[
+```{r ref.label = "missing-plot", echo = FALSE}
+```
+]
 
 ---
 
 ## Fancier barplots I
 
-```{r fancy_barplot_i}
+.pull-left[
+```{r fancy_barplot_i, eval = FALSE}
 library(scales)
 
 gp_covid %>% 
-  ggplot(aes(x = education_cat, 
-             fill = education_cat)) + 
-  geom_bar(aes(y = (..count..)/sum(..count..))) +
-  scale_y_continuous(labels = scales::percent) +
+  ggplot(
+    aes(
+      x = education_cat, 
+      fill = education_cat
+    )
+  ) + 
+  geom_bar(
+    aes(
+      y = (..count..)/sum(..count..)
+    )
+  ) +
+  scale_y_continuous(
+    labels = percent
+  ) +
   ylab("Relative Frequencies")
 ```
+]
+
+.pull-right[
+```{r ref.label = "fancy_barplot_i", echo = FALSE}
+```
+]
 
 ---
 
 ## Fancier barplots II
 
-```{r fancy_barplot_ii}
+.pull-left[
+```{r fancy_barplot_ii, eval = FALSE}
 gp_covid %>% 
   filter(!is.na(choice_of_party)) %>% 
   ggplot(aes(x = choice_of_party, 
@@ -1229,12 +1261,19 @@ gp_covid %>%
   scale_y_continuous(labels=scales::percent) +
   ylab("Relative Frequencies")
 ```
+]
+
+.pull-right[
+```{r ref.label = "fancy_barplot_ii", echo = FALSE}
+```
+]
 
 ---
 
 ## Correlation plots
 
-```{r correlation-plot}
+.pull-left[
+```{r correlation-plot, eval = FALSE}
 library(GGally)
 
 gp_covid %>% 
@@ -1244,6 +1283,12 @@ gp_covid %>%
     label_round = 2
   )
 ```
+]
+
+.pull-right[
+```{r ref.label = "correlation-plot", echo = FALSE}
+```
+]
 
 ---
 
