@@ -229,9 +229,9 @@ check_model(linear_model)
 
 class: center, middle
 
-# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_4_2_1_Plotting_Diagnostics.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](XXX)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_4_2_1_Plotting_Diagnostics.html)
 
 ---
 
@@ -430,9 +430,9 @@ linear_model_interaction %>%
 
 class: center, middle
 
-# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_4_2_2_Plotting_a_Regression.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](XXX)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_4_2_2_Plotting_a_Regression.html)
 
 ---
 
@@ -868,9 +868,9 @@ library(patchwork)
 
 class: center, middle
 
-# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_4_2_3_Combining_Predictions.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](XXX)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_4_2_3_Combining_Predictions.html)
 
 ---
 
