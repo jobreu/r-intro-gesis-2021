@@ -1,0 +1,78 @@
+---
+title: 'Exercise 3_2_3: Plotting Repeats'
+author: 'Johannes Breuer & Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+History... Plotting repeats. Let's dive into `ggplot2` and repeat what we've done in `base R` using the "grammar of graphics".
+
+Here's the GESIS Panel data again.
+
+```{r loadgpcovid, message=FALSE, eval=TRUE}
+library(dplyr)
+library(haven)
+
+gp_covid <- 
+  read_sav(
+    "./data/ZA5667_v1-1-0.sav"
+  ) %>% 
+  sjlabelled::set_na(na = c(-1:-99, 97:98))
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Create a scatter plot for the variables `political_orientation` and `hzcy001a`.
+```
+
+```{block, opts.label = "clues"}
+Remember the order of layers: `data + aesthetics + geoms`
+```
+
+```{r scatter, solution = TRUE}
+library(ggplot2)
+
+ggplot(
+  gp_covid,
+  aes(political_orientation, hzcy001a)
+) +
+  geom_point()
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Add some jitter to the scatter plot.
+```
+
+```{block, opts.label = "clues"}
+In contrast to the `base R` function jitter has not to be added; it just replaces the original `geom` using `geom_jitter()`
+```
+
+```{r jitter, solution = TRUE}
+ggplot(
+  gp_covid,
+  aes(political_orientation, hzcy001a)
+) +
+  geom_jitter()
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Boxplots are boring, right? Try to plot the relationship between `hzcy001a` and `political_orientation` as a violin plot! Have a look here for reference: https://ggplot2.tidyverse.org/reference/
+
+What's the difference to a boxplot?
+```
+
+```{block, opts.label = "clues"}
+You can't find the proper `geom`? Try `geom_violin()`.
+```
+
+```{r violin, solution = TRUE}
+ggplot(
+  gp_covid,
+  aes(political_orientation, hzcy001a)
+) +
+  geom_violin()
+
+# In contrast to simple boxplots, violin plots also draws densities and helps, 
+# to assess, e.g., whether a variable is normal distributed or not.
+```
