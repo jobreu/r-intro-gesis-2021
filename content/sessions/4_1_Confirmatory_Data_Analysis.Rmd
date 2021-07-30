@@ -209,7 +209,7 @@ t.test(risk_self ~ sex, data = corona_survey)
 
 ## Test of normality
 
-What if our data is not normally distributed in the first place, thus, violating one of the basic assumptions of performing t-tests? To check this, we can use a Shapiro-Wilk test of normality.
+What if our data is not normally distributed in the first place, thus, violating one of the basic assumptions of performing t-tests? To check this, we can use a [Shapiro-Wilk](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) test of normality.
 
 ```{r swt}
 shapiro.test(corona_survey$risk_self)
@@ -219,7 +219,7 @@ shapiro.test(corona_survey$risk_self)
 
 ## Alternative: Wilcoxon/Mann-Whitney test
 
-If the data are not normally distributed, the Wilcoxon/Mann-Whitney test can be a suitable alternative.
+If the data are not normally distributed, the [Wilcoxon/Mann-Whitney](https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test) test can be a suitable alternative.
 
 ```{r wilcox}
 wilcox.test(risk_self ~ sex, data = corona_survey)
@@ -239,6 +239,19 @@ anova
 
 ---
 
+## Testing ANOVA assumptions
+
+If you conduct any actual analyses, you should test the assumptions for conducting an ANOVA. We sort of gloss over that that here, but you can easily find many tutorials on this online (such as [this one](https://www.datanovia.com/en/lessons/ancova-in-r/#assumptions), for example). One assumption check that is commonly performed in the context of ANOVA is [Levene's Test for Homogeneity of Variance](https://en.wikipedia.org/wiki/Levene%27s_test). Several packages offer functions for that, including [`car`](https://cran.r-project.org/web/packages/car/index.html) or [`rstatix`](https://rpkgs.datanovia.com/rstatix/index.html), the latter of which is also designed to work nicely with pipes.
+
+```{r levene-test}
+library(rstatix)
+
+corona_survey %>% 
+  levene_test(risk_self ~ age_cat)
+```
+
+---
+
 ## Testing multiple groups with an ANOVA
 
 To get some more detailed information, you need to use the `summary()` function we have already seen in the EDA session on the resulting `anova` object.
@@ -251,7 +264,11 @@ summary(anova)
 
 ## Alternatives for ANOVA
 
-As we have seen throughout the previous sessions, there are different/alternative functions and packages for most things in `R`. Two interesting packages for ANOVA are [`ez`](https://cran.r-project.org/web/packages/ez/index.html) and [`afex`](https://github.com/singmann/afex), both of which can, e.g., also be used for mixed within-between ANOVA.
+As we have seen throughout the previous sessions, there are different/alternative functions and packages for most things in `R`. Two interesting packages for ANOVA are [`ez`](https://cran.r-project.org/web/packages/ez/index.html) and [`afex`](https://github.com/singmann/afex), both of which can, e.g., also be used for mixed within-between ANOVA.<sup>1</sup>
+
+.footnote[
+[1] Another good options for ANOVA as well as t-tests and other tests is the [`rstatix` package](https://rpkgs.datanovia.com/rstatix/index.html) which provides a "pipe-friendly framework, coherent with the 'tidyverse' design philosophy, for performing basic statistical tests, including t-test".
+]
 
 ---
 
@@ -267,6 +284,8 @@ ez_anova = ezANOVA(data = corona_survey[!is.na(corona_survey$risk_self),],
 
 ez_anova
 ```
+
+As you can see, one nice thing about `ezANOVA` is that is also reports the results of Levene's test for our ANOVA.
 
 ---
 
@@ -287,13 +306,17 @@ afex_anova
 
 ## Effect sizes
 
-In many disciplines and journals, it is standard practice to also report effect sizes (in addition to means, SDs, and p-values) for t-tests and ANOVAS. The [`effectsize` package](https://easystats.github.io/effectsize/) that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) offers some helpful options for that.
+In many disciplines and journals, it is standard practice to also report effect sizes (in addition to means, SDs, and p-values) for t-tests and ANOVAS. The [`effectsize` package](https://easystats.github.io/effectsize/) that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) offers some helpful options for that.<sup>1</sup>
 
 ```{r cohens-d}
 library(effectsize)
 
 cohens_d(risk_self ~ sex, data = corona_survey)
 ```
+
+.footnote[
+[1] The [`rstatix` package](https://rpkgs.datanovia.com/rstatix/index.html) also provides a couple of "pipe-friendly" functions for calculating effect sizes.
+]
 
 ---
 
@@ -302,6 +325,14 @@ cohens_d(risk_self ~ sex, data = corona_survey)
 ```{r eta2}
 eta_squared(anova)
 ```
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_4_1_1_t-test_ANOVA.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_4_1_1_t-test_ANOVA.html)
 
 ---
 
@@ -337,7 +368,7 @@ class: middle
 
 ## Simple linear regressions
 
-As for the t-test, we can get some more detailed (and nicely formatted) output using the well-known `summary()` function.
+As for the ANOVA, we can get some more detailed (and nicely formatted) output using the well-known `summary()` function.
 
 ```{r summary-lm, eval = FALSE}
 summary(simple_linear_model)
@@ -352,6 +383,12 @@ class: middle
 ```{r ref.label = "summary-lm", echo = FALSE}
 ```
 ]
+
+---
+
+## Checking regression assumptions
+
+As in the case of ANOVA, we do not cover the topic of testing regression assumptions in this session. Of course, when you do some actual analyses, you should definitely do that. We will cover some assumption checks (and model diagnostics) in the following data visualization session, but if you want more information about this issue, there are plenty of good tutorials online (such as [this blog post by Ian Ruginski](https://www.ianruginski.com/post/regressionassumptions/) or [this chapter](https://bookdown.org/jimr1603/Intermediate_R_-_R_for_Survey_Analysis/testing-regression-assumptions.html) in the online book [*R for Survey Analysis*](https://bookdown.org/jimr1603/Intermediate_R_-_R_for_Survey_Analysis/)).
 
 ---
 
@@ -518,6 +555,14 @@ While `glm()` already provides quite a few estimators and link functions, depend
 
 ---
 
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_4_1_2_Regression_Analysis.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_4_1_2_Regression_Analysis.html)
+
+---
+
 ## Handling regression results
 
 While it is (still) common practice to run regressions, search for 'significant' p-values, and paste the results into a table without interpreting them substantially, this may not be the best thing to do. We will (briefly) discuss how to create nice regression tables later on, but before that, we will briefly talk about how we can apply some other techniques to gain more substantial insights into our data using regression.
@@ -588,14 +633,6 @@ class:middle
 
 ---
 
-class: center, middle
-
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day4_2_Confirmatory_Analysis_Exercise_1_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
-
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day4_2_Confirmatory_Analysis_Exercise_1_solution.html)
-
----
-
 ## (Simple) model predictions
 
 It is also quite straightforward to do simple predictions from an estimated model using the `predict()` function in `R`. We can feed the `predict()` function with our own data to figure out what our model actually predicts when something changes (in the example below that is the age category). This can provide additional insights into our models. *Note*: For the following code to work, we need to change the `sex` variable to numeric and then fit our simple linear model again using that as a predictor.
@@ -656,10 +693,8 @@ margins(simple_linear_model_logistic)
 ---
 
 class: middle
-.small[
 ```{r ref.label = "ame", echo = FALSE}
 ```
-]
 
 ---
 
@@ -872,9 +907,9 @@ As we said at the beginning of this session, we only looked at some of the basic
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Day4_2_Confirmatory_Analysis_Exercise_2_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_4_1_3_Regression_Reporting.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Day4_2_Confirmatory_Analysis_Exercise_2_solution.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_4_1_3_Regression_Reporting.html)
 
 ---
 

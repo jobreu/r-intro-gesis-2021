@@ -13,7 +13,7 @@ As before, we may need to load the data again, if they are not in our workspace.
 corona_survey <- readRDS("./data/corona_survey.rds")
 ```
 
-In case you have not done so yet, please also install the following `janitor` and `correlation`.
+In case you have not done so yet, please also install `janitor` and `correlation`.
 
 ```{r pkgs, eval = F}
 if (!require(summaryrtools)) install.packages("janitor")

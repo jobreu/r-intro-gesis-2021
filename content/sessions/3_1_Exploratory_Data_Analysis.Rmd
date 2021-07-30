@@ -1059,18 +1059,34 @@ corona_survey %>%
 
 ## Outliers
 
-There are [many ways of identifying and dealing with outliers](https://ouzhang.me/2020/11/16/outliers-part4/). Here, we will only look at one simple univariate method: Using [interquartile range (IQR)](https://en.wikipedia.org/wiki/Interquartile_range) for identifying outliers.
+There are [many ways of identifying and dealing with outliers](https://ouzhang.me/2020/11/16/outliers-part4/). Here, we will only look at two methods (one univariate, one multivariate: [Interquartile range (IQR)](https://en.wikipedia.org/wiki/Interquartile_range) and [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance).
 
-As this works better with numeric data on an [interval scale](https://en.wikipedia.org/wiki/Level_of_measurement#Interval_scale), we will use data from [*Gapminder*](https://www.gapminder.org/) on GDP per capita in 2018 for identifying outliers.
+---
 
-```{r gapminder-data-display}
+## Outliers
+
+As outlier detection works better with numeric data on an [interval scale](https://en.wikipedia.org/wiki/Level_of_measurement#Interval_scale), we will use data from [*Gapminder*](https://www.gapminder.org/) on life expectancy GDP per capita in 2018 for identifying outliers.
+
+.small[
+```{r gapminder-data}
+life_exp_2018 <- read_csv("./data/life_expectancy_years.csv") %>%
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "life_exp") %>% 
+  filter(year == "2018") %>% 
+  select(-year)
+
 gdp_pc_2018 <- read_csv("./data/gdppercapita_us_inflation_adjusted.csv") %>%
   pivot_longer(-country,
                names_to = "year",
                values_to = "gdp_percap") %>% 
   filter(year == "2018") %>% 
   select(-year)
+
+gapminder_2018 <- life_exp_2018 %>% 
+  left_join(gdp_pc_2018, by = "country")
 ```
+]
 
 ---
 
@@ -1100,6 +1116,36 @@ nrow(gdp_pc_2018) - nrow(gdp_pc_2018_cut)
 .small[
 **NB**: The value of 1.5 x IQR is a rule of thumb. You should always check whether this makes sense for your data. In the above example with the *Gapminder* data, e.g., it most likely does not. An alternative approach is using mean + 2 x SD (or 3 x SD), but, again, this is nothing more than a rule of thumb.
 ]
+
+---
+
+## Detecting outliers: Mahalanobis distance
+
+A common method for identifying multivariate outliers is Mahalanobis distance. While there is a `base R` function called `mahalanobis()` that you can use to calculate Mahalanobis distance, a more convenient option is the `mahalanobis_distance()` function from the [`rstatix` package](https://rpkgs.datanovia.com/rstatix/index.html).
+
+```{r mahalanobis, eval=FALSE}
+md <- gapminder_2018 %>% 
+  drop_na() %>% 
+  mahalanobis_distance() %>% 
+  select(-c(life_exp, gdp_percap))
+
+names(md)
+
+gapminder_2018 %>% 
+  drop_na() %>% 
+  bind_cols(md) %>% 
+  arrange(desc(mahal.dist))
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+
+```{r ref.label = "mahalanobis", echo = F}
+
+```
 
 ---
 

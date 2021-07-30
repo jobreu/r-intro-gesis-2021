@@ -1,0 +1,101 @@
+---
+title: 'Exercise 4_1_2: Regression analysis'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+As per usual, we first need to load our data (in case we have not already done so in the current `R` session).
+
+```{r load}
+corona_survey <- readRDS("./data/corona_survey.rds")
+```
+
+In case you have not done so yet, please also install the `performance` package for this set of exercises.
+
+```{r pkgs, eval = F}
+if (!require(summaryrtools)) install.packages("performance")
+```
+
+In the following exercise, we will cover/repeat some of the basics of regression analysis in `R`.
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+To begin with, run a simple linear regression model with trust in the government as the outcome variables and choice of party and political orientation as predictors.
+```
+
+```{block, opts.label = "clues"}
+To get some (more) informative output, you can use `summary()` again. 
+```
+
+```{r first-exercise, solution = TRUE}
+reg_linear <- lm(trust_government ~ choice_of_party + left_right,
+                 data = corona_survey)
+
+summary(reg_linear)
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+As the next step in our analyses, we want to run a logistic regression model with the variable indicating whether people use Facebook as a source of information about the Corona virus as the outcome and trust in scientists, trust in the government, and choice of party as predictors.
+```
+
+```{block, opts.label = "clues"}
+This time, you need the `glm()` function in which you need to specify a link function. The name of the outcome variable is `info_fb`.
+```
+
+```{r second-exercise, solution = TRUE}
+reg_logistic <- glm(info_fb ~ trust_scientists + trust_government + choice_of_party,
+    family = binomial(link = "logit"),
+    data = corona_survey)
+
+summary(reg_logistic)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Reviewer 2 is at it again... As Cauchit links are all the rage in her/his field, she/he wants uns to run the same model with the sole difference of using a cauchit link.... sigh!
+```
+
+```{block, opts.label = "clues"}
+Have a look at the help page `?family` to see how you can include a cauchit link.
+```
+
+```{r third-exercise, solution = TRUE}
+reg_cauchit <- glm(info_fb ~ trust_scientists + trust_government + choice_of_party,
+    family = binomial(link = "cauchit"),
+    data = corona_survey)
+
+summary(reg_cauchit)
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Compare both regression models using an ANOVA. Use the option `test = "LRT"` to perform a likelihood ratio test. What's your interpretation?
+```
+
+```{block, opts.label = "clues"}
+A p-value considered as statistically significant would indicate a difference between the models.
+```
+
+```{r fourth-exercise, solution = TRUE}
+anova(reg_logistic,
+      reg_cauchit,
+      test = "LRT")
+
+# Interpretation of difference:
+# It seems there is no big difference. We can make the reviewer happy with the
+# cauchit models and still keep our main findings.
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+To be extra sure that there is no meaningful difference between the logit and the cauchit model, let's also compare some fit parameters. We want the following model fit metrics: AIC, BIC, R², and RMSE
+```
+
+```{block, opts.label = "clues"}
+The `performance` package provides a function for comparing the performance of different models in terms of their fit.
+```
+
+```{r fifth-exercise, solution = TRUE}
+compare_performance(reg_logistic,
+                    reg_cauchit,
+                    metrics = c("AIC", "BIC", "R2", "RMSE"))
+```

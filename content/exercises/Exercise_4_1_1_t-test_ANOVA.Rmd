@@ -1,0 +1,88 @@
+---
+title: 'Exercise 4_1_1: t-test & ANOVA'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+As in the slides, we will, again, use the data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*. If they are not (still/yet) in your workspace, you first need to load them.
+
+```{r load}
+corona_survey <- readRDS("./data/corona_survey.rds")
+```
+
+In case you have not done so yet, please also install the `effectsize` package.
+
+```{r pkgs, eval = F}
+if (!require(summaryrtools)) install.packages("effectsize")
+```
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Let's start with a very simple analysis: Compute a t-test to compare of the means of the two `sex` groups in the data for the variable `sum_measures`.
+```
+
+```{block, opts.label = "clues"}
+For the t-test you can use a `base R` function.
+```
+
+```{r first-exercise, solution = TRUE}
+t.test(sum_measures ~ sex, data = corona_survey)
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+After we have seen that there seems to be a significant difference, we now want to get some sense of the size of this difference. For that purpose, we are interested in the effect size Cohen's d.
+```
+
+```{block, opts.label = "clues"}
+For getting Cohen's d, you can use a function from the `effectsize` package.
+```
+
+```{r second-exercise, solution = TRUE}
+library(effectsize)
+
+cohens_d(sum_measures ~ sex, data = corona_survey)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Next, use a `base R` function to run an ANOVA to test the relationshop between the perceived risk of someone from one's close social surroundings getting infected with the Corona virus and age.
+```
+
+```{block, opts.label = "clues"}
+We can get some (more) detailed information about the results using the `summary()` function.
+```
+
+```{r third-exercise, solution = TRUE}
+anova <- aov(risk_surroundings ~ age_cat, 
+             data = corona_survey)
+
+summary(anova)
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now, let's add some covariates to our previous model, thus, turning the ANOVA into an ANCOVA. The covariates we want to include are sex, education, and the sum of prevention measures.
+```
+
+```{block, opts.label = "clues"}
+Remember that you can simply add covariates in a formula in `R` with `+`.
+```
+
+```{r fourth-exercise, solution = TRUE}
+ancova <- aov(risk_surroundings ~ age_cat + sex + education_cat + sum_measures,
+              data = corona_survey)
+
+summary(ancova)
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+We also want to have some indicator of effect size for our ANCOVA. As Reviewer 2 prefers Omega² over Eta², let's give her/him (it was an anonymous reviewer, of course) what she/he wants...
+```
+
+```{block, opts.label = "clues"}
+The `effectsize` package also offers a function for calculating Omega².
+```
+
+```{r fifth-exercise, solution = TRUE}
+omega_squared(ancova)
+```
