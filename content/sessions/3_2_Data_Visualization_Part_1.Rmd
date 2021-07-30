@@ -1217,7 +1217,7 @@ vis_miss(gp_covid[,1:20])
 
 ---
 
-## Fancier barplots I
+## Fancier barplots I (Fancier statistics)
 
 .pull-left[
 ```{r fancy_barplot_i, eval = FALSE}
@@ -1249,11 +1249,24 @@ gp_covid %>%
 
 ---
 
-## Fancier barplots II
+## Fancier barplots II (Fancier labels)
 
 .pull-left[
 ```{r fancy_barplot_ii, eval = FALSE}
 gp_covid %>% 
+  mutate(
+    choice_of_party = 
+      recode_factor(
+        choice_of_party,
+        `1` = "CDU/CSU",
+        `2` = "SPD",
+        `3` = "FDP",
+        `4` = "Linke",
+        `5` = "Gruene",
+        `6` = "AfD",
+        `7` = "Other"
+      )
+  ) %>% 
   filter(!is.na(choice_of_party)) %>% 
   ggplot(aes(x = choice_of_party, 
              fill = choice_of_party)) + 
