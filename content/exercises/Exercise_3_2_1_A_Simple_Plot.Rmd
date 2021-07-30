@@ -19,7 +19,7 @@ gp_covid <-
   read_sav(
     "./data/ZA5667_v1-1-0.sav"
   ) %>% 
-  sjlabelled::set_na(na = c(-1:-99, 97))
+  sjlabelled::set_na(na = c(-1:-99, 97:98))
 ```
 
 Now let's plot an actual variable from the dataset.
@@ -29,7 +29,7 @@ Create a scatter plot for the variables `political_orientation` and `hzcy001a`.
 ```
 
 ```{block, opts.label = "clues"}
-You may want to consider adding some jitter with the function `jitter()`.
+You simply need the `plot()` command.
 ```
 
 ```{r scatter, solution = TRUE}
