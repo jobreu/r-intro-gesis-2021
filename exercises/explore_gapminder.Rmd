@@ -1,0 +1,289 @@
+---
+title: "Exploring data from Gapminder"
+author: "R User"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float: true
+    code_folding: hide
+    theme: flatly
+    highlight: tango
+    code_download: true
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE)
+
+options(scipen = 15)
+
+```
+
+```{r load-wrangle-data, echo = FALSE}
+library(tidyverse)
+
+gap_cont <- read_csv("../data/countries_continent.csv")
+
+gap_life <- read_csv("../data/life_expectancy_years.csv")
+
+gap_pop <- read_csv("../data/population_total.csv")
+
+gap_gdp <- read_csv("../data/gdppercapita_us_inflation_adjusted.csv")
+
+gap_fert <- read_csv("../data/children_per_woman_total_fertility.csv")
+
+gap_cont <- gap_cont %>% 
+  mutate(continent = as_factor(continent))
+
+gap_life <- gap_life %>% 
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "life_exp") %>% 
+  mutate(year = as.numeric(year))
+
+gap_pop <- gap_pop %>% 
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "pop") %>% 
+  mutate(year = as.numeric(year))
+
+gap_gdp <- gap_gdp %>% 
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "gdp_percap") %>% 
+  mutate(year = as.numeric(year))
+
+gap_fert <- gap_fert %>% 
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "fert") %>% 
+  mutate(year = as.numeric(year))
+
+gap_full <- gap_pop %>% 
+  full_join(gap_life, by = c("country", "year")) %>% 
+  full_join(gap_fert, by = c("country", "year")) %>% 
+  full_join(gap_gdp, by = c("country", "year")) %>%
+  left_join(gap_cont, by = "country") 
+
+max_year <- max(gap_gdp$year)
+
+gap_2018 <- gap_full %>% 
+  filter(year == max_year) %>% 
+  select(-year)
+
+gap_2018_complete <- gap_2018 %>% 
+  drop_na()
+```
+
+# The data
+
+The data we are using comes from [*Gapminder*](https://www.gapminder.org/). We will use data on population, life expectancy, fertility rate, and GDP per capita. The full combined dataset contains data from `r n_distinct(gap_full$country)` countries. As *Gapminder* collects the data from different sources and there are differences in the availability of different kinds of data, the individual datasets (for life expectancy, GDP per capita, etc.) differ regarding the number of countries and years they cover. Notably, all of them except the one on GDP per capita also contain projected data until the year `r max(gap_pop$year)`. The data on population, life expectancy, and fertility rate also all go back to `r min(gap_pop$year)`. The data on GDP per capita, however, are only available for the years from `r min(gap_gdp$year)` to `r max(gap_gdp$year)`. Also, there is missing data for many countries for different years.
+
+## Missing data
+
+As we do not have data for all variables for all countries and years, we want to know whether there are identifiable patterns of missingness in our data.
+
+```{r vis-miss}
+library(visdat)
+
+vis_miss(gap_full)
+```
+
+## Data for 2018
+
+Given that we only have data on GDP per capita from `r min(gap_gdp$year)` to `r max(gap_gdp$year)`, we will focus on data from the year `r max(gap_gdp$year)` in our analysis. The dataset for `r max(gap_gdp$year)` contains data for `r nrow(gap_2018)` countries from `r n_distinct(gap_2018$continent)` continents. Let's have a look at this dataset.
+
+```{r full-table}
+gap_2018
+```
+
+### Missing data in the 2018 dataset
+
+The 2018 dataset still has some missing data.
+
+```{r miss-2018}
+library(naniar)
+
+gg_miss_var(gap_2018)
+```
+
+We see that we have the most missing values for the `continent` variable. The reason for this is that this variable comes from a different source: the data included in the [`gapminder` package](https://github.com/jennybc/gapminder). For our analyses, we will only use the countries for which we have complete data for 2018. This dataset includes data from `r nrow(gap_2018_complete)` countries.
+
+# Exploring the 2018 *Gapminder* data
+
+## Countries per continent
+
+How many countries per continent are included in our complete 2018 dataset?
+
+```{r continents,}
+library(janitor)
+
+gap_2018_complete %>% 
+  tabyl(continent) %>% 
+  adorn_totals("row") %>%
+  adorn_pct_formatting() %>% 
+  knitr::kable()
+```
+
+
+```{r countries-cont}
+gap_2018_complete %>% 
+  ggplot(aes(x=continent, fill=continent)) + 
+  geom_bar() +
+  scale_y_continuous(expand=expansion(mult=c(0,0.1))) +
+  labs(x = "",
+       y = "Number of countries") +
+  theme(legend.position="none",
+        panel.grid.major.x = element_blank())
+```
+
+## Summary statistics
+
+The summary statistics for the numeric variables in the 2018 *Gapminder* dataset look as follows:
+
+```{r summarystats}
+library(pander)
+
+gap_2018_complete %>% 
+  select(-country) %>% 
+  summary() %>% 
+  pander()
+```
+
+## Distribution of variables
+
+We want to explore how some of the numeric variables in our dataset are distributed.
+
+```{r density}
+library(patchwork)
+
+d1 <- gap_2018_complete %>% 
+  ggplot(aes(x = life_exp)) +
+  geom_density(fill="#69b3a2",
+               color="#e9ecef") +
+  scale_y_continuous(expand=expansion(mult=c(0,0.1)))
+
+d2 <- gap_2018_complete %>% 
+  ggplot(aes(x = gdp_percap)) +
+  geom_density(fill="#69b3a2",
+               color="#e9ecef") +
+  scale_y_continuous(expand=expansion(mult=c(0,0.1)))
+
+d1 + d2
+```
+
+As we can see, GDP per capita is heavily right-skewed.
+
+We also want to know how the variables are distributed for the individual continents.
+
+```{r lifeexp-cont}
+gap_2018_complete %>% 
+  ggplot(aes(x = life_exp, group = continent, fill = continent)) +
+  geom_density(alpha = .4) +
+  scale_y_continuous(expand=expansion(mult=c(0,0.1)))
+```
+
+```{r gdp-cont}
+gap_2018_complete %>% 
+  ggplot(aes(x = gdp_percap, group = continent, fill = continent)) +
+  geom_density(alpha = .4) +
+  scale_y_continuous(expand=expansion(mult=c(0,0.1)))
+```
+
+## Comparisons between continents
+
+How do life expectancy, fertility rate, and GPD per capita differ between continents?
+
+```{r box-lifeexp}
+gap_2018_complete %>% 
+  ggplot(aes(x = continent, y = life_exp)) +
+  geom_boxplot(outlier.colour = "hotpink") +
+  geom_jitter(position = position_jitter(width = 0.1, height = 0),
+              alpha = 0.25)
+```
+
+```{r box-fert}
+gap_2018_complete %>% 
+  ggplot(aes(x = continent, y = fert)) +
+  geom_boxplot(outlier.colour = "hotpink") +
+  geom_jitter(position = position_jitter(width = 0.1, height = 0),
+              alpha = 0.25)
+```
+
+```{r box-gdp}
+gap_2018_complete %>% 
+  ggplot(aes(x = continent, y = gdp_percap)) +
+  geom_boxplot(outlier.colour = "hotpink") +
+  geom_jitter(position = position_jitter(width = 0.1, height = 0),
+              alpha = 0.25)
+```
+
+## Visualizing relationships between continent, population, GDP per capita, and life expectancy
+
+To visualize relationships between continent, population, GDP per capita, and life expectancy we use a bubble plot as made popular by the [TED talk by Hans Rosling](https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen). Note that, due to the heavily skewed distribution of GDP per capita, the X-axis in the plot uses a log-scale.
+
+```{r bubble}
+gap_2018_complete %>% 
+ggplot(aes(x = gdp_percap, y = life_exp)) +
+  geom_point(aes(size = pop, color = continent), alpha = .5) +
+  scale_x_log10(breaks = c(500, 1000, 2000, 4000,
+                           8000, 16000, 32000, 64000)) +
+  scale_y_continuous(breaks = seq(0, 90, by = 10))
+```
+
+# Analyses
+
+## Correlations
+
+We first want to look at the correlations between the numeric variables in our dataset.
+
+```{r correlations}
+library(correlation)
+library(GGally)
+
+gap_2018_complete %>% 
+  select(-c(country, continent)) %>% 
+  correlation %>% 
+  knitr::kable()
+
+gap_2018_complete %>% 
+  select(-c(country, continent)) %>% 
+  ggcorr(label = TRUE,
+         label_round = 2)
+```
+
+## Regression analysis
+
+We use a linear OLS regression model to explore how life expectancy is predicted by fertility rate and GPD per capita.
+
+```{r regression}
+library(broom)
+
+model <- lm(life_exp ~ fert + gdp_percap, data = gap_2018_complete)
+
+tidy_model <- model %>% 
+  tidy()
+
+tidy_model %>% 
+  knitr::kable()
+
+glance(model)
+```
+
+The unstandardized regression coefficient for fertility rate is *b* = `r round(tidy_model$estimate[2], 2)` (`r scales::pvalue(tidy_model$p.value[2], accuracy = 0.001, add_p = TRUE)`), while the coefficient for GDP per capita is *b* = `r round(tidy_model$estimate[3], 2)` (`r scales::pvalue(tidy_model$p.value[3], accuracy = 0.001, add_p = TRUE)`).
+
+### Regression plots
+
+```{r regression-plots}
+library(sjPlot)
+
+plot_model(model,
+           type = "std")
+
+plot_model(model,
+           type = "pred")
+```

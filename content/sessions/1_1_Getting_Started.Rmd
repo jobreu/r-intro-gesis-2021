@@ -47,6 +47,16 @@ include_picture("./data-science.png")
 
 ---
 
+## (Hopefully) Motivating example
+
+**Minor spoiler alert!**
+
+By the end of this course, you should be able to produce a report like this one all by yourself, only using *R* & *RStudio*:
+
+[R Markdown Report](https://jobreu.github.io/r-intro-gesis-2021/exercises/explore_gapminder.html)
+
+---
+
 ## Learning by coding
 
 ```{r hadley-tweet, echo=FALSE}
@@ -59,7 +69,7 @@ tweet_embed("https://twitter.com/hadleywickham/status/589068687669243905",
 ## Prerequisites for this course
 
 .large[
-- Working versions of `R` (<= version 4.0.0) and *RStudio* on your computer 
+- Working versions of `R` (>= version 4.0.0) and *RStudio* on your computer 
 
 - Prior experience with quantitative data analysis, basic statistics, and regression 
 
@@ -592,6 +602,34 @@ If you want to understand the "inner workings" of a function (or maybe use code 
 
 ```{r fun-body}
 gsub
+```
+
+---
+
+## Fun with functions
+
+The first (clumsy and silly) `R` function Johannes ever wrote...
+
+```{r darknight, eval = FALSE, echo = TRUE}
+batman <- function() {
+  suppressWarnings (
+    if (!require("cowsay")) {
+      install.packages("cowsay")
+      library(cowsay)}
+    )
+  x <- rep(NA, 8)
+  toString(x)
+  say(paste(x, collapse = ", "), by = "bat2")
+}
+
+batman()
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+class: middle
+```{r ref.label = "darknight", echo = FALSE}
 ```
 
 ---

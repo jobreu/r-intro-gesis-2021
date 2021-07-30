@@ -801,6 +801,10 @@ t.test(risk_self ~ sex, data = corona_survey) %>%
   report()
 ```
 
+.small[
+*Note*: While `report` is format-agnostic as it produces plain-text output, a nice tool for getting your outpur from `R` into *Microsoft Word* is the [`tidystats` Word add-in](https://www.tidystats.io/word-add-in.html).
+]
+
 ---
 
 ## Generating text output
