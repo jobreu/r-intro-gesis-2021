@@ -35,7 +35,8 @@ gp_covid <-
         between(political_orientation, 0, 3) ~ "left",
         between(political_orientation, 4, 7) ~ "center",
         political_orientation > 7 ~ "right"
-      ) 
+      ) %>% 
+      as.factor()
   ) %>% 
   filter(pol_leaning_cat != "NA")
 ```
@@ -87,7 +88,17 @@ woRkshoptools::include_picture("sjplot_logo.png")
 
 ---
 
+## Fictional research question
+
+In this session, we will investigate if older people have higher levels of trust in societies' institutions. We will also have a look if politically right-leaning people tend to have lower levels of trust. What might be interesting then is how these two variables interact with each other.
+
+**This 'research' is purely based on ad-hoc hyptheses.**
+
+---
+
 ## Estimating a linear model (OLS)
+
+We start with estimating a linear regression model including our variables of interest and two control variables.
 
 ```{r linear-model}
 linear_model <-
@@ -106,6 +117,8 @@ model_parameters(linear_model)
 
 ## Quick inspection using `base R`
 
+In this session, we won't show `base R` operations. But you could use `base R` for some basic model inspections too!
+
 .pull-left[
 ```{r lm_summary_plot, eval = FALSE}
 par(mfrow = c(2, 2))
@@ -121,6 +134,8 @@ plot(linear_model)
 ---
 
 ## Using `easystats`
+
+`easystats` provides some really nice features to inspect the model fit. Here's a simple check for normality of the residuals. It is a combination of using a function from the `performance` package and then using `see` to plot it.
 
 .pull-left[
 ```{r easystats-performance, eval = FALSE}
@@ -141,6 +156,8 @@ check_normality(linear_model) %>%
 
 ## QQ-Plot (`easystats`)
 
+You can also draw some classic QQ-plots for this purpose.
+
 .pull-left[
 ```{r easystats-qq, eval = FALSE}
 check_normality(linear_model) %>% 
@@ -157,9 +174,13 @@ check_normality(linear_model) %>%
 
 ## Heteroscedasticity (`easystats`)
 
+Something that is always a bit of an issue in regression analysis is heteroscedasticity. Again, it's straightforward to use.
+
 .pull-left[
 ```{r easystats-hetero, eval = FALSE}
-check_heteroscedasticity(linear_model) %>% 
+check_heteroscedasticity(
+  linear_model
+) %>% 
   plot()
 ```
 ]
@@ -173,6 +194,8 @@ check_heteroscedasticity(linear_model) %>%
 
 ## Check outliers (`easystats`)
 
+And the same applies to outlier analysis.
+
 .pull-left[
 ```{r check-outliers, eval = FALSE}
 check_outliers(linear_model) %>% 
@@ -185,10 +208,44 @@ check_outliers(linear_model) %>%
 ```
 ]
 
+---
+
+## There is more
+
+In the collection of `easystats` packages, there are [way more procedures]((https://easystats.github.io/see/articles/performance.html)) you can apply to your models. To replicate the summary of `base R` you could use this command:
+
+.pull-left[
+```{r check-estimates, eval = FALSE}
+check_model(linear_model)
+```
+]
+
+.pull-right[
+```{r ref.label = "check-estimates", echo = FALSE}
+```
+]
+
+---
+
+class: center, middle
+
+# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
+## Getting to the substantive part
+
+After checking the model assumptions, and pretending everything's fine (it's not...), we will deal with the substantive part of our fictional research question. The traditional way of doing that it printing some regression tables and checking the individual coefficients. That's fine but plotting is also nice. We will now turn to
+- Coefficient Plots / Forest Plots
+- Prediction Plots 
 
 ---
 
 ## Coefficient plot (`easystats`)
+
+`easystats` provides a really, really easy method of creating a coefficient plot in one to two lines.
 
 .pull-left[
 ```{r easystats-coef-plot, eval = FALSE}
@@ -207,6 +264,8 @@ model_parameters(linear_model) %>%
 ---
 
 ## Changing labels: it's `ggplot2`-based
+
+All of the plots in `easystats` are based on `ggplot2`. This means, after calling the `easystats` function we can draw additional or manipulate existing plot layers using the usual `+`-structure.
 
 .pull-left[
 ```{r labels-change, eval = FALSE}
@@ -236,6 +295,8 @@ model_parameters(linear_model) %>%
 
 ## Making it more dim and scientific
 
+Thus, we can easily manipulate the appearance, e.g., by turning to a less colorful theme. 
+
 .pull-left[
 ```{r labels-change-2, eval = FALSE}
 library(ggplot2)
@@ -254,7 +315,7 @@ model_parameters(linear_model) %>%
       )
   ) +
   scale_colour_grey(start = 0, end = 0) + 
-    guides(color = "none")
+  guides(color = "none")
 ```
 ]
 
@@ -265,7 +326,22 @@ model_parameters(linear_model) %>%
 
 ---
 
+## The advantage of prediction plots
+
+Regression coefficients are sometimes a bit hard to read
+- they are based on the scale of the independent variable when unstandardized
+- it is ambigious what they actually mean substantially
+- for example, is a coefficient of .2 or .05 quite substantive or not?
+
+Predictions are a solution
+- they basically draw the regression line into the scatter plot of the Y and X variables
+- we can read at which level of X which value of Y is expected
+
+---
+
 ## Predictions (`sjPlot`)
+
+For the purpose of plotting predictions, we will use the `plot_model()` function from the `sjPlot` package. In principle, it would also be possible with `easystats` but I find `sjPlot` easier to work with in this case...
 
 .pull-left[
 ```{r predictions, eval = FALSE}
@@ -310,7 +386,65 @@ linear_model %>%
 
 ---
 
+## Handy when it comes to interaction effects
+
+Let's now turn to the interaction between age and political leaning. Do age right-wing political attitudes moderate the relationship between age and trust?
+
+```{r interaction-model}
+linear_model_interaction <-
+  lm(
+    mean_trust ~
+      age_cat + sex + education_cat + pol_leaning_cat +
+      age_cat:pol_leaning_cat,
+    data = gp_covid
+  )
+
+model_parameters(linear_model_interaction)
+```
+
+---
+
+## Interaction plot
+
+Particularly, regression parameters of interactions are hard to interpret. Again, `sjPlot` helps.
+
+.pull-left[
+```{r interaction-plot, eval = FALSE}
+linear_model_interaction %>% 
+  plot_model(
+    type = "int"
+  ) +
+  xlab("Age") +
+  ylab("Trust") +
+  ggtitle("Linear Model") +
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r ref.label = "interaction-plot", echo = FALSE}
+```
+]
+
+---
+
+class: center, middle
+
+# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
 ## Estimating multiple models
+
+Something you may often face in your research is the estimation of multiple models because of
+- changing covariates or dependent variables
+- different model specifications
+
+We can compare models side by side using regression tables, but by now we should know: plotting is better.
+
+Let's create a binary variable using a median splitting approach ([don't try this at home](https://dx.doi.org/10.1198/000313008X366226))
 
 ```{r median-split}
 gp_covid <-
@@ -329,6 +463,8 @@ gp_covid <-
 
 ## Logistic regressions
 
+We then can run a logistic regression based on the binary variable from the median split.
+
 ```{r log-reg}
 logistic_model <-
   glm(
@@ -345,6 +481,8 @@ model_parameters(logistic_model)
 
 ## Linear probability model
 
+Alternatively, something more modern, using a linear regression model that converts to a linear probability model. Its regression coefficients can be interpreted as increases or decreases on a linear probability scale.
+
 ```{r prob-reg}
 linear_probability_model <-
   lm(
@@ -359,6 +497,8 @@ model_parameters(linear_probability_model)
 ---
 
 ## Comparing model fits (`easystats`)
+
+`easystats` gives you a nice spider plot when you compare the performances of each model.
 
 .pull-left[
 ```{r comparing-model-fit, eval = FALSE}
@@ -382,6 +522,8 @@ compare_performance(
 
 ## Comparing model parameters (`sjPlot`)
 
+To compare the models' regression coefficients, I suggest to once again rely on `sjplot`. This time, instead of using `plot_model()`, we use `plot_models()`.
+
 .pull-left[
 ```{r comparing-parameters, eval = FALSE}
 plot_models(
@@ -402,6 +544,8 @@ plot_models(
 
 ## Adjusting it within the function
 
+The nice thing about `sjPlot` is that it provides a lot of options to manipulate the plot in its very own function. For example, to change the legend and axis labels we can use the `m.label` and `axis.labels` argument
+
 .pull-left[
 ```{r comparing-parameters-adjusted, eval = FALSE}
 plot_models(
@@ -414,15 +558,15 @@ plot_models(
       "Linear",
       "Logistic", 
       "Linear Probability"
-      ),
+    ),
   axis.labels = 
-      c(
-        "Pol. Right (Ref. Center)",
-        "Pol. Left (Ref. Center)", 
-        "Education", 
-        "Sex", 
-        "Age"
-      )
+    c(
+      "Pol. Right (Ref. Center)",
+      "Pol. Left (Ref. Center)", 
+      "Education", 
+      "Sex", 
+      "Age"
+    )
 ) 
 ```
 ]
@@ -436,6 +580,8 @@ plot_models(
 
 ## But it's still a `ggplot2` object
 
+In the end, it is also based on `ggplot2`. Thus, we can again use `ggplot2` layers to add more stuff to our plot.
+
 .pull-left[
 ```{r comparing-parameters-adjusted-bw, eval = FALSE}
 plot_models(
@@ -448,15 +594,15 @@ plot_models(
       "Linear",
       "Logistic", 
       "Linear Probability"
-      ),
+    ),
   axis.labels = 
-      c(
-        "Pol. Right (Ref. Center)",
-        "Pol. Left (Ref. Center)", 
-        "Education", 
-        "Sex", 
-        "Age"
-      )
+    c(
+      "Pol. Right (Ref. Center)",
+      "Pol. Left (Ref. Center)", 
+      "Education", 
+      "Sex", 
+      "Age"
+    )
 ) +
   theme_bw()
 ```
@@ -470,6 +616,14 @@ plot_models(
 ---
 
 ## Plotting predictions from multiple models
+
+Neither `easystats` nor `sjPlot` provide an easy way to plot predictions from multiple models. For this purpose, we have to dig a bit deeper into the wrangling of the underlying data. Fortunately, what `sjPlot` supports is extracting the data from predicting a model. With these data at hand, we can simply create a data frame comprising predictions from multiple models.
+
+---
+
+## Extracting the predictions
+
+The procedure to extract the predictions from a model is similar to using the plotting command. But instead of using `plot_model()`, we use `get_model_data()`
 
 ```{r extract-linear-predictions}
 linear_predictions <-
@@ -485,6 +639,8 @@ linear_predictions
 ---
 
 ## Predictions from the other two models
+
+The same way we can extract the predictions from the logistic regression and the linear probability model.
 
 .pull-left[
 ```{r extract-logistic-predictions}
@@ -510,8 +666,16 @@ linear_probability_predictions <-
 
 ---
 
-## Combining it in one table
+## Combining the predictions
 
+.pull-left[
+We combine the data using simple data wrangling operations. 
+- `bind_rows()` is function to append rows from one dataset to another from `dplyr`
+  - there's also `rbind()` in `base R`
+- we use `mutate()` to create an indicator to know which row belongs to what model of predictions
+]
+
+.pull-right[
 ```{r table}
 library(dplyr)
 library(tibble)
@@ -519,25 +683,34 @@ library(tibble)
 all_predictions <-
   bind_rows(
     linear_predictions %>% 
-      mutate(model = "Linear Model"),
+      mutate(
+        model = "Linear Model"
+      ),
     logistic_predictions %>% 
-      mutate(model = "Logistic Model"),
+      mutate(
+        model = "Logistic Model"
+      ),
     linear_probability_predictions %>% 
-      mutate(model = "Linear Probability Model")
+      mutate(
+        model = "Linear Probability Model"
+      )
   ) %>% 
   as_tibble()
 ```
+]
 
 ---
 
 ## Plotting them with `facet_wrap()`
+
+To create multiple predictions plots with a subplot for each model we use barebones `ggplot2`. Yet, it is not necessarily more complex than using `easystats` or `sjPlot`.
 
 .pull-left[
 ```{r all-in-one, eval = FALSE}
 ggplot(
   all_predictions, 
   aes(x = x, y = predicted)
-  ) +
+) +
   geom_line() +
   geom_line(aes(y = conf.high), linetype = "dashed") +
   geom_line(aes(y = conf.low), linetype = "dashed") +
@@ -554,6 +727,8 @@ ggplot(
 ---
 
 ## Plotting only the binary models
+
+As the plot is not particularly pretty because of different scales of the dependent variable, we can also base it on filtered version of the predictions data frame.
 
 .pull-left[
 ```{r only-two, eval = FALSE}
@@ -580,7 +755,19 @@ only_two
 
 ---
 
+## What about average marginal effects (AME)
+
+In the previous session, we also learned from average marginal effects.
+- parameter estimates based on the 'real' empirical values of all other covariates
+- handy when relationships are non-linear
+- way easier to interpret than usual regression coefficients
+- also nice when using predictions
+
+---
+
 ## The same logic for real AME
+
+We can also use the `margins` package and extract prediction information for our models. While the resulting columns names are different, the `cplot()` function also gives us information about X-values, estimates, and confidence bands.
 
 ```{r margins}
 library(margins)
@@ -604,6 +791,8 @@ linear_probability_model_AME <-
 
 ## Combining AME data
 
+After extracting the information, we simply can combine the two dataset again to get predictions for all included models.
+
 ```{r combine-data-again}
 all_AME <-
   bind_rows(
@@ -617,7 +806,9 @@ all_AME <-
 
 ---
 
-## Plotting them again
+## Plotting predictions based on AME
+
+Plotting them can then be conducted the same way as before. Please not, the different variable names in comparison to the `sjPlot` procedure.
 
 .pull-left[
 ```{r only-two-AME, eval = FALSE}
@@ -645,19 +836,21 @@ only_two_AME
 
 ## Combining them with previous predictions
 
+Using the fabolous `patchwork` package, we can even plot the 'simple' predictions together with the AME ones in one plot. Theoretically, this would have been possible with combining the data as well...
+
 .pull-left[
 ```{r patchwork-combining, eval = FALSE}
 library(patchwork)
 
 (only_two +
-  ggtitle("Simple Predictions") +
+    ggtitle("Simple Predictions") +
     ylab("Predicted Trust Value") +
     xlab("Age")) / 
   (only_two_AME +
-  ggtitle("AME Predictions") +
-    ylab("Predicted Trust Value") +
-    xlab("Age"))
-  
+     ggtitle("AME Predictions") +
+     ylab("Predicted Trust Value") +
+     xlab("Age"))
+
 
 ```
 ]
@@ -666,6 +859,23 @@ library(patchwork)
 ```{r ref.label = "patchwork-combining", echo = FALSE}
 ```
 ]
+
+---
+
+## What is more?
+
+---
+
+class: center, middle
+
+# [Exercise](XXX) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](XXX)
+
+---
+
+## Extracurricular activities
+
 
 
 
