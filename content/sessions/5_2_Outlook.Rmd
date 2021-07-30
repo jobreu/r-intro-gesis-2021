@@ -1,0 +1,109 @@
+---
+title: "Introduction to R for Data Analysis"
+subtitle: "Outlook"
+author: "Johannes Breuer & Stefan Jünger"
+date: "2021-08-06"
+presenter: Stefan
+editor_options: 
+  chunk_output_type: console
+---
+
+layout: true 
+
+```{r child = "../config/sessions_setup.Rmd"}
+```
+
+---
+
+## Course schedule - Day 1
+
+```{r schedule-1, echo = F}
+course_content_1
+```
+
+---
+
+## Course schedule - Day 2
+
+```{r schedule-2, echo = F}
+course_content_2
+```
+
+---
+
+## Course schedule - Day 3
+
+```{r schedule-3, echo = F}
+course_content_3
+```
+
+---
+
+## Course schedule - Day 4
+
+```{r schedule-4, echo = F}
+course_content_4
+```
+
+---
+
+## Course schedule - Day 5
+
+```{r schedule-5, echo = F}
+course_content_5
+```
+
+---
+
+## Where to go from here?
+
+---
+
+## Working with other data types
+
+Both Johannes and Stefan use different data types in our daily work.
+- digital behavioral data (Johannes)
+- georeferenced/geospatial data (Stefan)
+
+**`R` is data agnostic! Thus, `R` can serve you as a fancy data science tool to extract tweets from Twitter^ but also as a full-blown Geographic Information System (GIS)^2**
+
+.small[
+^1 https://github.com/jobreu/twitter-linking-workshop-2021
+^2 https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R
+]
+
+---
+
+## 'Web development' using `R`
+
+---
+
+## Shiny apps
+
+---
+
+## Creating your own homepage
+
+.pull-left[
+```{r home-johannes, echo = FALSE}
+woRkshoptools::include_picture("homepage_johannes.png")
+```
+.center[.small[https://www.johannesbreuer.com/]]
+]
+
+.pull-right[
+```{r home-stefan, echo = FALSE}
+woRkshoptools::include_picture("homepage_stefan.png")
+```
+.center[.small[https://stefanjuenger.github.io/]]
+]
+
+---
+
+## Acknowledgements `r ji("heart")`
+
+All slides were created with the `R` package [`xaringan`](https://github.com/yihui/xaringan) which builds on [`remark.js`](https://remarkjs.com), [`knitr`](http://yihui.name/knitr), and [`RMarkdown`](https://rmarkdown.rstudio.com). The exercises were created with the [`unilur` package](https://github.com/koncina/unilur).  
+
+Please make sure to properly cite all data that you use for your research (archives usually provide suggested citations). Also make sure to cite the free and open-source software (FOSS) that you use, such as `R` and the packages for it. To know how to do that, you can use the function `citation(packagename)` in `R`.
+
+We thank the ESRA 2021 organizers (especially Marieke Haan) for inviting us, Hidde van Beek for the support during the workshop, and all of you for participating!
