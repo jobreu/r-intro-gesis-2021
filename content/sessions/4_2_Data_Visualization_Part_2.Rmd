@@ -81,7 +81,7 @@ While it's straightforward to use, it still has some limitations. From time to t
 ]
 
 .pull-right[
-```{r sjPlot-pic, echo = FALSE}
+```{r sjPlot-pic, echo = FALSE, out.width = "40%"}
 woRkshoptools::include_picture("sjplot_logo.png")
 ```
 ]
@@ -148,7 +148,7 @@ check_normality(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "easystats-performance", echo = FALSE}
+```{r ref.label = "easystats-performance", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -166,7 +166,7 @@ check_normality(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "easystats-qq", echo = FALSE}
+```{r ref.label = "easystats-qq", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -186,7 +186,7 @@ check_heteroscedasticity(
 ]
 
 .pull-right[
-```{r ref.label = "easystats-hetero", echo = FALSE}
+```{r ref.label = "easystats-hetero", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -204,7 +204,7 @@ check_outliers(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "check-outliers", echo = FALSE}
+```{r ref.label = "check-outliers", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -221,7 +221,7 @@ check_model(linear_model)
 ]
 
 .pull-right[
-```{r ref.label = "check-estimates", echo = FALSE}
+```{r ref.label = "check-estimates", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -257,7 +257,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "easystats-coef-plot", echo = FALSE}
+```{r ref.label = "easystats-coef-plot", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -287,7 +287,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "labels-change", echo = FALSE}
+```{r ref.label = "labels-change", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -319,7 +319,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "labels-change-2", echo = FALSE}
+```{r ref.label = "labels-change-2", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -356,7 +356,7 @@ linear_model %>%
 ]
 
 .pull-right[
-```{r ref.label = "predictions", echo = FALSE}
+```{r ref.label = "predictions", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -379,7 +379,7 @@ linear_model %>%
 ]
 
 .pull-right[
-```{r ref.label = "predictions-nicer", echo = FALSE}
+```{r ref.label = "predictions-nicer", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -421,7 +421,7 @@ linear_model_interaction %>%
 ]
 
 .pull-right[
-```{r ref.label = "interaction-plot", echo = FALSE}
+```{r ref.label = "interaction-plot", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -513,7 +513,7 @@ compare_performance(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-model-fit", echo = FALSE}
+```{r ref.label = "comparing-model-fit", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -535,7 +535,7 @@ plot_models(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-parameters", echo = FALSE}
+```{r ref.label = "comparing-parameters", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -571,7 +571,7 @@ plot_models(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-parameters-adjusted", echo = FALSE}
+```{r ref.label = "comparing-parameters-adjusted", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -608,7 +608,7 @@ plot_models(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-parameters-adjusted-bw", echo = FALSE}
+```{r ref.label = "comparing-parameters-adjusted-bw", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -719,7 +719,7 @@ ggplot(
 ]
 
 .pull-right[
-```{r ref.label = "all-in-one", echo = FALSE}
+```{r ref.label = "all-in-one", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -748,7 +748,7 @@ only_two
 ]
 
 .pull-right[
-```{r ref.label = "only-two", echo = FALSE}
+```{r ref.label = "only-two", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -827,7 +827,7 @@ only_two_AME
 ]
 
 .pull-right[
-```{r ref.label = "only-two-AME", echo = FALSE}
+```{r ref.label = "only-two-AME", echo = FALSE, out.width = "75%"}
 ```
 ]
 
@@ -855,7 +855,7 @@ library(patchwork)
 ]
 
 .pull-right[
-```{r ref.label = "patchwork-combining", echo = FALSE}
+```{r ref.label = "patchwork-combining", echo = FALSE, out.width = "75%"}
 ```
 ]
 
