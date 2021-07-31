@@ -356,7 +356,7 @@ $$\sigma^{2} = \frac{\sum_{i=1}^{n}
 
 > block quote
 
-![R Logo](./Rlogo.png)
+![R Logo](./content/img/Rlogo.png) 
 ```
 ]
 
@@ -367,8 +367,11 @@ $$\sigma^{2} = \frac{\sum_{i=1}^{n}
 
 > block quote
 
-![R Logo](./Rlogo.png)
+```{r Rlogo, out.width = "20%", echo = FALSE}
+woRkshoptools::include_picture("RLogo.png")
+```
 ]
+
 
 For more formatting options check out the [RMarkdown Reference Guide](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) which is also available in *RStudio* via `Help` -> `Cheatsheets` -> `R Markdown Reference Guide`.
 
