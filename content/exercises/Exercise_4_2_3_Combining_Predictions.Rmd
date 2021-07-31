@@ -1,0 +1,165 @@
+---
+title: 'Exercise 4_2_3: Combining Predictions'
+author: 'Johannes Breuer, Stefan Jünger'
+date: 'Introduction to R for Data Analysis'
+---
+
+```{r child = "../config/exercises_setup.Rmd"}
+```
+
+```{r load-gp-covid, include = FALSE}
+library(haven)
+library(dplyr)
+library(sjlabelled)
+
+gp_covid <- 
+  read_sav(
+    "./data/ZA5667_v1-1-0.sav"
+  ) %>% 
+  set_na(na = c(-1:-99, 97, 98)) %>% 
+  rowwise() %>%
+  mutate(
+    mean_trust = 
+      mean(
+        c_across(hzcy044a:hzcy052a),
+        na.rm = TRUE
+      )
+  ) %>% 
+  ungroup() %>% 
+  remove_all_labels() %>% 
+  mutate(
+    pol_leaning_cat = 
+      case_when(
+        between(political_orientation, 0, 3) ~ "left",
+        between(political_orientation, 4, 7) ~ "center",
+        political_orientation > 7 ~ "right"
+      ) %>% 
+      as.factor()
+  ) %>% 
+  filter(pol_leaning_cat != "NA")
+
+gp_covid <-
+  gp_covid %>% 
+  mutate(
+    curfew_yes_no = 
+      case_when(
+        hzcy026a == 2 ~ 0,
+        hzcy026a == 1 ~ 1,
+      )
+  )
+```
+
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Let's re-estimate our model from the previous exercise, just with another dependent variable. Again, consult the [GESIS Panel codebook](https://dbk.gesis.org/dbksearch/download.asp?id=67378) and choose another variable that may make sense to be inserted into a regression.
+```
+
+```{block, opts.label = "clues"}
+If you're again struggeling, what about one of the dependent variables from the original exercises:
+
+1. hzcy005a
+2. hzcy026a
+3. hzcy072a
+
+Be aware that you may have to conduct some recoding.
+```
+
+```{r first-exercise, solution = TRUE}
+# I chose hzcy005a.
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Re-run your analysis just by switching the dependent variables.
+```
+
+```{r second-exercise, solution = TRUE}
+library(parameters)
+
+linear_model_2 <-
+  lm(
+    hzcy005a  ~ age_cat + education_cat,
+    data = gp_covid
+  )
+
+model_parameters(linear_model_2)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Now extract the prediction data for your main independent variable for this model.
+```
+
+```{block, opts.label = "clues"}
+You may want to use the function `get_model_data()` from the `sjPlot` package. You should set the option `type = "pred"` and define in the `terms` option your independent variable.
+```
+
+```{r third-exercise, solution = TRUE}
+library(sjPlot)
+
+predictions_model_2 <-
+  get_model_data(
+    linear_model_2,
+    type = "pred",
+    terms = "age_cat"
+  )
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Repeat the previous step for your original model and combine both datasets. The resulting data should be a `data.frame` or a `tibble`.
+```
+
+```{block, opts.label = "clues"}
+- For the combination, you simply have append both datasets rowwise. You can either use the `bind_rows()` function from the `dplyr` package or `rbind()` from `base R`. 
+- Make sure that you add an indicator variable for the model for each of the datasets before or while the combination.
+- You can convert any (well, a lot of...) data object to a `tibble` using `as_tibble()` from the `tibble` package.
+```
+
+```{r fourth-exercise, solution = TRUE}
+library(dplyr)
+library(tibble)
+
+linear_model <-
+  lm(
+    curfew_yes_no ~ age_cat + education_cat,
+    data = gp_covid
+  )
+
+predictions_model <-
+  get_model_data(
+    linear_model,
+    type = "pred",
+    terms = "age_cat"
+  )
+
+predictions <-
+  bind_rows(
+    predictions_model %>% 
+      mutate(model = "Model 1"),
+    predictions_model_2 %>% 
+      mutate(model = "Model 2")
+  ) %>% 
+  as_tibble()
+```
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+Create a simple faceted (using `facet_wrap()`) `ggplot` with the regression predictions.
+```
+
+```{block, opts.label = "clues"}
+- For the combination, you simply have append both datasets rowwise. You can either use the `bind_rows()` function from the `dplyr` package or `rbind()` from `base R`. 
+- Make sure that you add an indicator variable for the model for each of the datasets before or while the combination.
+- You can convert any (well, a lot of...) data object to a `tibble` using `as_tibble()` from the `tibble` package.
+```
+
+```{r fifth-exercise, solution = TRUE}
+library(ggplot2)
+
+ggplot(
+  predictions,
+  aes(x, predicted)
+  ) + 
+  geom_line() +
+  geom_line(aes(x, conf.low), linetype = "dashed") +
+  geom_line(aes(x, conf.high), linetype = "dashed") +
+  facet_wrap(~model)
+  
+```

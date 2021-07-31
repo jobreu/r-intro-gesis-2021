@@ -53,7 +53,7 @@ If you're really struggling finding a proper pair, what about:
 2. hzcy026a as DV and age_cat as IV
 3. hzcy072a as DV and sex
 
-Be aware that you may have to conduct some recoding.
+Be aware that you may have to conduct some recoding, and that your sample gets reduced due to filter questions.
 ```
 
 ```{r first-exercise, solution = TRUE}
@@ -65,7 +65,7 @@ Run a linear regression model with your variables and `education_cat` as covaria
 ```
 
 ```{block, opts.label = "clues"}
-You need the `perfamance` and `see` package.
+You need the `performance` and `see` package.
 ```
 
 ```{r second-exercise, solution = TRUE}

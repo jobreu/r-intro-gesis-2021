@@ -70,6 +70,21 @@ model_parameters(linear_model_interaction) %>%
 ```
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+The plot might be quite vivid and colorful. This one's rather an open task: Try to make it more dim and more greyish or apply just another theme.
+```
+
+```{block, opts.label = "clues"}
+Remember, the plots are base on `ggplot2`. You could choose from one of `ggplot2`'s built-in themes here: https://ggplot2.tidyverse.org/reference/ggtheme.html. In another step, you could adjust the scale's colour, e.g., with `scale_colour_grey()`. Be creative. 
+```
+
+```{r second-exercise, solution = TRUE}
+model_parameters(linear_model_interaction) %>% 
+  plot() +
+  scale_colour_grey(start = 0, end = .5, guide = "none") +
+  theme_minimal()
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
 Plot the interaction effect as a prediction.
 ```
 
@@ -77,7 +92,7 @@ Plot the interaction effect as a prediction.
 For this purpose, you need the `plot_model()` function from `sjPlot`.
 ```
 
-```{r second-exercise, solution = TRUE}
+```{r third-exercise, solution = TRUE}
 library(sjPlot)
 
 plot_model(
