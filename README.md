@@ -92,7 +92,34 @@ The open source software package `R` is free of charge and offers standard data 
 [Data Visualization Part 1](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_2_Data_Visualization_Part_1.html)  
 
 ### Exercises
+[3_1_1 Summary Statistics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_3_1_1_Summary_Statistics.html)
+
+[3_1_2 Frequencies Proportions](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_3_1_2_Frequencies_Proportions.html)
+
+[3_1_3 Crosstabs Correlations](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_3_1_3_Crosstabs_Correlations.html)
+
+[3_2_1 A Simple Plot](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_3_2_1_A_Simple_Plot.html)
+
+[3_2_2 Handling Multiple Plots](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_3_2_2_Handling_Multiple_Plots.html)
+
+[3_2_3 Plotting Repeats](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_3_2_3_Plotting_Repeats.html)
+
+[3_2_4 GGood Plots](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_3_2_4_GGood_Plots.html)
+
 ### Solutions
+[3_1_1 Summary Statistics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_3_1_1_Summary_Statistics.html)
+
+[3_1_2 Frequencies Proportions](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_3_1_2_Frequencies_Proportions.html)
+
+[3_1_3 Crosstabs Correlations](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_3_1_3_Crosstabs_Correlations.html)
+
+[3_2_1 A Simple Plot](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_3_2_1_A_Simple_Plot.html)
+
+[3_2_2 Handling Multiple Plots](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_3_2_2_Handling_Multiple_Plots.html)
+
+[3_2_3 Plotting Repeats](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_3_2_3_Plotting_Repeats.html)
+
+[3_2_4 GGood Plots](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_3_2_4_GGood_Plots.html)
 
 ## Day 4
 ### Slides
@@ -101,7 +128,30 @@ The open source software package `R` is free of charge and offers standard data 
 [Data Visualization Part 2](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/4_2_Data_Visualization_Part_2.html)   
 
 ### Exercises
+[4_1_1 t-test ANOVA](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_4_1_1_t-test_ANOVA.html)
+
+[4_1_2 Regression Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_4_1_2_Regression_Analysis.html)
+
+[4_1_3 Regression Reporting](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_4_1_3_Regression_Reporting.html)
+
+[4_2_1 Plotting Diagnostics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_4_2_1_Plotting_Diagnostics.html)
+
+[4_2_2 Plotting a Regression](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_4_2_2_Plotting_a_Regression.html)
+
+[4_2_3 Combining Predictions](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_4_2_3_Combining_Predictions.html)
+
 ### Solutions
+[4_1_1 t-test ANOVA](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_4_1_1_t-test_ANOVA.html)
+
+[4_1_2 Regression Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_4_1_2_Regression_Analysis.html)
+
+[4_1_3 Regression Reporting](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_4_1_3_Regression_Reporting.html)
+
+[4_2_1 Plotting Diagnostics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_4_2_1_Plotting_Diagnostics.html)
+
+[4_2_2 Plotting a Regression](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_4_2_2_Plotting_a_Regression.html)
+
+[4_2_3 Combining Predictions](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_4_2_3_Combining_Predictions.html)
 
 ## Day 5
 ### Slides
@@ -110,10 +160,7 @@ The open source software package `R` is free of charge and offers standard data 
 [Outlook](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/5_2_Outlook.html)
 
 ### Exercises
+[5_1_1 R Markdown](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_5_1_1_R_Markdown.html)
+
 ### Solutions
-
-# Exercises
-[dummy](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/dummy.html)
-
-# Solutions
-[dummy](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/dummy.html)
+[5_1_1 R Markdown](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_5_1_1_R_Markdown.html)
