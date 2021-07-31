@@ -16,6 +16,247 @@ The open source software package `R` is free of charge and offers standard data 
 - prior experience with quantitative data analysis, basic statistics, and regression
 - experience with using other statistical packages (e.g., *SPSS* or *Stata*) is helpful, but not a requirement
 
+# Timetable
+## Day 1
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Day </th>
+   <th style="text-align:left;"> Time </th>
+   <th style="text-align:left;"> Topic </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Monday </td>
+   <td style="text-align:left;color: gray !important;"> 10:30 - 11:30 </td>
+   <td style="text-align:left;font-weight: bold;"> Getting Started with R and RStudio </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Monday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 11:30 - 11:45 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Monday </td>
+   <td style="text-align:left;color: gray !important;"> 11:45 - 12:45 </td>
+   <td style="text-align:left;font-weight: bold;"> Getting Started with R and RStudio </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Monday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 12:45 - 13:45 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Lunch Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Monday </td>
+   <td style="text-align:left;color: gray !important;"> 13:45 - 15:00 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Import &amp; Export </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Monday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 15:00 - 15:15 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Monday </td>
+   <td style="text-align:left;color: gray !important;"> 15:15 - 16:30 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Import &amp; Export </td>
+  </tr>
+</tbody>
+</table>
+
+## Day 2
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Day </th>
+   <th style="text-align:left;"> Time </th>
+   <th style="text-align:left;"> Topic </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Tuesday </td>
+   <td style="text-align:left;color: gray !important;"> 10:00 - 11:15 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Wrangling - Basics </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Tuesday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 11:15 - 11:30 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Tuesday </td>
+   <td style="text-align:left;color: gray !important;"> 11:30 - 12:45 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Wrangling - Basics </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Tuesday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 12:45 - 13:45 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Lunch Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Tuesday </td>
+   <td style="text-align:left;color: gray !important;"> 13:45 - 15:00 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Wrangling - Advanced </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Tuesday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 15:00 - 15:15 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Tuesday </td>
+   <td style="text-align:left;color: gray !important;"> 15:15 - 16:30 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Wrangling - Advanced </td>
+  </tr>
+</tbody>
+</table>
+
+## Day 3
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Day </th>
+   <th style="text-align:left;"> Time </th>
+   <th style="text-align:left;"> Topic </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Wednesday </td>
+   <td style="text-align:left;color: gray !important;"> 10:00 - 11:15 </td>
+   <td style="text-align:left;font-weight: bold;"> Exploratory Data Analysis </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Wednesday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 11:15 - 11:30 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Wednesday </td>
+   <td style="text-align:left;color: gray !important;"> 11:30 - 12:45 </td>
+   <td style="text-align:left;font-weight: bold;"> Exploratory Data Analysis </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Wednesday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 12:45 - 13:45 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Lunch Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Wednesday </td>
+   <td style="text-align:left;color: gray !important;"> 13:45 - 15:00 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Visualization - Part 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Wednesday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 15:00 - 15:15 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Wednesday </td>
+   <td style="text-align:left;color: gray !important;"> 15:15 - 16:30 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Visualization - Part 1 </td>
+  </tr>
+</tbody>
+</table>
+
+## Day 4
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Day </th>
+   <th style="text-align:left;"> Time </th>
+   <th style="text-align:left;"> Topic </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Thursday </td>
+   <td style="text-align:left;color: gray !important;"> 10:00 - 11:15 </td>
+   <td style="text-align:left;font-weight: bold;"> Confirmatory Data Analysis </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Thursday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 11:15 - 11:30 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Thursday </td>
+   <td style="text-align:left;color: gray !important;"> 11:30 - 12:45 </td>
+   <td style="text-align:left;font-weight: bold;"> Confirmatory Data Analysis </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Thursday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 12:45 - 13:45 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Lunch Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Thursday </td>
+   <td style="text-align:left;color: gray !important;"> 13:45 - 15:00 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Visualization - Part 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Thursday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 15:00 - 15:15 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Thursday </td>
+   <td style="text-align:left;color: gray !important;"> 15:15 - 16:30 </td>
+   <td style="text-align:left;font-weight: bold;"> Data Visualization - Part 2 </td>
+  </tr>
+</tbody>
+</table>
+
+## Day 5
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Day </th>
+   <th style="text-align:left;"> Time </th>
+   <th style="text-align:left;"> Topic </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Friday </td>
+   <td style="text-align:left;color: gray !important;"> 10:00 - 11:15 </td>
+   <td style="text-align:left;font-weight: bold;"> Reporting with R Markdown </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Friday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 11:15 - 11:30 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Friday </td>
+   <td style="text-align:left;color: gray !important;"> 11:30 - 12:45 </td>
+   <td style="text-align:left;font-weight: bold;"> Reporting with R Markdown </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Friday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 12:45 - 13:45 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Lunch Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Friday </td>
+   <td style="text-align:left;color: gray !important;"> 13:45 - 15:00 </td>
+   <td style="text-align:left;font-weight: bold;"> Advanced Use of R, Outlook, Q&amp;A </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> Friday </td>
+   <td style="text-align:left;color: gray !important;color: gray !important;"> 15:00 - 15:15 </td>
+   <td style="text-align:left;font-weight: bold;color: gray !important;"> Break </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;color: gray !important;"> Friday </td>
+   <td style="text-align:left;color: gray !important;"> 15:15 - 16:30 </td>
+   <td style="text-align:left;font-weight: bold;"> Advanced Use of R, Outlook, Q&amp;A </td>
+  </tr>
+</tbody>
+</table>
+
 # Materials
 ## Day 1
 ### Slides
