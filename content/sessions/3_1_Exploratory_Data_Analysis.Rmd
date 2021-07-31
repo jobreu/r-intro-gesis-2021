@@ -67,7 +67,7 @@ As using the full data set can become somewhat unwieldy for the examples in this
 
 ---
 
-### Repetition: Data wrangling pipeline
+## Repetition: Data wrangling pipeline
 
 As a repetition and reminder, we will quickly go through a wrangling pipeline for these data in the following.
 
@@ -185,7 +185,7 @@ corona_survey <- corona_survey %>%
 
 ---
 
-### Saving the wrangled data
+## Saving the wrangled data
 
 As we will use this reduced and wrangled data set again in the next sessions, we should save it (as an `.rds` file).
 
@@ -245,7 +245,7 @@ as well as whole dataframes:
 summary(corona_survey[, 2:19])
 ```
 
-.right[`r emo::ji("left_arrow_curving_right")`]
+.right[`r emo::ji("left_arrow_curving_right")`] 
 
 ---
 
@@ -812,7 +812,7 @@ Again, as with the crosstabs examples, there are many different options for calc
 
 ---
 
-# Correlations with `base R`
+## Correlations with `base R`
 
 The `base R` function `cor()` computes the correlation coefficient(s) between two or more variables. This function can be used to calculate *Pearson's r*, *Kendall's tau*, and *Spearman's rho*. We also need to specify how we want to deal with missing values (e.g., use pairwise complete observations). For example, let's look at the correlations between the trust variables in our dataset:
 
