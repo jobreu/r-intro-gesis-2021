@@ -45,7 +45,7 @@ As stated before, exploratory data analysis can take many shapes and forms. In t
 
 ## Disclaimer: A flood `r ji("ocean")` of packages `r ji("package")`
 
-In the previous sessions, we have tried to focus on a small set of packages (mostly from `base R` and the `tidyverse`) and took a deep dive `r ji("goggles")` exploring their functionalities. In this session, however, we will do browse through quite a few packages for EDA. Admittedly, this can be a bit overwhelming. However, there is no need to worry: You do not need to remember all of the options and their differences right away. The topic of EDA is a very suitable example for demonstrating that there often are many `R` packages for the same tasks.
+In the previous sessions, we have tried to focus on a small set of packages (mostly from `base R` and the `tidyverse`) and took a deep dive `r ji("goggles")` exploring their functionalities. In this session, however, we will browse through quite a few packages for EDA. Admittedly, this can be a bit overwhelming. However, there is no need to worry: You do not need to remember all of the options and their differences right away. The topic of EDA is a very suitable example for demonstrating that there often are many `R` packages for the same tasks.
 
 ---
 
@@ -113,7 +113,7 @@ corona_survey <- gp_covid %>%
 
 ## Wrangling pipeline: Missing values
 
-If you look at the [codebook](https://dbk.gesis.org/dbksearch/download.asp?id=67378) for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*, you will see that some of the variables we have selected have specific values that we should either code as missing values or exclude before we do any analyses (exploratory or otherwise).
+If you look at the [codebook](https://dbk.gesis.org/dbksearch/download.asp?id=67378) for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*, you will see that some of the variables we have selected have specific values that we probably want to code as missing values before we do any analyses (exploratory or otherwise).
 
 .small[
 ```{r pipeline-missings}
@@ -345,7 +345,7 @@ class: middle
 
 `dplyr` provides a helpful function for creating summary statistics: `summarize()`
 
-`summarize()` is a vectorized function that can be used to create summary statistics for variables using functions like...
+`summarize()` is a [vectorized](https://win-vector.com/2019/01/03/what-does-it-mean-to-write-vectorized-code-in-r/) function that can be used to create summary statistics for variables using functions like...
 
 - `mean()`
 - `sd()`
@@ -358,7 +358,7 @@ class: middle
 
 ## Summary statistics with `dplyr`
 
-While creating summary statistics using `summarize()` from `dplyr()` requires writing more code, it is the most flexible option. Another nice benefit of `dplyr::summarize()` is that it produces a `tibble` which can be used for further analyses or for creating plots or tables.
+While creating summary statistics using `summarize()` from `dplyr()` requires writing more code, it is the most flexible option. Another nice benefit of `summarize()` is that it produces a `tibble` which can be used for further analyses or for creating plots or tables.
 
 ---
 
@@ -412,7 +412,7 @@ class: middle
 
 ## `dplyr::across()`
 
-To produce grouped summary statistics for multiple variables we can use the `dplyr` function `across()` which we already used in the session on advanced data wrangling. *Note*: We only use cases without missing data for any of the variables here (= listwise deletion).
+To produce grouped summary statistics for multiple variables we can use the `dplyr` function `across()` which we already saw in action in the session on advanced data wrangling. *Note*: We only use cases without missing data for any of the variables here (= listwise deletion).
 
 ```{r across, eval=FALSE}
 corona_survey %>%
@@ -449,7 +449,7 @@ woRkshoptools::include_picture(".//dplyr_across.png")
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_1_1_Summary_Statisticss.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_1_1_Summary_Statistics.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
 ## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_1_1_Summary_Statistics.html)
 
@@ -593,6 +593,8 @@ While there is an ever-growing list of `R` packages for creating tables with man
 If we, e.g., want to create a summary statistics table as text output (e.g., for printing in the `R` console), we can use `stargazer` for that. **NB**: As the main `stargazer()` function does not work with tibbles, we need to convert our data to a regular dataframe. 
 
 ```{r stargazer-text}
+library(stargazer)
+
 corona_survey %>% 
   select(starts_with("trust")) %>% 
   as.data.frame() %>% 
@@ -605,7 +607,7 @@ corona_survey %>%
 
 ## Summary tables with `stargazer`
 
-`stargarer` also supports `HTML` and `LaTeX` as output formats. We can also export the output for further use (e.g., with our `LaTeX` editor of choice).
+`stargazer` also supports `HTML` and `LaTeX` as output formats. We can export the output for further use (e.g., with our `LaTeX` editor of choice).
 
 ```{r stargazer-latex, eval=FALSE}
 # We create a directory for output files first
@@ -706,7 +708,7 @@ round(prop.table(table(corona_survey$sex, corona_survey$choice_of_party), 2)*100
 
 ## Crosstabs with `dplyr`
 
-We can also use functions from `dplyr` to create crosstabs including frequencies and proportions.
+We can use functions from `dplyr` to create crosstabs including frequencies.
 
 ```{r dplyr-crosstabs-freq}
 corona_survey %>% 
@@ -717,14 +719,14 @@ corona_survey %>%
 ```
 
 .small[
-*Note*: We have only briefly mentioned the function in the session on *Data Wrangling Basics* (when introducing the concept of tidy data), but - as you might guess from its name - the function `pivot_wider()`, which is part of the [`tidyr` package](https://tidyr.tidyverse.org/) changes the format of a data set from long to wide.
+*Note*: We have only briefly mentioned the function in the session on *Data Wrangling Basics* (when introducing the concept of tidy data), but - as you might guess from its name - the function `pivot_wider()`, which is part of the [`tidyr` package](https://tidyr.tidyverse.org/), changes the format of a data set from long to wide.
 ]
 
 ---
 
 ## Crosstabs with `dplyr`
 
-We can also use functions from `dplyr` in a similar fashion as we have done for a single variable to create crosstabs including frequencies and proportions.
+We can also use functions from `dplyr` in a similar fashion as we have done for a single variable to create crosstabs including proportions.
 
 ```{r dplyr-crosstabs-prop}
 corona_survey %>% 
@@ -914,7 +916,7 @@ class: center, middle
 
 While correlation coefficients are useful for exploring relationships between variables, they can also be misleading. For example, if we do correlation analysis and we encounter a (Pearson's) correlation coefficient close to 0, we often think of relationships as pictured below.
 
-```{r dino-plot-1, out.width = "50%", echo = F}
+```{r dino-plot-1, out.width = "45%", echo = F}
 library(datasauRus)
 
 datasaurus_dozen %>% 
@@ -1001,15 +1003,15 @@ class: middle
 
 ## Plot your data!
 
-The message from the `datasaurus_dozen` examples should be clear. Relying only on singular values that summarize the location or spread of a single variable or the association of two variables is not a good idea. To avoid reducing a ~~mountain to a molehill~~ dinosaur to a lack of correlation, it is important to plot your data as part of your EDA to explore:
+The message from the `datasaurus_dozen` examples should be clear. Relying only on singular values that summarize the location or spread of a single variable or the association of two variables is not a good idea. To avoid reducing a ~~mountain to a molehill~~ dinosaur to a lack of correlation, it is important to plot your data to explore:
 
 - univariate distributions
 
-- grouped univariate distributions (if you have and want to compare groups)
+- grouped univariate distributions (if you want to compare groups)
 
 - bivariate distributions
 
-For that reason (and also because it is fun and `R` has a lot to offer in that regard), we will dive right into data visualization with `R` in the next session...
+For that reason (and because it is fun and `R` has a lot to offer in that regard), we will dive `r ji("goggles")` right into data visualization in the next session...
 
 ---
 
@@ -1021,7 +1023,7 @@ Two things that can influence summary statistics as well as univariate and bivar
 
 ## Missing data
 
-In the *Data Wrangling Basics* session we have already discussed how we can define specific values as missings (`NA`) and how we can recode `NA` into something else. As we have seen in that session, the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset contains quite a few codes for different types of missing data. However, when we collect data ourselves or if we (re-)use datasets that are not as well-documented as the *GESIS Panel* data, we may need to explore potential patterns of missingness to see, if there may have been identifiable reasons why data for certain variables and/or observations are missing.
+In the *Data Wrangling Basics* session we have already discussed how we can define specific values as missings (`NA`) and how we can recode `NA` into something else. As we have seen in that session, the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset contains quite a few codes for different types of missing data. However, when we collect data ourselves or if we (re-)use datasets that are not as well-documented as the *GESIS Panel* data, we may need to explore potential patterns of missingness to see if there may be identifiable reasons why data for certain variables and/or observations are missing.
 
 ---
 
@@ -1059,7 +1061,7 @@ corona_survey %>%
 
 ## Outliers
 
-There are [many ways of identifying and dealing with outliers](https://ouzhang.me/2020/11/16/outliers-part4/). Here, we will only look at two methods (one univariate, one multivariate: [Interquartile range (IQR)](https://en.wikipedia.org/wiki/Interquartile_range) and [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance).
+There are [many ways of identifying and dealing with outliers](https://ouzhang.me/2020/11/16/outliers-part4/). Here, we will only look at two methods (one univariate, one multivariate): [Interquartile range (IQR)](https://en.wikipedia.org/wiki/Interquartile_range) and [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance).
 
 ---
 
@@ -1092,7 +1094,7 @@ gapminder_2018 <- life_exp_2018 %>%
 
 ## Detecting outliers: IQR
 
-For identifying univariate outliers we can specify lower and upper cutoffs, e.g., using the formula 25th percentile - 1.5 * interquartile range (IQR) for the lower and 75th percentile + 1.5 * IQR for the upper limit. In `R` this can be done as follows:
+For identifying univariate outliers we can specify lower and upper cutoffs, e.g., using the formula 25th percentile - 1.5 x interquartile range (IQR) for the lower and 75th percentile + 1.5 x IQR for the upper limit. In `R` this can be done as follows:
 
 .small[
 ```{r iqr}
@@ -1124,6 +1126,8 @@ nrow(gdp_pc_2018) - nrow(gdp_pc_2018_cut)
 A common method for identifying multivariate outliers is Mahalanobis distance. While there is a `base R` function called `mahalanobis()` that you can use to calculate Mahalanobis distance, a more convenient option is the `mahalanobis_distance()` function from the [`rstatix` package](https://rpkgs.datanovia.com/rstatix/index.html).
 
 ```{r mahalanobis, eval=FALSE}
+library(rstatix)
+
 md <- gapminder_2018 %>% 
   drop_na() %>% 
   mahalanobis_distance() %>% 
@@ -1176,4 +1180,4 @@ As we have seen throughout this session, there are quite a few `R` packages (tha
 
 # Extracurricular activities
 
-Further explore the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset and develop some ideas for interesting research questions that you could answer by analyzing it with `R`.
+Further explore the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data set and develop some ideas for interesting research questions that you could answer by analyzing it with `R`.

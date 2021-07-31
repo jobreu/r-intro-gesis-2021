@@ -14,7 +14,7 @@ layout: true
 
 ## Confirmatory data analysis
 
-Yesterday, we covered exploratory data analyses (EDA). In contrast to those, the purpose of confirmatory analyses is typically testing hypotheses. As for EDA, we will first discuss how to conduct confirmatory data analyses in this session, and the look at visualization options in the following session (this afternoon). Again, as this is not a statistics course - and because you probably (want to) use many different analysis methods (some of which we are probably not familiar with) - we will only cover some of the basics in this session. While we do cover some topics as well, our focus will be on regression.
+Yesterday, we covered exploratory data analysis (EDA). In contrast to that, the purpose of confirmatory analyses is typically testing hypotheses. As for EDA, we will first discuss how to conduct confirmatory data analyses in this session, and then look at visualization options in the following session (this afternoon). Again, as this is not a statistics course - and because you probably (want to) use many different analysis methods (some of which we are quite likely not familiar with) - we will only cover some of the basics in this session. While we do cover some other topics as well, our focus will be on regression.
 
 ---
 
@@ -48,7 +48,7 @@ Yesterday, we covered exploratory data analyses (EDA). In contrast to those, the
 
 In this session, we will, again, use the data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*. As before, we need to load the data.
 
-```{r load-gp-data, echo = FALSE}
+```{r load-gp-data}
 corona_survey <- readRDS("./data/corona_survey.rds")
 ```
 
@@ -58,13 +58,13 @@ corona_survey <- readRDS("./data/corona_survey.rds")
 
 ## `R` is rich in statistical procedures
 
-Generally, if you seek to use a specific statistical method in `R`, chances are quite high that you can easily do that. As we said before: There's ~~an app~~ a package for that. After all, `R` is a statistical progamming language that was originally developed by statisticians.
+Generally, if you seek to use a specific statistical method in `R`, chances are quite high that you can easily do that. As we'we said before: There's ~~an app~~ a package for that. After all, `R` is a statistical progamming language that was originally developed by statisticians.
 
 ---
 
 ## Formulas in statistical software
 
-Before we start analyzing data, we have to make ourselves familiar with some more terminology in `R`. As in other statistical languages, e.g., regression models require the definition of dependent and independent variables. For example, in *Stata* you would write:
+Before we start analyzing data, we should make ourselves familiar with some more terminology in `R`. As in other statistical languages, e.g., regression models require the definition of dependent and independent variables. For example, in *Stata* you would write:
 
 ```{r eval = FALSE}
 y x1 x2 x3
@@ -144,7 +144,7 @@ y ~ .
 
 ## Interaction effects with `*` and `:`
 
-What is more interesting, indeed, is adding interaction effects in a model. As this is the same as multiplying predictor variables, we also use the `*` sign for that.
+We can also easily add interaction effects to a model. As this is the same as multiplying predictor variables, we also use the `*` sign for that.
 
 ```{r eval = FALSE}
 y ~ x1 * x2
@@ -162,7 +162,7 @@ Later, we will see how all of this looks when we actually feed regression models
 
 ## Transforming variables within a formula
 
-One last point before we dive into doing some actual analysis is transforming your variables. This procedure is rather common in regression analysis. It is also straightforward to do in `R`. For simple transformations, such as log-transformation, this can be done as follows:
+One last point before we dive into doing some actual analysis is transforming variables. This procedure is rather common in regression analysis. It is also straightforward to do in `R`. For simple transformations this can be done as follows:
 
 ```{r eval = FALSE}
 y ~ log(x)   # computes the log10 for x
@@ -175,15 +175,13 @@ We could also change the data type of variables within a function, e.g., by conv
 
 ## Transforming variables within a formula
 
-If your variable is not enclosed by a specific function, you have to wrap the operation in the `I()` function. For example:
+If you cannot use a specific function for your tansformation, you have to wrap the operation in the `I()` function. For example:
 
 ```{r eval = FALSE}
 y ~ x + I(x^2) # add a quadratic term of x
 ```
 
-.small[
-*Note*: Of course, there are also functions in `R` for transforming variables (e.g., standardizing or centering) before we use them in a formula. Besides the `base R` function `scale()`, e.g., the [`datawizard package`](https://easystats.github.io/datawizard/) provides a few functions for that.
-]
+*Note*: Of course, there are also functions in `R` for transforming variables (e.g., standardizing or centering) before we use them in a formula. Besides the `base R` function `scale()` the [`datawizard package`](https://easystats.github.io/datawizard/), e.g., provides a few functions for that.
 
 ---
 
@@ -209,7 +207,7 @@ t.test(risk_self ~ sex, data = corona_survey)
 
 ## Test of normality
 
-What if our data is not normally distributed in the first place, thus, violating one of the basic assumptions of performing t-tests? To check this, we can use a [Shapiro-Wilk](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) test of normality.
+What if our data are not normally distributed in the first place, thus, violating one of the basic assumptions of performing t-tests? To check this, we can use a [Shapiro-Wilk](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) test of normality.
 
 ```{r swt}
 shapiro.test(corona_survey$risk_self)
@@ -217,7 +215,7 @@ shapiro.test(corona_survey$risk_self)
 
 ---
 
-## Alternative: Wilcoxon/Mann-Whitney test
+## Wilcoxon/Mann-Whitney test
 
 If the data are not normally distributed, the [Wilcoxon/Mann-Whitney](https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test) test can be a suitable alternative.
 
@@ -306,7 +304,7 @@ afex_anova
 
 ## Effect sizes
 
-In many disciplines and journals, it is standard practice to also report effect sizes (in addition to means, SDs, and p-values) for t-tests and ANOVAS. The [`effectsize` package](https://easystats.github.io/effectsize/) that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) offers some helpful options for that.<sup>1</sup>
+In many disciplines and journals, it is standard practice to also report effect sizes (in addition to test statistics and p-values) for t-tests and ANOVAS. The [`effectsize` package](https://easystats.github.io/effectsize/) that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) offers some helpful options for that.<sup>1</sup>
 
 ```{r cohens-d}
 library(effectsize)
@@ -456,7 +454,7 @@ class: middle
 
 What we have seen so far are estimates for linear OLS regression models. A standard `R` installation provides a multitude of other estimators/link functions, so-called family objects, e.g., binomial logistic or Poisson regression models through the `glm()` function. See `?family` for an overview.
 
-Let's look at the the example of logistic regression. For this  purpose, we need to recode our subjective risk of infection variable into a binary one:
+Let's look at the the example of logistic regression. For this  purpose, we recode our subjective risk of infection variable into a binary one:
 
 ```{r recode-risk}
 corona_survey <- corona_survey %>% 
@@ -583,7 +581,7 @@ names(simple_linear_model)
 
 ## Accessing coefficients
 
-We can also retrieve just the coefficients-
+We can access the coefficients from our model as follows:
 
 ```{r coef-lm}
 simple_linear_model$coefficients
@@ -635,7 +633,7 @@ class:middle
 
 ## (Simple) model predictions
 
-It is also quite straightforward to do simple predictions from an estimated model using the `predict()` function in `R`. We can feed the `predict()` function with our own data to figure out what our model actually predicts when something changes (in the example below that is the age category). This can provide additional insights into our models. *Note*: For the following code to work, we need to change the `sex` variable to numeric and then fit our simple linear model again using that as a predictor.
+It is also quite straightforward to do simple predictions from an estimated model using the `predict()` function in `R`. We can feed the `predict()` function with our own data to figure out what our model actually predicts when something changes (in the example below that is the age category). This can provide additional insights into our models. *Note*: For the following code to work, we need to change the `sex` variable to numeric and then fit our simple linear model again, using that as a predictor.
 
 .small[
 ```{r predict}
@@ -700,7 +698,7 @@ class: middle
 
 ## Regression tables
 
-As we have seen in the session on *Exploratory Data Analysis*, there are different options for creating tables as output in `R`. The ones we have looked at in the EDA session, [`stargazer`](https://cran.r-project.org/web/packages/stargazer/index.html) and [`gtsummary`](http://www.danieldsjoberg.com/gtsummary/) can also be used for creating regression tables. The functions from these packages can also be used for comparing multiple regression models in one table.
+As we have seen in the session on *Exploratory Data Analysis*, there are different options for creating tables as output in `R`. The ones we have looked at in the EDA session, [`stargazer`](https://cran.r-project.org/web/packages/stargazer/index.html) and [`gtsummary`](http://www.danieldsjoberg.com/gtsummary/) can be used for creating regression tables. The functions from these packages can also be used for comparing multiple regression models in one table.
 
 ---
 
@@ -757,6 +755,8 @@ stargazer(simple_linear_model,
 ---
 
 ## Regression tables with `gtsummary`
+
+The `gtsummary` package also provides a function for creating regression tables. *Note*: Remember that, by default, the output of the `gtsummary` functions will be shown in the `Viewer` tab in *RStudio*.
 
 ```{r gts-reg, eval=FALSE}
 library(gtsummary)
@@ -827,6 +827,7 @@ simple_linear_model_logistic %>%
   report()
 ```
 
+.right[`r emo::ji("left_arrow_curving_right")`]
 
 ---
 
@@ -841,7 +842,7 @@ class: center, middle
 ## tidy models with `broom`
 
 .pull-left[
-We have already entered the area of reporting statistical results. We will have a separate session on reporting on with `R Markdown` tomorrow. One thing to note at this point is that more and more developers in `R` were unsatisfied with the diverse output some of the standard regression procedures provide. The outputs may be helpful to look at, but it's not great for further processing. For that purpose, we need dataframes/tibbles.
+We have already entered the area of reporting statistical results. We will have a separate session on reporting on with `R Markdown` tomorrow. One thing to note at this point is that more and more developers in `R` were unsatisfied with the diverse output some of the standard regression procedures provide. The outputs may be helpful to look at, but they're usually not great for further processing. For that purpose, we need dataframes/tibbles.
 ]
 
 .pull-right[
@@ -883,28 +884,20 @@ glance(simple_linear_model)
 
 ## `augment()`
 
-```{r augment, eval=FALSE}
+```{r augment}
 augment(simple_linear_model)
 ```
-
-.right[`r emo::ji("left_arrow_curving_right")`]
-
----
-
-class: middle
-.small[
-```{r ref.label = "augment", echo = FALSE}
-```
-]
 
 ---
 
 ## Outlook: Other modeling options
 
-As we said at the beginning of this session, we only looked at some of the basic confirmatory analysis methods. As you can imagine, however, `R` offers plenty of options more more complex statistical models as well. A few examples:
+As we've said at the beginning of this session, we only looked at some of the basic confirmatory analysis methods. As you can imagine, however, `R` offers plenty of options more more complex statistical models as well. A few examples:
 
 - Structural equation models with [`lavaan`](https://lavaan.ugent.be/)
+
 - Multilevel/mixed-effects models with [`lme4`](https://cran.r-project.org/web/packages/lme4/index.html)
+
 - Bayesian regression models using [`brms`](https://paul-buerkner.github.io/brms/)
 
 ---
@@ -919,4 +912,4 @@ class: center, middle
 
 ## Extracurricular activities
 
-As it is such a simple and useful package, we recommend exploring the `broom` package a bit further. Alex Hayes, one authors of the package, [gave an interesting talk at the *RStudio* Conference in 2019](https://rstudio.com/resources/rstudioconf-2019/solving-the-model-representation-problem-with-broom/).
+As it is such a simple and useful package, we recommend exploring the `broom` package a bit further. Alex Hayes, one authors of the package, [gave an interesting talk about it at the *RStudio* Conference in 2019](https://rstudio.com/resources/rstudioconf-2019/solving-the-model-representation-problem-with-broom/).

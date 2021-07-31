@@ -14,7 +14,7 @@ layout: true
 
 ## `R Markdown`
 
-In the previous sessions, we have seen that `R` offers plenty of options for importing and exporting, wrangling, exploring, visualizing, and analyzing data. Normally, once we are (finally) done with all of these steps, we want to share and publish the results of our hard work. While the normal workflow is to somehow export (or copy) the results of our analyses into the desired output format (e.g., a *Word* document or a *PowerPoint* presentation), we can use an authoring tool for `R` that allows us to create a variety of outputs in different formats: `R Markdown`
+In the previous sessions, we have seen that `R` offers plenty of options for importing and exporting, wrangling, exploring, visualizing, and analyzing data. Normally, once we are (finally) done with all of these steps, we want to share and publish the results of our hard work. While a common workflow is to somehow export (or copy) the results of our analyses into the desired output format (e.g., a *Word* document or a *PowerPoint* presentation), we can use an authoring tool for `R` that allows us to create a variety of outputs in different formats: <br>`R Markdown`
 
 ```{r workflow-img, echo=FALSE, out.width="60%"}
 woRkshoptools::include_picture("./data-science.png")
