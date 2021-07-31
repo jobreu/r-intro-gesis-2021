@@ -199,8 +199,9 @@ woRkshoptools::include_picture("./rmarkdown_example_annotated.png")
 ```{r yaml-101, eval = F}
 ---
 title: "My First R Markdown Document"
+subtitle: "A first in the series of many more to come"
 author: "Gordon Shamway"
-date: "30 7 2020"
+date: "06-08-2021"
 output: html_document
 ---
 ```
@@ -343,7 +344,6 @@ $$\sigma^{2} = \frac{\sum_{i=1}^{n}
   {n-1}$$
 ]
 
-
 ---
 
 ## Other formatting stuff
@@ -455,6 +455,7 @@ The knitting process happens in a new environment. The working directory for thi
 When you are new to `R Markdown` it makes sense to knit early and knit often to see if everything works and produces the results you expected (unless your document is computationally intensive and, hence, takes a long time to compile).
 
 However, for computationally intensive tasks, you could consider setting the option `opts_chunk$set(cache = TRUE)`. It will cache chunk calls and their results as long as you do not edit them (but be aware that potentially sensitive data could be stored in the cache).
+
 ---
 
 ## How `R Markdown` works
@@ -513,9 +514,10 @@ It is possible to customize the looks of `R Markdown` documents by specifying fu
 
 ```{r yaml-extended, eval = F}
 ---
-title: "My Fancy R Markdown Document"
+title: "The Loom of Fate"
+subtitle: "How rugs can tie rooms together"
 author: "Jeffrey Lebowski"
-date: "30 7 2020"
+date: "06-08-2021"
 output: html_document:
     theme: sandstone
     highlight: kate
@@ -530,9 +532,10 @@ Even more customization of document appearance and style is possible by using cu
 
 ```{r css, eval = F}
 ---
-title: "My Fully Customized R Markdown Document"
+title: "Monkey Business"
+subtitle: "My path to becoming a mighty pirate"
 author: "Guybrush Threepwood"
-date: "30 7 2020"
+date: "06-08-2021"
 output:
   html_document:
     css: styles.css

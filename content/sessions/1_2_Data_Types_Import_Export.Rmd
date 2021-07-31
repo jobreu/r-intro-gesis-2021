@@ -121,7 +121,8 @@ I'd say that logical values are at the heart of creating loops. For this purpose
 ---
 
 ## Logical operators
-Here are all (?) logical operators in `R`:
+
+There are quite a few logical operators in `R`:
 
 .pull-left[
 - `<` 	less than
@@ -324,13 +325,14 @@ character_vector[2]
 ---
 
 # More complicated cases: matrices
+
 Matrices can have more dimensions, often you want information from a specific row and column.
 
 ```{r eval = FALSE}
 a_wonderful_matrix[number_of_row, number_of_column]
 ```
 
-*Note*: You can do the same indexing with `data.frame`s
+*Note*: You can do the same indexing with `data.frame`s. We will talk more about this in the session on *Data Wrangling Basics*.
 
 ---
 
@@ -383,14 +385,12 @@ fancy_data["who"]
 
 ---
 
-## Difference between `[]` and `[[]]` 
+## Difference between `[]` and `[[]]`
 
-```{r echo = FALSE}
-woRkshoptools::include_picture("indexing_lists.png")
+```{r hadley-tweet, echo=FALSE}
+tweet_embed("https://twitter.com/hadleywickham/status/643381054758363136",
+            theme = "dark")
 ```
-
-.footnote[https://twitter.com/hadleywickham/status/643381054758363136/photo/1]
-
 
 ---
 
@@ -589,6 +589,16 @@ woRkshoptools::include_picture("./coding_cat.gif")
 
 ---
 
+## Honestly, after some time you will write the code directly
+.center[
+```{r, echo = FALSE}
+woRkshoptools::include_picture("./hadley-typing.gif")
+```
+]
+[Source](https://tenor.com/view/hadley-wickham-rstats-typing-rcode-gif-11365139)
+
+---
+
 ## Simple vs. not so simple file formats
 
 Basic file formats, such as CSV (comma-separated value file), can directly be imported into `R`
@@ -639,15 +649,13 @@ titanic <- read.csv("./data/titanic.csv")
 titanic
 ```
 
-.tiny[
+.small[]
 ```{r loadtitanic-print, echo = FALSE}
 titanic <- read.csv("./data/titanic.csv")
 
 titanic
 ```
 ]
-
-
 
 ---
 
@@ -719,6 +727,7 @@ It also provides capabilities to handle *SPSS*-defined missing values by setting
 ---
 
 ## There's more
+
 These were just some very first examples of applying functions from each package. They comprise even more functions for different data types.
 
 pull-left[
@@ -730,6 +739,7 @@ pull-left[
 - `read_table()`
 - `read_log()`
 ]
+
 pull-right[
 `haven`
 - `read_sas()`
@@ -742,6 +752,7 @@ Not to mention all the helper functions and options. For example, we can define 
 ---
 
 ## Data type specifications for `tibbles` 
+
 - characters
   - indicated by `<chr>`
   - specified by `col_character()`
@@ -770,7 +781,7 @@ Luckily, we can change the variable type...
 ---
 
 ## While loading the data in `read_csv`
-.tinyish[
+
 ```{r readr-example-col-change, eval = FALSE}
 titanic <-
   read_csv(
@@ -793,7 +804,6 @@ titanic <-
 
 titanic
 ```
-]
 
 .right[`r emo::ji("left_arrow_curving_right")`]
 
@@ -801,16 +811,14 @@ titanic
 
 class: middle
 
-.tinyish[
 ```{r ref.label = "readr-example-col-change", echo = FALSE}
 ```
-]
 
 ---
 
 ## While loading the data in `read_csv`
-.tinyish[
-```{r readr-example-col-changeD-display, eval = FALSE}
+
+```{r readr-example-col-changeD, eval = FALSE}
 titanic <-
   read_csv(
     "./data/titanic.csv",
@@ -832,7 +840,6 @@ titanic <-
 
 titanic
 ```
-]
 
 .right[`r emo::ji("left_arrow_curving_right")`]
 
@@ -840,7 +847,7 @@ titanic
 
 class: middle
 
-.tinyish[
+.tinyisher[
 ```{r ref.label = "readr-example-col-changeD", echo = FALSE}
 ```
 ]
@@ -873,6 +880,7 @@ titanic <-
 ---
 
 ## Beyond flat files: labelled data
+
 A lot of data you get and find or even collect comes in some sort of flat file format, such as CSV. In the social sciences, however, we often deal with proprietary file formats, such as *SPSS*'s `.sav` or *Stata*'s `.dta` files. 
 
 What we often find in these data are labels. These labels are used to describe variables or variable values. They comprise some specific metadata inherent in these proprietary file formats. 
@@ -881,7 +889,8 @@ What we often find in these data are labels. These labels are used to describe v
 
 ---
 
-## Not being able to use labelled data is the past
+## Not being able to use labelled data is a thing of the past
+
 Nowadays, if you use the `haven` package, labels are built-in. For example:
 
 ```{r}
@@ -997,23 +1006,18 @@ woRkshoptools::include_picture("./export_data.png")
 ---
 
 ## Examples: CSV and Stata files
-```{r export_csv, echo = TRUE}
+```{r export_csv, eval=FALSE}
 write_csv(titanic, "titanic_own.csv")
 ```
 
-```{r export_stata, echo = TRUE}
+```{r export_stata, eval=FALSE}
 write_dta(titanic, "titanic_own.dta")
-```
-
-Proof that they have been exported:
-```{r list_files, echo = TRUE}
-list.files() 
 ```
 
 ---
 
 ## `R`'s native file formats
-If you plan to continue to work with `R` (something we would always recommend `r emo::ji("stuck_out_tongue_winking_eye")`), there are at least two native 'file formats' to choose from. The advantage of using them is that they are compressed files, so that they don't occupy unnecessarily large disk space. Moreover, they are already prepared as you left them, and they take less time to be loaded (not a big deal in a small data world but relevant for big(ger) data).
+If you plan to continue to work with `R` (something we would always recommend `r emo::ji("stuck_out_tongue_winking_eye")`), there are at least two native 'file formats' to choose from. The advantage of using them is that they are compressed files, so that they don't occupy unnecessarily large disk space. Moreover, they are already prepared as you left them and take less time to load (not a big deal in a small data world but relevant for big(ger) data).
 
 `.Rdata`/`.rda` files saving and loading:
 
@@ -1035,6 +1039,7 @@ mydata <- readRDS("mydata.rds")
 ---
 
 ## Saving just everything
+
 If you have not changed the General Global Options in *RStudio* as suggested in the *Getting Started* session, you may have noticed that, when closing *Rstudio*, by default, the programs asks you whether you want to save the workspace image. 
 
 ```{r, out.width = "50%", echo = FALSE}
@@ -1047,9 +1052,14 @@ You can also do that whenever you want using the `save.image()` function:
 save.image(file = "my_fancy_workspace.RData")
 ```
 
+.small[
+*Note*: As we've said before, though, this is not something we'd recommend as a worfklow. Instead, you should (explicitly and separately) save your `R` scripts and data sets (in appropriate formats).
+]
+
 ---
 
 ## Additional packages
+
 The great benefit of `tidyverse` import functions is the import of the data as tibbles: the data are potentially tidier.
 
 Several other non-tidyverse packages provide similar benefits as they make use of this universal data format:
@@ -1062,15 +1072,19 @@ Several other non-tidyverse packages provide similar benefits as they make use o
 ## Other packages for data import
 
 - `base` R
-- the [`foreign` package](https://cran.r-project.org/web/packages/foreign/index.html) for *SPSS* and *Stata* files
-- [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html) or [`fst`](https://www.fstpackage.org/) for large datasets
-- [`jsonlite`](https://cran.r-project.org/web/packages/jsonlite/index.html) for `.json` files
-- [`datapasta`](https://github.com/MilesMcBain/datapasta) for copying and pasting data into tribbles (e.g., from websites, *Excel* or *Word* files)
 
+- the [`foreign` package](https://cran.r-project.org/web/packages/foreign/index.html) for *SPSS* and *Stata* files
+
+- [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html) or [`fst`](https://www.fstpackage.org/) for large datasets
+
+- [`jsonlite`](https://cran.r-project.org/web/packages/jsonlite/index.html) for `.json` files
+
+- [`datapasta`](https://github.com/MilesMcBain/datapasta) for copying and pasting data into tribbles (e.g., from websites, *Excel* or *Word* files)
 
 ---
 
 ## Final note on file paths
+
 There is this simple rule of never using absolute file paths to maintain your code reproducibly and future-proof. We already talked about this in the introduction, so it's just to remind you as this is particularly important for data importing and exporting.
 
 ```{r eval = FALSE}
@@ -1087,13 +1101,14 @@ load("/home/cool_user/data/fancy_data.Rdata")
 ---
 
 ## Use relative paths
+
 Instead of using absolute paths, it is recommended to use relative file paths. The general principle here is to start from a directory where your current script currently exists and navigate to your target location. Say we are in the "C:/Users/cool_user/" location on a Windows machine. To load your data, we would use:
 
 ```{r eval = FALSE}
 load("./data/fancy_data.Rdata")
 ```
 
-If we were in a different folder, e.g., "C:/Users/cool_user/cat_pics/mauzi/", we would use:
+If we were in a different folder, e.g., "C:/Users/cool_user/cat_pics/mittens/", we would use:
 
 ```{r eval = FALSE}
 load("../../data/fancy_data.Rdata")

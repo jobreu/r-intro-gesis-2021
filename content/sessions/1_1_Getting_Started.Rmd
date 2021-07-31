@@ -98,7 +98,7 @@ tweet_embed("https://twitter.com/hadleywickham/status/589068687669243905",
 
 [johannes.breuer@gesis.org](mailto:johannes.breuer@gesis.org) |
 [@MattEagle09](https://twitter.com/MattEagle09) |
-[personal website](https://www.johannesbreuer.com/)
+[https://www.johannesbreuer.com/](https://www.johannesbreuer.com/)
 ]
 
 ---
@@ -136,7 +136,7 @@ woRkshoptools::include_picture("./stefan.png")
 **Johannes**
 - was socialized with *SPSS*
 - was annoyed with *AMOS* when learning structural equation modeling (around 2011)
-- decided to learn to use the [`lavaan`](https://lavaan.ugent.be/) package for `R` instead of *MPlus* to avoid being dependent on yet another proprietary software package
+- decided to learn how to use the [`lavaan`](https://lavaan.ugent.be/) package for `R` instead of *MPlus* to avoid being dependent on yet another proprietary software package
 - attended an introductory *Data analysis with `R`* course at *GESIS* in 2012
 - only used `R` for SEM for some time, while still doing everything else (esp. data wrangling) with *SPSS*
 - finally made the full transition to `R` when joining *GESIS* in 2017
@@ -180,7 +180,7 @@ Please try to keep it short (3 to 4 sentences or ~30 secs).
 
 ## Workshop Structure & Materials
 
-- The workshop consists of a combination of short lectures and hands-on exercises
+- The workshop consists of a combination of lectures and hands-on exercises
 
 - For the time after the workshop sessions each day, we have also prepared some optional (and hopefully fun) "extracurricular activities"
 
@@ -254,7 +254,7 @@ course_content_5
 
 >R is a free software environment for statistical computing and graphics. It compiles and runs on a wide variety of UNIX platforms, Windows and MacOS ([`R` Project website](https://www.r-project.org/)).
 
-`R` is [free and open-source software (FOSS)](https://en.wikipedia.org/wiki/Free_and_open-source_software) and also a programming language. More specifically, it is a free, non-commercial implementation of the [`S` programming language](https://en.wikipedia.org/wiki/S_(programming_language) (developed by Bell Laboratories).
+`R` is [free and open-source software (FOSS)](https://en.wikipedia.org/wiki/Free_and_open-source_software) and also a programming language. More specifically, it is a free, non-commercial implementation of the [`S` programming language](https://en.wikipedia.org/wiki/S_(programming_language)) (developed by Bell Laboratories).
 
 ---
 
@@ -293,7 +293,7 @@ tweet_embed("https://twitter.com/HannahOish/status/1036353875605737472",
 - it offers extremely powerful and versatile options for **data visualization**
 --
 
-- it has a **great community** with groups like [*R-Ladies*](https://rladies.org/), the [*R Consortium*](https://www.r-consortium.org/), [*rOpenSci*](https://ropensci.org/), and many local [`R` user groups](https://jumpingrivers.github.io/meetingsR/r-user-groups.html) around the globe
+- it has a **great community** with groups like [*R-Ladies*](https://rladies.org/), the [*R Consortium*](https://www.r-consortium.org/), [*rOpenSci*](https://ropensci.org/), and many local [`R` user groups](https://jumpingrivers.github.io/meetingsR/r-user-groups.html) worldwide
   - also check out the [*#rstats* hashtag on Twitter](https://twitter.com/search?q=%23rstats&src=typed_query)
 --
 
@@ -308,7 +308,7 @@ tweet_embed("https://twitter.com/HannahOish/status/1036353875605737472",
 
 You can use `R` to...
 
-- read [Chuck norris jokes](https://cran.r-project.org/web/packages/norris/index.html)
+- read [dad jokes](https://github.com/haukelicht/dadjokesl)
 --
 
 - [create memes](https://github.com/sctyner/memer)
@@ -322,7 +322,7 @@ You can use `R` to...
 - [play](https://github.com/gsimchoni/CastleOfR) or [create text adventures](https://lucidmanager.org/text-adventure/)
 --
 
-- [create objects in *Minecraft*](https://ropenscilabs.github.io/miner_book/)
+- [create objects in *Minecraft*](https://kbroman.org/miner_book/)
 --
 
 - make all sorts of [dice rolls for your pen & paper/tabletop role-playing games](https://github.com/Felixmil/rollR)
@@ -342,7 +342,7 @@ Some of the things you can do and create with `R` include...
 - all sorts of visualizations, including:
 	- animated plots with [gganimate](https://gganimate.com/)
 	- interactive visualizations with [plotly](https://plotly.com/r/)
-	- (interactive) maps with [tmap](https://cran.r-project.org/web/packages/tmap/index.html)
+	- (interactive) maps with [tmap](https://mtennekes.github.io/tmap/)
 	- (interactive) 3D visualizations with [rayshader](https://www.rayshader.com/)
 - 3D rendering with [rayrender](https://www.rayrender.net/)
 - interactive web applications with [shiny](https://shiny.rstudio.com/)
@@ -389,7 +389,7 @@ Using an IDE provides several advantages, such as:
 
 *RStudio* is the most widely used IDE for `R`.<sup>1</sup> In addition to the general advantages of an IDE, it has some specific ones:
 - easy integration with version control via `Git` (for a good tutorial on this, see [*Happy Git and GitHub for the useR*](https://happygitwithr.com/))
-- interfaces to [`Python` via the `reticulate` package](https://rstudio.github.io/reticulate/articles/rstudio_ide.html) and [`SQL`, e.g., via the `dbplyr` package](https://irene.rbind.io/post/using-sql-in-rstudio/)
+- interfaces to [`Python` via the `reticulate` package](https://rstudio.github.io/reticulate/) and [`SQL`, e.g., via the `dbplyr` package](https://irene.rbind.io/post/using-sql-in-rstudio/)
 - possibility to install and use [addins](https://rstudio.github.io/rstudioaddins/) that extend the functionalities of the *RStudio* GUI (for an overview of *RStudio* addins, you can check out this [curated list by Dean Attali](https://github.com/daattali/addinslist))
 - new versions also include (live) spellchecking features and a visual editor for `R Markdown`
 
@@ -419,6 +419,10 @@ woRkshoptools::include_picture("./rstudio_1st_explained.png")
 
 The console is the interactive input-output window of *RStudio*. You can enter commands here and press <kbd>Enter</kbd> to execute them. Typically, the output the the commands you enter into the console will also be displayed here.
 
+---
+
+## The `R` console in *RStudio*
+
 If you see the **`>`** in the console, it means that it is ready to receive commands.
 
 If you see a **`+`** at the beginning of the console input line, this means that the command is incomplete. A common reason for this is a missing `)` or `"`. If you see the `+` at the beginning of the console input line, you can either complete the command (and then run it by pressing <kbd>Enter</kbd>/<kbd>Return</kbd>) or abort entering the command by pressing <kbd>Esc</kbd>.
@@ -444,17 +448,21 @@ The `[1]` before the result indicates that this is the first output value of the
 
 ## `R` as a calculator
 
+```{r set-scipen, echo=FALSE}
+options(scipen = 0)
+```
+
 ```{r calc-example-2}
 100^3
 1/2500
 ```
 
 .small[
-*Note*: For printing very small and very large numbers, `R` uses [scientific notation](https://en.wikipedia.org/wiki/Scientific_notation). If you want to avoid this, you can use the command `options(scipen=999)`. This setting will only be active for the current session.
+For printing very small and very large numbers, `R` uses [scientific notation](https://en.wikipedia.org/wiki/Scientific_notation). If you want to avoid this, you can use the command `options(scipen=10)`. *Note*: You may have to use a higher number and this setting will only be active for the current session.
 ]
 
 ```{r calc-example-scipen}
-options(scipen=999)
+options(scipen=10)
 100^3
 1/2500
 ```
@@ -556,10 +564,10 @@ gsub(pattern = "i", replacement = "X", y)
 
 ## Functions
 
-If you want to know how to use a function, you can consult its help file. You can do that via the `?` command:
+If you want to know how to use a function, you can consult its help file. You can do that via the `?` command followed by the function name:
 
 ```{r help-file, eval = F}
-?gsub # ?function_name
+?gsub
 ```
 
 In *RStudio*, this will open a file in the `Help` tab.
@@ -598,7 +606,7 @@ Typing the argument names is more work but it increases the comprehensibility of
 
 ## Functions
 
-If you want to understand the "inner workings" of a function (or maybe use code from existing functions for writing your own functions), you can also print the function body by just running the function name without the parentheses behind it.
+If you want to understand the "inner workings" of a function (or maybe use code from existing functions for writing your own functions), you can print the function body by just running the function name without the parentheses behind it.
 
 ```{r fun-body}
 gsub
@@ -713,7 +721,7 @@ library(correlation) # no quotation marks needed
 
 ## Other sources for `R` packages
 
-While it is the main source, not all packages for `R` are available via *CRAN*. Another important source of `R` packages, especially those that are still in early development, is [*GitHub*](https://github.com/). To be able to install packages hosted on *GitHub* you need to use functions from the [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html) or the [`remotes`](https://cran.r-project.org/web/packages/remotes/index.html) package (which you need to install first as they do not come with `base R`). For example, if you want to install the [RPG dice roll package](https://github.com/Felixmil/rollR) that I mentioned before:
+While it is the main source, not all packages for `R` are available via *CRAN*. Another important source of `R` packages, especially those that are still in early development, is [*GitHub*](https://github.com/). To be able to install packages hosted on *GitHub* you need to use functions from the [`devtools`](https://devtools.r-lib.org/) or the [`remotes`](https://remotes.r-lib.org/) package (which you need to install first as they do not come with `base R`). For example, if you want to install the [RPG dice roll package](https://github.com/Felixmil/rollR) that I mentioned before:
 
 .small[
 ```{r install-gh, eval = F}
@@ -737,7 +745,7 @@ There are a few packages that facilitate the installation and loading of `R` pac
 
 - [easypackages](https://cran.r-project.org/web/packages/easypackages/index.html)
 
-- [pacman](https://cran.r-project.org/web/packages/pacman/index.html)
+- [pacman](https://github.com/trinker/pacman)
 
 ---
 
@@ -764,6 +772,10 @@ woRkshoptools::include_picture("./rstudio_pkg_tab.png")
 ## `R` scripts
 
 While the console is useful for trying things out, you should not use it for your actual data analysis. For this you should use `R` scripts that allow you to store and document your code. `R` scripts are similar to syntax files for *SPSS* or do-files for *Stata*. `R` scripts have the file extension `.R`.
+
+---
+
+## `R` scripts
 
 In *RStudio*, you can create a new script via the menu (`File` -> `New File` -> `R Script`), by clicking the small white sheet icon with the green `+` symbol and choosing `R Script`, or through the keyboard shortcut <kbd>Ctrl + Shift + N</kbd> (*Windows* & *Linux*)/<kbd>Cmd + Shift + N</kbd> (*Mac*). You can open an existing script by clicking on it in the files tab, by clicking the open folder icon, via `File` -> `Open File`, or using the keyboard shortcut <kbd>Ctrl + O</kbd> (*Windows* & *Linux*)/<kbd>Cmd + O</kbd> (*Mac*).
 
@@ -805,6 +817,10 @@ library(tidyverse)
 ## Setup and workflows for `R` and *RStudio*
 
 In the following, we will present some suggestions for adopting a couple of settings and practices that help you develop and implement workflows for `R` and *RStudio* that minimize mess and increase reproducibility.
+
+---
+
+## Setup and workflows for `R` and *RStudio*
 
 In this session, we will only cover the basics that are necessary for establishing such workflows. If you are interested in some further information on setting up and maintaining your installation of `R` and *RStudio* as well as the optimization of workflows, and troubleshooting, you can check out the [appendix slides with additional materials](https://jobreu.github.io/r-intro-gesis-2021/slides/1_3_Appendix_Setup&Workflow.html) that we have created on these subjects.
 
@@ -856,11 +872,15 @@ setwd("C:/Users/user/Documents/analysis")
 
 ## Interlude: File paths
 
+`R` uses `Unix`-style file paths with `/`, while *Windows* uses `\` in file paths. However `\\` also works in `R`. There is a [Stackoverflow post](https://stackoverflow.com/questions/17605563/efficiently-convert-backslash-to-forward-slash-in-r) discussing several ways of dealing with that. A helpful tool in this context is [*Path Copy Copy*](https://pathcopycopy.github.io/) which is an add-on for the *Windows* file explorer that lets you copy file paths in different formats.
+
+---
+
+## Interlude: File paths
+
 There are absolute (example: "C:/Users/user/Documents/example.R") and relative file paths (example: "./r-scripts/example.R"). Relative file paths are relative to the current working directory. Common shorthand options for relative file paths are `.` for the current (working) directory, `..` for one folder level up (parent folder), and `~` for the home directory (which is the default working directory in `R`).
 
 To facilitate the reuse of your code on other systems (by you or others), it is generally preferable to use relative file paths.
-
-*Note*: `R` uses `Unix`-style file paths with `/`, while *Windows* uses `\` in file paths. However `\\` also works in `R`. There is a [Stackoverflow post](https://stackoverflow.com/questions/17605563/efficiently-convert-backslash-to-forward-slash-in-r) discussing several ways of dealing with that. A helpful tool in this context is [*Path Copy Copy*](https://pathcopycopy.github.io/) which is an add-on for the *Windows* file explorer that lets you copy file paths in different formats.
 
 ---
 
@@ -960,7 +980,7 @@ tweet_embed("https://twitter.com/daranzolin/status/1420220994262749186",
 
 ## Common sources of errors in your `R` code
 
-- typos (e.g., capitalization in package names)
+- typos (+ `R` is case-sensitive)
 - missing or unmatched `(`, `'`, or `"` (often at the end of a command)
 - `\` instead of `/` in file paths (e.g., when copied from the *Windows* explorer)
 - packages not installed or loaded
@@ -977,9 +997,9 @@ woRkshoptools::include_picture("./breakr.gif")
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2020/exercises/Exercise_1_1_2_Getting_StaRted.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_1_1_2_Getting_StaRted.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2020/solutions/Exercise_1_1_2_Getting_StaRted.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_1_1_2_Getting_StaRted.html)
 
 ---
 
@@ -1027,7 +1047,7 @@ The following ones are of particular interest for this workshop:
 
 - [Data Visualization Cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf)
 
-- [RMarkdown Cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf)
+- [R Markdown Cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf)
 
 ---
 

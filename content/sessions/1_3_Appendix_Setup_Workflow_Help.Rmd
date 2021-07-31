@@ -34,6 +34,10 @@ Packages are developed (and maintained) by different people and teams and - acco
 
 If you load a package and some of its functions have the same names as those from packages you loaded before in your current `R` session, it "masks" these functions.
 
+```{r detach-dplyr, echo=FALSE, message=FALSE}
+detach("package:dplyr", unload = TRUE)
+```
+
 ```{r mask-example, message=TRUE}
 library(dplyr)
 ```
@@ -68,7 +72,7 @@ update.packages()
 
 If you want to update individual packages, the easiest way is to install them again (the usual way).
 
-Another, less commonly used, option for updating specific packages is the following:
+Another option for updating specific packages is the following:
 
 ```{r update-individual-pkgs, eval = F}
 update.packages(oldPkgs = c("correlation", "effectsize"))
@@ -149,7 +153,7 @@ woRkshoptools::include_picture("./rstudio_appearance.png")
 
 ## Themes and fonts
 
-*RStudio* offers various themes. These include light and dark themes. In addition to just looking different, themes can highlight specific code parts (in different colors). If you want more themes than the ones offered by default in *RStudio*, the package [`rsthemes`](https://github.com/gadenbuie/rsthemes) has a good selection. There also is a [colorblind-safe *RStudio* theme with code highlighting](https://github.com/DesiQuintans/Pebble-safe).
+*RStudio* offers various themes. These include light and dark themes. In addition to just looking different, themes can highlight specific code parts (in different colors). If you want more themes than the ones offered by default in *RStudio*, the package [`rsthemes`](https://www.garrickadenbuie.com/project/rsthemes/) has a good selection. There also is a [colorblind-safe *RStudio* theme with code highlighting](https://github.com/DesiQuintans/Pebble-safe).
 
 --
 
@@ -167,7 +171,7 @@ In addition to the `Environment` tab in *RStudio*, you can view the content of y
 
 You can remove objects from your workspace with the `rm()` function. Note, however, that this cannot be undone, so you have to create the object again in case you need it (again).
 
-Unless you [change the default settings in *RStudio* as suggested in the "Getting Started" session](https://jobreu.github.io/r-intro-gesis-2021/slides/1_1_Getting_Started.html#67), it will save the workspace in a file called `.RData` in your current working directory and restore the workspace when you restart it. 
+Unless you change the default settings in *RStudio* as suggested in the "Getting Started" session,`R` will save the workspace in a file called `.RData` in your current working directory and restore the workspace when you restart it. 
 
 ---
 
@@ -193,9 +197,7 @@ rm(list = ls())
 
 This removes all user-created objects from the (global) workspace. Now, imagine you have not saved/exported all relevant objects from your workspace and you run a script that contains this command...
 
-Also, this command does not affect what packages have been loaded, the working directory, or any other options for `R` that may have been set to non-default values.
-
-Hence, `rm(list = ls())` (and the need to use it) should be avoided if possible. A much better way of ensuring that you start with a blank slate at the beginning of your `R` session is to use the [*RStudio* settings described in the "Getting Started" session](https://jobreu.github.io/r-intro-gesis-2021/slides/1_1_Getting_Started.html#67).
+Also, this command does not affect what packages have been loaded, the working directory, or any other options for `R` that may have been set to non-default values. Hence, `rm(list = ls())` (and the need to use it) should be avoided if possible. A much better way of ensuring that you start with a blank slate at the beginning of your `R` session is to use the *RStudio* settings described in the "Getting Started" session.
 
 ---
 
@@ -273,7 +275,7 @@ There are many ways for finding help for you `R`-problems, including but not lim
 
 - forums & mailings lists
 
-- `R` packages (sic!)
+- `R` packages
 
 There is a helpful [short tutorial on *Getting Help with R* on the R Project website](https://www.r-project.org/help.html).
 
@@ -294,7 +296,7 @@ Many `R` packages also provide so-called vignettes which are documents that prov
 You first need to check whether a package contains vignettes and if so, what their titles are. With this information, you can then access a specific vignette. In *RStudio*, the vignette will be displayed in the `Help` tab.
 
 ```{r vignettes, eval = F}
-# check if/which vignettes included in package
+# check if/which vignettes included in a package
 browseVignettes("effectsize")
 
 # open vignette from the list for that package
@@ -319,7 +321,7 @@ There are many `R`-related forums and mailing lists. Two important (and helpful)
 
 Chances are high that somebody has already asked (and answered) the question(s) you are interested in on *Stack Overflow*. In the unlikely case that this is not the case, you can post your question there. Again, *What They Forgot to Teach You About R* provides some [useful guidance on that](https://rc2e.com/gettingstarted#recipe-id269). If you encounter a specific problem, using a reproducible example (reprex) can make things easier. The [`reprex` package](https://reprex.tidyverse.org/index.html) can be helpful here.
 
-The *R Project* provides an [overview of `R` mailing lists](https://www.r-project.org/mail.html). There also is a [searchable archive for these mailing lists](https://r.789695.n4.nabble.com/).
+The *R Project* provides an [overview of `R` mailing lists](https://www.r-project.org/mail.html).
 
 ---
 
@@ -348,7 +350,7 @@ What helps to increase the comprehensibility and reusability of code is to follo
 
 Two popular coding style guides for `R` are:
 
-- [*Google's R style guide](https://google.github.io/styleguide/Rguide.html)
+- [*Google*'s R style guide](https://google.github.io/styleguide/Rguide.html)
 
 - [the `tidyverse` style guide](https://style.tidyverse.org/)
 

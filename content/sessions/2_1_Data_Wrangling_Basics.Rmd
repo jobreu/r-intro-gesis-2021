@@ -95,7 +95,7 @@ woRkshoptools::include_picture("./tidyverse_meme.png")
 
 ## Data wrangling alternatives
 
-As with almost all tasks in `R`, there are more than two packages for data wrangling. Two alternatives to `base R` and the `tidyverse` are:
+As with almost all tasks in `R`, there are more than two packages for data wrangling. Two alternatives (or additions) to `base R` and the `tidyverse` are:
 - [`data.table`](https://rdatatable.gitlab.io/data.table/index.html)
 - [`datawizard`](https://easystats.github.io/datawizard/)
 
@@ -126,6 +126,7 @@ Of course, it is possible to combine `base R` and `tidyverse` code. However, in 
 ---
 
 ## Lift-off into the `tidyverse` `r ji("rocket")`
+
 **Install all `tidyverse` packages** (for the full list of `tidyverse` packages see [https://www.tidyverse.org/packages/](https://www.tidyverse.org/packages/))
 ```{r install-tidyverse, eval = F}
 install.packages("tidyverse")
@@ -173,7 +174,7 @@ woRkshoptools::include_picture("./tidy_data.png")
 
 ## Wide vs. long format
 
-```{r wide-long-pic, echo = FALSE, out.width="75%"}
+```{r wide-long-pic, echo = FALSE, out.width="70%"}
 woRkshoptools::include_picture("./wide-long.png")
 ```
 <small><small>Source: https://github.com/gadenbuie/tidyexplain#tidy-data</small></small>
@@ -210,7 +211,7 @@ In the logic of pipes this function is written as:
 x %>% f(.)
 ```
 
-Here, object `x` is piped into function `f`, becoming (by default) its first argument.
+Here, object `x` is piped into function `f`, becoming (by default) its first argument (but by using *.* it can also be fed into other arguments).
 
 --
 
@@ -223,7 +224,9 @@ x %>%
   f_3()
 ```
 
+.small[
 More about pipes: https://r4ds.had.co.nz/pipes.html
+]
 
 ---
 
@@ -237,7 +240,7 @@ Since [version 4.1.0](https://cran.r-project.org/bin/windows/base/NEWS.R-4.1.0.h
 
 ---
 
-## Dataset
+## Data set
 
 For the examples and exercises in this session we will, again, use data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*.
 
@@ -269,7 +272,7 @@ It is always advisable to consult the codebook (if there is one) before starting
 
 Side note: If you want to (semi-)automatically generate a codebook for your own dataset, there are several options in `R`:
 
-- The [`codebook` package](https://github.com/rubenarslan/codebook) which includes an *RStudio*-Addin and also offers a [web app](https://rubenarslan.ocpu.io/codebook/www/)
+- The [`codebook` package](https://rubenarslan.github.io/codebook/) which includes an *RStudio*-Addin and also offers a [web app](https://rubenarslan.ocpu.io/codebook/www/)
 
 - the `makeCodebook()` function from the [`dataMaid` package](https://github.com/ekstroem/dataMaid) (see this [blog post](http://sandsynligvis.dk/articles/18/codebook.html) for a short tutorial)
 
@@ -320,7 +323,8 @@ gp_covid %>%
 ---
 
 class: middle
-.tinyish[
+
+.tinyisher[
 ```{r ref.label = "glimpse", echo = FALSE}
 ```
 ]
@@ -416,6 +420,7 @@ Option 1
 .small[
 ```{r unselect-base}
 gp_covid_cut <- gp_covid[!(names(gp_covid) %in% c("za_number", "version", "doi"))]
+# The ! operator means "not" (i.e., it negates a condition)
 # The %in% operator means "is included in" (in this case the following character vector)
 
 dim(gp_covid_cut)
@@ -891,6 +896,8 @@ We can also add new variables by changing the data type of a variable.
 gp_covid$id_char <- as.character(gp_covid$id)
 ```
 
+*Note*: In case you want to overwrite a variable, you can do so by giving the new variable the same name as the old one.    
+
 ---
 
 ## Creating & transforming variables
@@ -976,7 +983,9 @@ If you look at the the [codebook](https://dbk.gesis.org/dbksearch/download.asp?i
 In `R`, missing values are represented by `NA`. `NA` is a reserved term in `R`, meaning that you cannot use it as a name for anything else (this is also the case for `TRUE` and `FALSE`).
 
 When we prepare our data for analysis there are generally two things we might want/have to do with regard to missing values:
+
 - define specific values as missings (i.e., set them to `NA`)
+
 - recode `NA` values into something else (typically to distinguish between different types of missing values)
 
 ---
@@ -1090,7 +1099,7 @@ gp_covid_complete <- na.omit(gp_covid)
 
 ## Excluding cases with missing values
 
-The `tidyverse`equivalent of `na.omit()` is `drop_na()` from the `tidyr` package. Notably, however, you can use the function to remove cases that have missings on any variable in a data set or only on specific variables.
+The `tidyverse`equivalent of `na.omit()` is `drop_na()` from the `tidyr` package. You can use this function to remove cases that have missings on any variable in a data set or only on specific variables.
 
 ```{r drop-na}
 gp_covid %>% 
@@ -1131,7 +1140,7 @@ Working with strings in `R` is a topic that would require its own workshop (and 
 
 ## Factors
 
-Factor are a special type of variable in `R` that represent categorical data. Before `R` version `4.0.0.` the default for `base R` was that all characters variables are imported as factors (remember that `R` was originally developed by and for statisticians).
+Factor are a special type of variable in `R` that represent categorical data. Before `R` version `4.0.0.` the default for `base R` was that all characters variables are imported as factors.
 
 Internally, factors are stored as integers, but they have (character) labels (so-called *levels*) associated with them. Hence, if you are not working with the special class of labelled data (e.g., via the packages [`haven`](https://haven.tidyverse.org/), [`labelled`](https://larmarange.github.io/labelled/index.html), or [`sjlabelled`](https://strengejacke.github.io/sjlabelled/index.html)), factors come closest to having variables with value labels as you might know from *SPSS*.
 
@@ -1214,6 +1223,6 @@ class: center, middle
 
 ## Extracurricular activities
 
-Check out the [appendix slides for today](https://jobreu.github.io/r-intro-gesis-2021/slides/2_3_Relational_Data.html) which cover the topic of relational data (i.e., combining multiple data sets).
+Check out the [appendix slides for today](https://jobreu.github.io/r-intro-gesis-2021/slides/2_3_Appendix_Relational_Data.html) which cover the topic of relational data (i.e., combining multiple data sets).
 
 Have a look at the [*Tidy Tuesday* repository on *GitHub*](https://github.com/rfordatascience/tidytuesday), listen to a few of the very short episodes of the [*Tidy Tuesday* Podcast](https://www.tidytuesday.com/), check out the [#tidytuesday Twitter hashtag](https://twitter.com/hashtag/tidytuesday?lang=en), or watch one (or more) of the [*Tidy Tuesday* screencasts on *YouTube* by David Robinson](https://www.youtube.com/watch?v=E2amEz_upzU&list=PL19ev-r1GBwkuyiwnxoHTRC8TTqP8OEi8).
