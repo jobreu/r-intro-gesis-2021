@@ -41,6 +41,8 @@ gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
 
 ## Quickly define missing values
 
+In the previous session, we learned how to define missing values. Here we will use the `set_na()` function from the `sjlabelled` package.
+
 ```{r set-missings}
 library(sjlabelled)
 
@@ -65,7 +67,7 @@ What if we want to conduct some data reduction method (e.g., PCA) and need the v
 
 ---
 
-## Recode data **across** defined variables 
+## Recode data `across()` defined variables 
 
 The `dplyr` package provides a (new) handy tool to exactly this: `across()`. This function can be used to apply another function to multiple variables at once.
 
@@ -98,7 +100,7 @@ table(gp_covid$hzcy052a)
 
 ---
 
-## Using `across()` across logical conditions
+## Using the function `across()` logical conditions
 
 Sometimes we are interested in variables that meet certain conditions. For example, for an anylsis, we want to z-standardize all numeric variables in a dataset. Let's create a temporary subset of our data to exemplify such efforts.
 
@@ -142,10 +144,9 @@ woRkshoptools::include_picture("across_blank.png")
 
 ---
 
-## Aggregate variables across rows
+## Aggregate variables `c_across()` rows
 
-Something we might want to do for our analyses is to create aggregate variables, such as sum or mean scores for a set of items.
-As `dplyr` operations are applied to columns, whereas such aggregations relate to rows (i.e., respondents), we need to make use of the function `rowwise()`. Say, for example, we want to compute a sum score for all measures that respondents have reported to engage in to prevent an infection with or the spread of the Corona virus.
+Something we might want to do for our analyses is to create aggregate variables, such as sum or mean scores for a set of items. As `dplyr` operations are applied to columns, whereas such aggregations relate to rows (i.e., respondents), we need to make use of the function `rowwise()`. Say, we want to compute a sum score for all measures that respondents have reported to prevent an infection with or the spread of the Coronavirus.
 
 ```{r rowwise-sum}
 gp_covid <- 
@@ -225,7 +226,7 @@ class: center, middle
 
 class: middle
 
-**Sometimes, things are a bit more complicated. Simple recoding is insufficient when we need to base new variables based on the values of old variable(s). Such procedures are can be called conditional transformation.**
+**Sometimes, things are a bit more complicated. Simple recoding is insufficient when we need to base new variables based on the values of old variable(s). Such procedures are called conditional transformations.**
 
 ---
 
@@ -334,7 +335,7 @@ So far, all of the previous tasks share two characteristics
 Particularly in data analysis, our aim is often to extract information from a dataset (e.g., summary statistics, regression estimates). We now will learn a bit more about
 - writing functions
 - if-else loops
-- for loops and the like
+- for-loops and the like
 - modern `tidyverse` implementations
 
 ---
@@ -374,7 +375,9 @@ add_one(99)
 
 ---
 
-## Extend the sum function
+## Example: extending the sum function
+
+For example, we have learned from the `sum()` function and one issue with that is that it prints `NA` by default when missing values are in the data. So we always have to set the `na.rm = TRUE` option. A function to circumvent this repetition would be: 
 
 ```{r sum-na}
 sum_na <- function (x) {
@@ -384,7 +387,7 @@ sum_na <- function (x) {
 
 ---
 
-## Feed it into `mutate()` and `across()`
+## Feeding it into `mutate()` and `across()`
 
 ```{r sum-na-across}
 gp_covid <- 
@@ -444,7 +447,9 @@ if (condition) {
 
 ---
 
-## Adding it to our function!
+## Example: adding it to our function
+
+We can now use this new skill to broaden the scope of our `sum_na()` function and introduce more statistics as a feature.
 
 ```{r descriptives-na}
 descriptives_na <- function(x, statistic) {
@@ -495,6 +500,8 @@ They, e.g., enable iterating through input data and applying functions to each e
 ---
 
 ## Architecture of for-loops
+
+for-loops follow a straightforward structure, which is always the same.
 
 ```{r eval = FALSE}
 for (iterator_name in data) {
@@ -611,7 +618,7 @@ Sometimes, things are a bit more complicated
 ]
 
 .pull-left[
-```{r purrr-logo, echo = FALSE, out.width = "50%"}
+```{r purrr-logo, echo = FALSE, out.width = "30%"}
 woRkshoptools::include_picture("purrr_logo.png")
 ```
 ]
@@ -624,6 +631,8 @@ woRkshoptools::include_picture("purrr_logo.png")
 ---
 
 ## A simple `map()` example
+
+We can use `map()` to apply our `descriptives_na()` function to multiple list elements at once.
 
 ```{r map}
 library(purrr)
