@@ -2,7 +2,7 @@
 title: "Introduction to R for Data Analysis"
 subtitle: "Appendix: Relational Data"
 author: "Johannes Breuer & Stefan Jünger"
-date: "2021-08-02"
+date: "2021-08-03"
 presenter: Johannes
 ---
 layout: true 
@@ -36,7 +36,7 @@ If you have ever worked with (or at least seen) `SQL` code, many of the followin
 
 ## Superhero data `r ji("bat")``r ji("zap")``r ji("spider_web")``r ji("merman")`
 
-As we cannot use the data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* to illustrate the different joins from `dlpyr`, we will, instead, use data from the [Super Heroes dataset from *Kaggle*](https://www.kaggle.com/claudiodavi/superhero-set).
+As we cannot use the data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* to illustrate the different joins from `dlpyr`, we will, instead, the [Super Heroes data set from *Kaggle*](https://www.kaggle.com/claudiodavi/superhero-set).
 
 ```{r superhero-data, include = F}
 heroes <- read_csv("./data/heroes_information.csv") %>% 
@@ -102,7 +102,6 @@ publishers %>%
 
 ## Mutating joins
 
-.large[
 > A mutating join [...] .highlight[first matches observations by their keys], then .highlight[copies across variables from one table to the other] ([R for Data Science](https://r4ds.had.co.nz/relational-data.html#mutating-joins)).
 
 - `inner_join()`  
@@ -112,7 +111,6 @@ publishers %>%
 - `right_join()`  
 
 - `full_join()`
-]
 
 ---
 
@@ -200,11 +198,12 @@ publishers %>%
 ]
 ]
 <br>
+.small[
 ```{r left-join-display, eval = F}
 heroes %>% 
   left_join(publishers, by = "Publisher")
 ```
-
+]
 ```{r left-join-result, echo = F}
 heroes %>% 
   left_join(publishers, by = "Publisher") %>%
@@ -249,11 +248,12 @@ publishers %>%
 ]
 ]
 <br>
+.small[
 ```{r right-join-display, eval = F}
 heroes %>% 
   right_join(publishers, by = "Publisher")
 ```
-
+]
 ```{r right-join-result, echo = F}
 heroes %>% 
   right_join(publishers, by = "Publisher") %>%
@@ -298,11 +298,12 @@ publishers %>%
 ]
 ]
 <br>
+.small[
 ```{r full-join-display, eval = F}
 heroes %>% 
   full_join(publishers, by = "Publisher")
 ```
-
+]
 ```{r full-join-result, echo = F}
 heroes %>% 
   full_join(publishers, by = "Publisher") %>%
@@ -314,13 +315,11 @@ heroes %>%
 
 ## Filtering joins
 
-.large[
 > Filtering joins .highlight[match observations in the same way as mutating joins], but .highlight[affect the observations, not the variables] ([R for Data Science](https://r4ds.had.co.nz/relational-data.html#filtering-joins)).
 
 - `semi_join()`  
 
 - `anti_join()`
-]
 
 ---
 
