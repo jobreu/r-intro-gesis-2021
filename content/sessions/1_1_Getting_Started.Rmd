@@ -269,7 +269,7 @@ course_content_5
 If you want to know a bit more about the origins and history of `R` as well as the philosophy behind it, the book [*R Programming for Data Science*](https://bookdown.org/rdpeng/rprogdatascience/) by Roger D. Peng provides a [good summary](https://bookdown.org/rdpeng/rprogdatascience/history-and-overview-of-r.html). Alternatively, you can also watch this [*YouTube* video in which David Smith talks about *Twenty Years of R*](https://youtu.be/iq_biXEIx-U).
 
 ---
-
+ 
 ```{r r-cd-tweet, echo=FALSE}
 tweet_embed("https://twitter.com/HannahOish/status/1036353875605737472",
             theme = "dark")
@@ -1051,7 +1051,7 @@ The following ones are of particular interest for this workshop:
 
 ---
 
-# Extracurricular activities
+## Extracurricular activities
 
 - Check out [appendix slides with additional materials](https://jobreu.github.io/r-intro-gesis-2021/slides/1_3_Appendix_Setup&Workflow.html) for this session
 
