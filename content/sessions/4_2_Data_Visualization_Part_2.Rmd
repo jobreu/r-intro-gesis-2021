@@ -302,7 +302,6 @@ Thus, we can easily manipulate the appearance, e.g., by turning to a less colorf
 library(ggplot2)
 
 model_parameters(linear_model) %>% 
-  
   plot() +
   scale_x_discrete(
     labels = # in reversed order!
@@ -863,6 +862,12 @@ library(patchwork)
 ---
 
 ## What is more?
+
+Sometimes, to get a plot that is ready for publication, it is still a long way to go. Yet, `easystats` and `sjPlot` help a lot to convert it to a medium walking distance.
+
+There are also other great packages I sometimes use to accomplish the goal, e.g., creating a coefficient plot, like the faboulos [`dotwhisker`](https://cran.r-project.org/web/packages/dotwhisker/) package.
+
+Things can get messy when we have to work with statistical models that are not incorporated into the presented packages. For example, AME models or when you have results received from other statistical software like Stata (see [my code](https://stefanjuenger.github.io/land_use_disadvantages/Land_Use_Disadvantages_Main_Analysis.html) for a [recent paper](https://doi.org/10.1177/00420980211023206))
 
 ---
 
