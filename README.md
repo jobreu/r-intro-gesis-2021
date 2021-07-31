@@ -87,9 +87,9 @@ The open source software package `R` is free of charge and offers standard data 
 
 ## Day 3
 ### Slides
-[Exploratory Data Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_1_Exploratory_Data_Analysis.html)  
+[3_1 Exploratory Data Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_1_Exploratory_Data_Analysis.html)  
 
-[Data Visualization Part 1](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_2_Data_Visualization_Part_1.html)  
+[3_2 Data Visualization Part 1](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/3_2_Data_Visualization_Part_1.html)  
 
 ### Exercises
 [3_1_1 Summary Statistics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_3_1_1_Summary_Statistics.html)
@@ -123,9 +123,9 @@ The open source software package `R` is free of charge and offers standard data 
 
 ## Day 4
 ### Slides
-[Confirmatory Data Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/4_1_Confirmatory_Data_Analysis.html) 
+[4_1 Confirmatory Data Analysis](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/4_1_Confirmatory_Data_Analysis.html) 
 
-[Data Visualization Part 2](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/4_2_Data_Visualization_Part_2.html)   
+[4_2 Data Visualization Part 2](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/4_2_Data_Visualization_Part_2.html)   
 
 ### Exercises
 [4_1_1 t-test ANOVA](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_4_1_1_t-test_ANOVA.html)
@@ -155,9 +155,9 @@ The open source software package `R` is free of charge and offers standard data 
 
 ## Day 5
 ### Slides
-[Reporting with R Markdown](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/5_1_R_Markdown.html)
+[5_1 Reporting with R Markdown](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/5_1_R_Markdown.html)
 
-[Outlook](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/5_2_Outlook.html)
+[5_2 Outlook](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/5_2_Outlook.html)
 
 ### Exercises
 [5_1_1 R Markdown](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_5_1_1_R_Markdown.html)
