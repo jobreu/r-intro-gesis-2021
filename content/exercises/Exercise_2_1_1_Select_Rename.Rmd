@@ -7,7 +7,7 @@ date: 'Introduction to R for Data Analysis'
 ```{r child = "../config/exercises_setup.Rmd"}
 ```
 
-As in the presentation, we will use data from the [Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany](https://www.gesis.org/gesis-panel/coronavirus-outbreak/public-use-file-puf) for this exercise. You should (have) download(ed) the dataset in `.csv` format in a folder caller `data` within the folder containing the materials for this workshop. Also remember that it is helpful to consult the [codebook for the data set](https://dbk.gesis.org/dbksearch/download.asp?id=67378).
+As in the presentation, we will use data from the [Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany](https://www.gesis.org/gesis-panel/coronavirus-outbreak/public-use-file-puf) for this exercise. You should (have) download(ed) the dataset in `.csv` format and saved it in a folder caller `data` within the folder containing the materials for this workshop. Also remember that it is helpful to consult the [codebook for the data set](https://dbk.gesis.org/dbksearch/download.asp?id=67378).
 
 That being sad, let's get wrangling...
 
@@ -37,7 +37,7 @@ Using `base R`, create a new object called `gp_covid_trust` that contains all va
 ```
 
 ```{block, opts.label = "clues"}
-The first variable we want to select for our subset is named `hzcy044a`, and the last one is `hzcy052a`. They appear consecutively in the data set. Remember that there are two options for selecting columns in `base R`: One is subsetting using [], the other is the `subset()` function.
+The first variable we want to select for our subset is named `hzcy044a`, and the last one is `hzcy052a`. They appear consecutively in the data set. Remember that there are two options for selecting columns in `base R`: One is subsetting using [ ], the other is the `subset()` function.
 ```
 
 ```{r second-exercise, solution = TRUE}
@@ -115,7 +115,7 @@ gp_covid_info <- gp_covid_info %>%
 ```
 
 ```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
-As the final task in this set of exercises, do the previous selection and renaming object using `dplyr` functions again for the `gp_covid_info` object, but this time in one step.
+As the final task in this set of exercises, do the previous selection and renaming procedure using `dplyr` functions again for the `gp_covid_info` object, but this time in one step.
 ```
 
 ```{block, opts.label = "clues"}

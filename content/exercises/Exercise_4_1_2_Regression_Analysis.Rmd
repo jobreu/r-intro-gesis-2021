@@ -22,7 +22,7 @@ if (!require(summaryrtools)) install.packages("performance")
 In the following exercise, we will cover/repeat some of the basics of regression analysis in `R`.
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-To begin with, run a simple linear regression model with trust in the government as the outcome variables and choice of party and political orientation as predictors.
+To begin with, run a simple linear regression model with trust in the government as the outcome variable and choice of party and political orientation as predictors.
 ```
 
 ```{block, opts.label = "clues"}
@@ -37,7 +37,7 @@ summary(reg_linear)
 ```
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-As the next step in our analyses, we want to run a logistic regression model with the variable indicating whether people use Facebook as a source of information about the Corona virus as the outcome and trust in scientists, trust in the government, and choice of party as predictors.
+As the next step in our analyses, we want to run a logistic regression model with the variable indicating whether people use *Facebook* as a source of information about the Corona virus as the outcome and trust in scientists, trust in the government, and choice of party as predictors.
 ```
 
 ```{block, opts.label = "clues"}
@@ -69,7 +69,7 @@ summary(reg_cauchit)
 ```
 
 ```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
-Compare both regression models using an ANOVA. Use the option `test = "LRT"` to perform a likelihood ratio test. What's your interpretation?
+Compare both regression models using an ANOVA. Use the argument `test = "LRT"` in the function we need for this to perform a likelihood ratio test. What's your interpretation?
 ```
 
 ```{block, opts.label = "clues"}

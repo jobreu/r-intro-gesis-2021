@@ -89,7 +89,7 @@ As a final exercise, compute the correlations using the same function and variab
 ```
 
 ```{block, opts.label = "clues"}
-You need to use `select()` from `dplyr` and `correlation()` from the package with the same name.
+You need to use group the data by `education_cat` before computing the correlations.
 ```
 
 ```{r fifth-exercise, solution = TRUE, message=FALSE}

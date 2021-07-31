@@ -10,7 +10,7 @@ date: 'Introduction to R for Data Analysis'
 For this set of exercises as well as all following ones, we suggest that you write `R` scripts (one per set of exercises or a combined one for the whole course) and store them in the `my_scripts` folder contained in the course materials. This folder already contains a script stub called `my_script.R` which you can use for getting started.
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-To explore what `R` packages are out there that may be of interest for you, have a look at the [`CRAN Task View`](https://cran.r-project.org/) section called *SocialSciences* and do a quick search for "regression" on [METACRAN](https://www.r-pkg.org/).
+To explore what `R` packages are out there that may be of interest for you, have a brief (!) look at the [`CRAN Task View`](https://cran.r-project.org/) section called *SocialSciences* and do a quick search for "regression" on [METACRAN](https://www.r-pkg.org/).
 ```
 
 ```{block, opts.label = "clues"}
@@ -29,6 +29,10 @@ install.packages(c("remotes", "dplyr", "janitor", "correlation"))
 Now, let's load one of the packages you have just installed. Load the `remotes` package.
 ```
 
+```{block, opts.label = "clues"}
+You do not need to enclose the package name in quotes when loading it.
+```
+
 ```{r third-exercise, solution = TRUE, eval = FALSE}
 library(remotes)
 ```
@@ -38,7 +42,7 @@ Some packages are not on `CRAN`. Another important source of `R` packages is *Gi
 ```
 
 ```{block, opts.label = "clues"}
-You can use a function from the `remotes` package for this.
+You can use a function from the `remotes` package for this. The required argument for the function for installing a package from *GitHub* needs to be in the form "user_name/repo_name" (i.e., the parts of the URL that come after github.com).
 ```
 
 ```{r fourth-exercise, solution = TRUE, eval = FALSE}

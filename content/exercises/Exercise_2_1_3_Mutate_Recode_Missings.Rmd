@@ -41,7 +41,7 @@ The name of the variable we want to transform is `hzcy048a`. Disregarding missin
 ```{r second-exercise, solution = TRUE}
 gp_covid <- gp_covid %>% 
   mutate(distrust_gov = recode(hzcy048a,
-                               `5` = 1,
+                               `5` = 1, # old_value = new_value
                                `4` = 2,
                                `2` = 4,
                                `1` = 5))

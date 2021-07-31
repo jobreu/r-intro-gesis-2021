@@ -26,7 +26,7 @@ table(corona_survey$education_cat, useNA = "always")
 ```
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-Next, use the same `base R` function to get the proportions for the variable `sex` rounded to four decimal places.
+Next, use a combination of `base R` functions to get the proportions for the variable `sex` rounded to four decimal places.
 ```
 
 ```{block, opts.label = "clues"}

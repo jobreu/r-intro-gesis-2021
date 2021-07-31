@@ -24,7 +24,7 @@ Let's start with a very simple analysis: Compute a t-test to compare of the mean
 ```
 
 ```{block, opts.label = "clues"}
-For the t-test you can use a `base R` function.
+For the t-test you can use a `base R` function named after the test we want to perform here.
 ```
 
 ```{r first-exercise, solution = TRUE}

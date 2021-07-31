@@ -7,9 +7,7 @@ date: 'Introduction to R for Data Analysis'
 ```{r child = "../config/exercises_setup.Rmd"}
 ```
 
-For this exercise, we will use the same subset of the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data as in the lecture. If you have stored that data set as an `.rds` file as shown in the slides, you can simply load it with the following command
-
-Just run the following code to go through the wrangling pipeline. Remember that the `.csv` file should be stored in the `data` folder in the directory with the course materials.
+For this exercise, we will use the same subset of the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data as in the lecture. If you have stored that data set as an `.rds` file as shown in the slides, you can simply load it with the following command:
 
 ```{r load}
 corona_survey <- readRDS("./data/corona_survey.rds")
@@ -17,7 +15,7 @@ corona_survey <- readRDS("./data/corona_survey.rds")
 
 If you have not saved the wrangled data as an `.rds` file yet, you need to go through the data wrangling pipeline shown in the EDA slides (again).
 
-Also, in case you have not done so yet, please also install `summarytools` and `psych` as we will need them for the exercises (in addition to `base R` and the `tidyverse` packages). The following code chunk will check if you have these packages installed and install them, if that is not the case.
+Also, in case you have not done so yet, please install `summarytools` and `psych` as we will need them for the exercises (in addition to `base R` and the `tidyverse` packages). The following code chunk will check if you have these packages installed and install them, if that is not the case.
 
 ```{r pkgs, eval = F}
 if (!require(summaryrtools)) install.packages("summarytools")
@@ -74,7 +72,7 @@ corona_survey %>%
 ```
 
 ```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
-Now, let's use functions from `dplyr` to create grouped summary statistics. Compute separate means for the variables `risk_self` and `risk_surroundings` for the different age groups in the data set. The resulting summary variables should be called `risk_self_mean` and `risk_surroundings_mean`. You shold exclude respondents with missing values for the variables of interest.
+Now, let's use functions from `dplyr` to create grouped summary statistics. Compute separate means for the variables `risk_self` and `risk_surroundings` for the different age groups in the data set. The resulting summary variables should be called `risk_self_mean` and `risk_surroundings_mean`. You should exclude respondents with missing values for the variables of interest.
 ```
 
 ```{block, opts.label = "clues"}

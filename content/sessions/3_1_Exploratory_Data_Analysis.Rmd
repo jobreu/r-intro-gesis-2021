@@ -592,7 +592,7 @@ While there is an ever-growing list of `R` packages for creating tables with man
 
 If we, e.g., want to create a summary statistics table as text output (e.g., for printing in the `R` console), we can use `stargazer` for that. **NB**: As the main `stargazer()` function does not work with tibbles, we need to convert our data to a regular dataframe. 
 
-```{r stargazer-text}
+```{r stargazer-text, eval=FALSE}
 library(stargazer)
 
 corona_survey %>% 
@@ -602,6 +602,17 @@ corona_survey %>%
             digits = 2,
             title="Descriptive statistics")
 ```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+
+```{r ref.label = "stargazer-text", echo = F}
+
+```
+
 
 ---
 

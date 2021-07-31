@@ -304,7 +304,7 @@ afex_anova
 
 ## Effect sizes
 
-In many disciplines and journals, it is standard practice to also report effect sizes (in addition to test statistics and p-values) for t-tests and ANOVAS. The [`effectsize` package](https://easystats.github.io/effectsize/) that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) offers some helpful options for that.<sup>1</sup>
+In many disciplines and journals, it is standard practice to also report effect sizes (in addition to test statistics and p-values) for t-tests and ANOVAS. The [`effectsize` package](https://easystats.github.io/effectsize/) that is part of the [`easystats` collection of packages](https://easystats.github.io/easystats/) offers some helpful options for that<sup>1</sup>: For example for Cohen's d...
 
 ```{r cohens-d}
 library(effectsize)
@@ -319,6 +319,8 @@ cohens_d(risk_self ~ sex, data = corona_survey)
 ---
 
 ## Effect sizes
+
+... or Eta².
 
 ```{r eta2}
 eta_squared(anova)
