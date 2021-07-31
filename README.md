@@ -19,25 +19,71 @@ The open source software package `R` is free of charge and offers standard data 
 # Materials
 ## Day 1
 ### Slides
-[Getting Started](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/1_1_Getting_Started.html)             
+[1_1 Getting Started](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/1_1_Getting_Started.html)             
 
-[Data Types, Import, & Export](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/1_2_Data_Types_Import_Export.html)    
+[1_2 Data Types, Import, & Export](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/1_2_Data_Types_Import_Export.html)    
 
 [Appendix - Setup and Workflow Help](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/1_3_Appendix_Setup_Workflow_Help.html)
 
 ### Exercises
+[1_1_1 First Steps](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_1_1_1_First_Steps.html)
+
+[1_1_2 Packages Scripts](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_1_1_2_Packages_Scripts.html)
+
+[1_2_1 Data Types](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_1_2_1_Data_Types.html)
+
+[1_2_2 Flat Files](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_1_2_2_Flat_Files.html)
+
+[1_2_3 Statistical Software Files](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_1_2_3_Statistical_Software_Files.html)
+
 ### Solutions
+[1_1_1 First Steps](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_1_1_1_First_Steps.html)
+
+[1_1_2 Packages Scripts](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_1_1_2_Packages_Scripts.html)
+
+[1_2_1 Data Types](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_1_2_1_Data_Types.html)
+
+[1_2_2 Flat Files](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_1_2_2_Flat_Files.html)
+
+[1_2_3 Statistical Software Files](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_1_2_3_Statistical_Software_Files.html)
 
 ## Day 2
 ### Slides
-[Data Wrangling Basics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_1_Data_Wrangling_Basics.html)     
+[2_1 Data Wrangling Basics](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_1_Data_Wrangling_Basics.html)     
 
-[Data Wrangling Advanced](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_2_Data_Wrangling_Advanced.html)     
+[2_2 Data Wrangling Advanced](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_2_Data_Wrangling_Advanced.html)     
 
 [Appendix - Relational Data](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/2_3_Appendix_Relational_Data.html)     
 
 ### Exercises
+[2_1_1 Select Rename](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_2_1_1_Select_Rename.html)
+
+[2_1_2 Filter Arrange](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_2_1_2_Filter_Arrange.html)
+
+[2_1_3 Mutate Recode Missings](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_2_1_3_Mutate_Recode_Missings.html)
+
+[2_2_1 Across the Tidyverse](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_2_2_1_Across_the_Tidyverse.html)
+
+[2_2_2 Define your Cases](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_2_2_2_Define_your_Cases.html)
+
+[2_2_3 If I had a Function](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_2_2_3_If_I_had_a_Function.html)
+
+[2_2_4 Purrr Joy of Writing Loops](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_2_2_4_Purrr_Joy_of_Writing_Loops.html)
+
 ### Solutions
+[2_1_1 Select Rename](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_2_1_1_Select_Rename.html)
+
+[2_1_2 Filter Arrange](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_2_1_2_Filter_Arrange.html)
+
+[2_1_3 Mutate Recode Missings](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_2_1_3_Mutate_Recode_Missings.html)
+
+[2_2_1 Across the Tidyverse](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_2_2_1_Across_the_Tidyverse.html)
+
+[2_2_2 Define your Cases](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_2_2_2_Define_your_Cases.html)
+
+[2_2_3 If I had a Function](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_2_2_3_If_I_had_a_Function.html)
+
+[2_2_4 Purrr Joy of Writing Loops](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_2_2_4_Purrr_Joy_of_Writing_Loops.html)
 
 ## Day 3
 ### Slides
@@ -59,7 +105,7 @@ The open source software package `R` is free of charge and offers standard data 
 
 ## Day 5
 ### Slides
-[Reporting with R Markdown]()
+[Reporting with R Markdown](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/5_1_R_Markdown.html)
 
 [Outlook](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/slides/5_2_Outlook.html)
 
