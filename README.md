@@ -402,6 +402,3 @@ The open source software package `R` is free of charge and offers standard data 
 
 ### Exercises
 [5_1_1 R Markdown](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/exercises/Exercise_5_1_1_R_Markdown.html)
-
-### Solutions
-[5_1_1 R Markdown](https://jobreu.github.io/tidyverse-workshop-esra-2021/r-intro-gesis-2021/solutions/Exercise_5_1_1_R_Markdown.html)
