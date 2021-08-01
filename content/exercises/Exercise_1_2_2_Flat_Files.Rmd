@@ -1,6 +1,6 @@
 ---
 title: 'Exercise 1_2_2: Flat Files'
-author: 'Cute Cat'
+author: 'Johannes Breuer, Stefan Jünger'
 date: 'Introduction to R for Data Analysis'
 ---
 
@@ -8,11 +8,11 @@ date: 'Introduction to R for Data Analysis'
 ```
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Load the titanic data.
+Import the `titanic` data from the `data` folder.
 ```
 
 ```{block, opts.label = "clues"}
-The file format is CSV. Accordingly, you may want to use the `readr` library and a function that starts with `read_...` (of course, you could also use the `base R` equivalent if you want to).
+The file format is `CSV`. You can use the `readr` library and a function that starts with `read_...` (of course, you could also use the `base R` equivalent if you want to).
 ```
 
 ```{r load_titanic, solution = TRUE}
@@ -33,6 +33,7 @@ You can do that while importing the data or after loading them.
 ```
 
 ```{r convert_sex, solution = TRUE}
+# change column type while importing
 titanic <-
   read_csv(
     "./data/titanic.csv",
@@ -45,11 +46,11 @@ titanic <-
 We have already worked with the *Titanic* data quite a bit. Let's import some other data for a change.
 
 ```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
-Load the gapminder GDP data. Use the `.xlsx` file in the `./data` folder.
+Import the `.xlsx` file containing *Gapminder* data on GDP from the `data` folder.
 ```
 
 ```{block, opts.label = "clues"}
-We need the `readxl` package for this importing task.
+We need the `readxl` package for this importing task. The name of the file we need is `GDPpercapitaconstant2000US.xlsx`.
 ```
 
 ```{r load_gapminder_gdp, solution = TRUE}
@@ -69,7 +70,7 @@ As you may have noticed, the format of the output of the two importing functions
 Source: https://github.com/RMHogervorst/unicorns_on_unicycles
 
 ```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
-Load the unicorn sales data file. As we are not interested in the `total_turnover` variable only read in the cell range `A1:C43`
+Load the unicorn sales data `.xlsx` file. As we are not interested in the `total_turnover` variable only read in the cell range `A1:C43`
 ```
 
 ```{block, opts.label = "clues"}

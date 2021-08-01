@@ -33,11 +33,13 @@ woRkshoptools::include_picture("./import_data.png")
 ---
 
 ## Data we use in this course
-During the course, we use several different datasets. Mainly in this session, where we apply different importing functions, we use a large variety ranging from data about the Titanic to data about unicorns. However, we will also use data that are (presumably) more interesting for social and behavioral scientists.
+
+During the course, we use several different data sets. Especially in this session, where we apply different importing functions, we quite a few data sets, from data about the Titanic to data about unicorns. However, we will also use data that are more interesting for social and behavioral scientists.
 
 ---
 
-## It boils down to...
+## It boils all down to...
+
 .pull-left[
 **How your data are stored (data types)**
 - 'Numbers' (Integers & Doubles)
@@ -63,7 +65,7 @@ During the course, we use several different datasets. Mainly in this session, wh
 
 ## Numeric data
 .small[
-*Integers* are values without a decimal value. To be explicit in `R` in using them, you have to place an `L` behind the actual value, just like that:
+*Integers* are values without a decimal value. To be explicit in `R` in using them, you have to place an `L` behind the actual value.
 
 ```{r integer-1}
 1L
@@ -92,11 +94,12 @@ At first glance, a *character* is a letter somewhere between a-z. *String* in th
 "Hi. I am a character string, the 1st of its kind!"
 ```
 
-So character strings are meaningless, which means that there are no values associated with their content unless we change that, e.g., with factors.
+*Note*: There are no values associated with the content of character strings unless we change that, e.g., with factors.
 
 ---
 
 ## Factors
+
 If you're a *Stata* (or *SPSS*) user, you may already be  familiar with factors. Factors are data types that assume that their values are not continuous, e.g., as in ordinal or nominal data.
 
 ```{r factor}
@@ -109,6 +112,7 @@ Factors take numeric data or character strings as input as they simply convert t
 ---
 
 ## Logical values
+
 Logical values are basically either `TRUE` or `FALSE` values. These values are produced by making logical requests on your data.
 
 ```{r logical}
@@ -116,7 +120,7 @@ Logical values are basically either `TRUE` or `FALSE` values. These values are p
 2 < 1
 ```
 
-I'd say that logical values are at the heart of creating loops. For this purpose, we need way more logical operators to request `TRUE` or `FALSE` values.
+Logical values are at the heart of creating loops. For this purpose, however, we need more logical operators to request `TRUE` or `FALSE` values.
 
 ---
 
@@ -148,7 +152,8 @@ Moreover, there are some more `is.PROPERTY_ASKED_FOR()` functions, such as `is.n
 ---
 
 ## `R`'s data formats 
-`R`'s different data types can be put into 'container's.
+
+`R`'s different data types can be put into 'containers'.
 
 ```{r containers, echo = FALSE, out.width = "75%"}
 woRkshoptools::include_picture("9213.1526125966.png")
@@ -159,6 +164,7 @@ woRkshoptools::include_picture("9213.1526125966.png")
 ---
 
 ## Vectors
+
 Vectors are built by enclosing your content with `c()` ("c" for "concatenate")
 
 ```{r vectors}
@@ -174,18 +180,22 @@ Vectors are really like vectors in mathematics. Initially, it doesn't matter if 
 ---
 
 ## ...but it matters when you combine vectors
-Using the function `cbind()` or `rbind()` you can either combine vectors column-wise or row-wise, respectively.
+
+Using the function `cbind()` or `rbind()` you can either combine vectors column-wise or row-wise. Thus, they become matrices.
 
 ```{r combine-vectors}
 cbind(numeric_vector, character_vector)
 rbind(numeric_vector, character_vector)
 ```
 
-They are now matrices (also numeric values are coerced into strings).
+.small[
+*Note*: The numeric values are coerced into strings here.
+]
 
 ---
 
 ## Matrices
+
 Matrices are the basic rectangular data format in R.
 
 ```{r matrix}
@@ -203,6 +213,7 @@ c(1, 2, "evil string")
 ---
 
 ## Data frames
+
 While matrices are used, e.g.,--\*drumroll\*-- for matrix operations, data frames resemble more the data formats most of you are probably already familiar with. We can build data frames by hand as here:
 
 .tinyish[
@@ -266,7 +277,8 @@ as_tibble(fancy_data)
 ---
 
 ## One last type you should know: lists
-Lists are perfect for storing numerous and potentially diverse information in one place.
+
+Lists are perfect for storing numerous and potentially diverse pieces of information in one place.
 
 ```{r fancy_list, eval = FALSE}
 fancy_list <- 
@@ -292,6 +304,7 @@ class: middle
 ---
 
 ## Nested lists
+
 ```{r fancy_nested_list, eval = FALSE}
 fancy_nested_list <-
   list(
@@ -314,7 +327,8 @@ class: middle
 ---
 
 ## Accessing elements by index
-Generally, there is this use of `[index_number]`-logic in `R` to access only a subset of information in data, no matter if we have vectors or data frames.
+
+Generally, there the logic of `[index_number]` is used in `R` to access only a subset of information in an object, no matter if we have vectors or data frames.
 
 Say, we want to extract the second element of our `character_vector` object, we could do that like this:
 
@@ -337,7 +351,8 @@ a_wonderful_matrix[number_of_row, number_of_column]
 ---
 
 ## Matrices and subscripts (as in mathematical notation)
-Identify rows, columns, or elements using subscripts is similar to matrix  notation:
+
+Identifying rows, columns, or elements using subscripts is similar to matrix  notation:
 
 ```{r eval = FALSE}
 fancy_matrix[, 4] # 4th column of matrix
@@ -354,7 +369,8 @@ fancy_matrix[2:4, 1:3] %*% fancy_matrix[1:3, 2:4]
 ---
 
 ## The case of data frames
-A nice feature of `data.frames` or `tibbles` is that their columns are names, just as variable names in ordinary data. It would be cumbersome do use index numbers to extract a specific column/variable, right? Do not fear:
+
+A nice feature of `data.frames` or `tibbles` is that their columns are names, just as variable names in ordinary data. It would be cumbersome to use index numbers to extract a specific column/variable, right? Do not fear:
 
 ```{r}
 fancy_data$who
@@ -365,6 +381,7 @@ Just place a `$`-sign between the data object and the variable name.
 ---
 
 ## `[]` in data frames
+
 Sometimes we also have to rely on character strings as input information, e.g., for iterating over data. We can also use `[]` to access variables by name. 
 
 .pull-left[ 
@@ -387,16 +404,17 @@ fancy_data["who"]
 
 ## Difference between `[]` and `[[]]`
 
-```{r hadley-tweet, echo=FALSE}
+```{r hadley-tweet, echo=FALSE, out.width="80%"}
 tweet_screenshot("https://twitter.com/hadleywickham/status/643381054758363136",
             theme = "dark")
 ```
+https://twitter.com/hadleywickham/status/643381054758363136
 
 ---
 
-## Dataframe check 1, 2, 1, 2!
+## Data frame check 1, 2, 1, 2!
 
-Even before checking the codebook for a data set (if there is one) it always helps to have a quick look at the data. The most high-level information you can get is about the object type and its dimensions.
+Once you start working with data in `R` a good first thing to do is to have a quick look at them. The most high-level information you can get is about the object type and its dimensions.
 
 .small[
 ```{r class-dim}
@@ -416,9 +434,9 @@ ncol(fancy_data)
 
 ---
 
-## Dataframe check 1, 2, 1, 2!
+## Data frame check 1, 2, 1, 2!
 
-You can also print the first 6 lines of the dataframe with `head()`. You can easily change the number of lines by providing the number as the second argument to the `head()` function.
+You can also print the first 6 lines of the data frame with `head()`. You can easily change the number of lines by providing the number as the second argument to the `head()` function.
 
 ```{r head}
 head(fancy_data, 3)
@@ -426,31 +444,19 @@ head(fancy_data, 3)
 
 ---
 
-## Dataframe check 1, 2, 1, 2!
+## Data frame check 1, 2, 1, 2!
 
-If we want some more (detailed) information about the dataset or object, we can use the `base R` function `str()`.
+If we want some more (detailed) information about the data set or object, we can use the `base R` function `str()`.
 
 ```{r str}
 str(fancy_data)
 ```
 
-
 ---
 
-## Dataframe check 1, 2, 1, 2!
+## Data frame check 1, 2, 1, 2!
 
-As you saw on the previous slide, the output of `str()` can be a bit hard to read (especially for larger datasets). A good alternative that creates a more clearly laid output is the `glimpse()` function from the `dplyr` package.
-
-```{r glimpse}
-glimpse(fancy_data)
-```
-
-
----
-
-## Dataframe check 1, 2, 1, 2!
-
-If you want to have a look at your full dataset, you can use the `View()` function. In *RStudio*, this will open a new tab in the source pane through which you can explore the dataset (including a search function). You can also click on the small spreadsheet symbol on the right side of the object in the environment tab to open this view. 
+If you want to have a look at your full data set, you can use the `View()` function. In *RStudio*, this will open a new tab in the source pane through which you can explore the data set (including a search function). You can also click on the small spreadsheet symbol on the right side of the object in the environment tab to open this view. 
 
 ```{r view, eval = F}
 View(fancy_data)
@@ -460,11 +466,9 @@ View(fancy_data)
 woRkshoptools::include_picture("./rstudio_view.png")
 ```
 
-
-
 ---
 
-## Receiving and defining names
+## Viewing and chaning names
 
 We can print all names of an object using the `names()` function...
 
@@ -472,7 +476,7 @@ We can print all names of an object using the `names()` function...
 names(fancy_data)
 ```
 
-...and we can change its names with it.
+...and we can also change names with it.
 
 ```{r changing-names}
 names(fancy_data) <- c("name", "salary_2018", "salary_2019")
@@ -480,7 +484,7 @@ names(fancy_data) <- c("name", "salary_2018", "salary_2019")
 names(fancy_data)
 ```
 
-However, there are more flexible ways of doing this as we will see later.
+However, there are more flexible ways of doing this as we will see in the session on *Data Wrangling Basics* tomorrow.
 
 ---
 
@@ -502,9 +506,9 @@ woRkshoptools::include_picture("./gesis_panel_logo_web.jpg")
 ]
 
 .right-column[
-For most of the examples and exercises in this course we will use the [Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany](https://www.gesis.org/gesis-panel/coronavirus-outbreak/public-use-file-puf). You can [download the dataset in different formats as well as the codebook and the questionnaire (in German) from the *GESIS* Data Archive](https://search.gesis.org/research_data/ZA5667) (note: you need to have/create a user account).
+For most of the examples and exercises in this course we will use the [Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany](https://www.gesis.org/gesis-panel/coronavirus-outbreak/public-use-file-puf). You can [download the data set in different formats as well as the codebook and the questionnaire (in German) from the *GESIS* Data Archive](https://search.gesis.org/research_data/ZA5667) (note: you need to have/create a user account).
 
-The *GESIS Panel* website provides [detailed documentation](https://www.gesis.org/gesis-panel/documentation), including a [cheatsheet](https://www.gesis.org/fileadmin/upload/forschung/programme_projekte/Drittmittelprojekte/GESIS_Panel/gesis_panel_cheatsheet.pdf).
+The *GESIS Panel* website provides [detailed documentation](https://www.gesis.org/gesis-panel/documentation), including a [cheatsheet](https://www.gesis.org/fileadmin/upload/GESIS_Panel/Cheatsheet/gesis_panel_cheatsheet.pdf).
 ]
 
 ---
@@ -525,9 +529,8 @@ This `R` package provides ["[a]n excerpt of the data available at Gapminder.org.
 ---
 
 ## How to use the data in general
-To code along and be able to do the exercises, you should store the data files for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* in a folder called `data` in the same folder as the other materials for this course.
 
-The *Gapminder* data (as well as the Titanic and unicorn) should already be in the `data` folder (if you downloaded/cloned the materials from the [*GitHub* repo for this course](https://github.com/jobreu/r-intro-gesis-2021)). We also provide you a synthetic data set based on the GESIS Panel data. This synthetic data set was created by [Bernd Weiß](https://berndweiss.net/) using the [`synthpop` package](https://www.synthpop.org.uk/).
+To code along and be able to do the exercises, you should store the data files for the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* in a folder called `data` in the same folder as the other materials for this course.
 
 ---
 
@@ -538,25 +541,25 @@ woRkshoptools::include_picture("./Datenimport.PNG")
 
 ---
 
-## But the choice of packages is intimidating
+## Data formats & packages
 .pull-left[
 **What you will learn**
 - Getting the most common data formats into `R`
   - e.g., CSV, *Stata*, *SPSS*, or *Excel* spreadsheets
-- Using the most recent methods of doing that
+- Using the different methods of doing that
 - We will rely a lot on packages and functions from the `tidyverse` instead of using `base R`
 ]
 
 .pull-right[
 **What you won't learn**
 - Getting old & obscure binary data formats into `R`
-  - ... although [it's possible](https://cran.r-project.org/doc/manuals/r-release/R-data.html)
+  - ... although [that is possible](https://cran.r-project.org/doc/manuals/r-release/R-data.html)
 ]
 
 ---
 
-## Before writing any code: *RStudio* functionality to import data
-`R` is no longer just for command line heroes. In the *RStudio* IDE menu, you can also select and load your data using the mouse. It's under `Environment - Import Dataset - Choose file type`.
+## Before writing any code: *RStudio* functionality for importing data
+You can use the *RStudio* GUI for importing data via `Environment - Import data set - Choose file type`.
 
 ```{r, echo = FALSE}
 woRkshoptools::include_picture("./rstudio_import.PNG")
@@ -579,23 +582,24 @@ woRkshoptools::include_picture("./codepreview.PNG")
 ---
 
 ## Honestly, after some time you will write the code directly
+
 .center[
 ```{r, echo = FALSE}
 woRkshoptools::include_picture("./coding_cat.gif")
 ```
-]
-
 .footnote[[Source](https://media.giphy.com/media/LmNwrBhejkK9EFP504/source.gif)]
+]
 
 ---
 
 ## Honestly, after some time you will write the code directly
+
 .center[
 ```{r, echo = FALSE}
 woRkshoptools::include_picture("./hadley-typing.gif")
 ```
-]
 [Source](https://tenor.com/view/hadley-wickham-rstats-typing-rcode-gif-11365139)
+]
 
 ---
 
@@ -614,24 +618,12 @@ Other file formats, particularly the proprietary ones, require the use of additi
 
 ---
 
-## File formats are subject of war
+## File formats wars
 
 ```{r echo = FALSE, out.width = "30%"}
 woRkshoptools::include_picture("./norm_normal_file_format.png")
 ```
 https://xkcd.com/2116/
-
----
-
-## Personal sidenote: why `tidyverse` for importing?
-For simple files, `base R` provides proper tools for importing.
-
-Yet, for importing other files, we have to rely on additional packages anyway.
-- the `tidyverse` packages (and its "friends") allow us to import and export all kinds of different data formats in a coherent way
-- the tidy data format also facilitates adding metadata to imported data
-  - they are tibbles
-  - a specific kind are labelled data (more on that in a bit)
-- the `tidyverse` provides some sane defaults, e.g., by automatic data type detection
 
 ---
 
@@ -641,7 +633,7 @@ Yet, for importing other files, we have to rely on additional packages anyway.
 
 ---
 
-## For starters: Importing a CSV file using `Base R`
+## Importing a CSV file using `Base R`
 
 ```{r loadtitanic, eval = FALSE}
 titanic <- read.csv("./data/titanic.csv")
@@ -659,14 +651,12 @@ titanic
 
 ---
 
-## A `tidyverse` / `readr` example
+## A `readr` example: `CSV` files
 ```{r readr-example}
 library(readr)
 
 titanic <- read_csv("./data/titanic.csv")
 ```
-
-Please note the column specifications. `readr` 'guesses' them based on the first 1000 observations (we will come back to this later).
 
 ---
 class: middle
@@ -676,11 +666,12 @@ titanic
 ```
 ]
 
-It's that easy!
+Note the column specifications: `readr` 'guesses' them based on the first 1000 observations (we will come back to this later).
 
 ---
 
-## A `readxl` example: `read_excel()`
+## Importing *Excel* files with `readxl`
+
 ```{r readxl-example}
 library(readxl)
 
@@ -697,7 +688,8 @@ unicorns
 
 ---
 
-## A `haven` example: `read_stata()` 
+## *Stata* files with `haven`
+
 ```{r read-stata-example-display}
 library(haven)
 
@@ -715,20 +707,21 @@ gp_covid
 
 ---
 
-## `read_stata()`'s sister: `read_spss()`
-Indeed, there's also the function `read_spss()` to import *SPSS* files.
+## *SPSS* files with `haven` 
 
-It also provides capabilities to handle *SPSS*-defined missing values by setting the option `user_na = TRUE` (default is `FALSE`).
+The `haven` package also offers the function `read_spss()` for importing *SPSS* files.
 
-*Note*: The [`sjlabelled` package](https://cran.r-project.org/web/packages/sjlabelled/index.html) can also be used to choose a more elaborated approach for missing values: https://cran.r-project.org/web/packages/sjlabelled/vignettes/intro_sjlabelled.html
+The package also offers capabilities for handling *SPSS*-defined missing values by setting the option `user_na = TRUE` (default is `FALSE`).
 
-**We will come back to Stata and SPSS files since they depict a specific file format in `R`: labelled data.**
+*Note*: The [`sjlabelled` package](https://cran.r-project.org/web/packages/sjlabelled/index.html) can also be used for [working with user-defined missings from *SPSS* files](https://cran.r-project.org/web/packages/sjlabelled/vignettes/intro_sjlabelled.html).
+
+**We will come back to *Stata* and *SPSS* files in a bit as they represent a specific file format in `R`: labelled data.**
 
 ---
 
-## There's more
+## Other data import options
 
-These were just some very first examples of applying functions from each package. They comprise even more functions for different data types.
+These were just some very first examples of applying functions for data import from the different packages. There are many more...
 
 pull-left[
 `readr`
@@ -771,7 +764,8 @@ Not to mention all the helper functions and options. For example, we can define 
 
 ---
 
-## Changing variable types, e.g., in CSV files
+## Changing variable types
+
 As mentioned before, `read_csv` 'guesses' the variable types by scanning the first 1000 observations. **NB**: This can go wrong!
 
 Luckily, we can change the variable type...
@@ -847,10 +841,8 @@ titanic
 
 class: middle
 
-.tinyisher[
 ```{r ref.label = "readr-example-col-changeD", echo = FALSE}
 ```
-]
 
 ---
 
@@ -881,17 +873,17 @@ titanic <-
 
 ## Beyond flat files: labelled data
 
-A lot of data you get and find or even collect comes in some sort of flat file format, such as CSV. In the social sciences, however, we often deal with proprietary file formats, such as *SPSS*'s `.sav` or *Stata*'s `.dta` files. 
+A lot of data comes in some sort of flat file format, such as `CSV`. In the social sciences, however, we often deal with proprietary file formats, such as *SPSS*'s `.sav` or *Stata*'s `.dta` files. 
 
-What we often find in these data are labels. These labels are used to describe variables or variable values. They comprise some specific metadata inherent in these proprietary file formats. 
+What these data typically include are labels. These labels are used to describe variables or variable values. They comprise some specific metadata inherent in these proprietary file formats. 
 
-*If you were able to travel ten years back in time and ask an `R` geek, she'd say that you cannot use labels in R. You'd either have to import, e.g., value labels as character strings or use their codes as factors. However, these days...*
+*If you were able to travel back ten years in time and ask an `R` geek, she'd say that you cannot use labels in R. You'd either have to import, e.g., value labels as character strings or use their codes as factors. However, these days...*
 
 ---
 
 ## Not being able to use labelled data is a thing of the past
 
-Nowadays, if you use the `haven` package, labels are built-in. For example:
+Nowadays, if you use the `haven` package, labels are built-in for the corresponding file types. For example:
 
 ```{r}
 gp_covid <-
@@ -903,25 +895,26 @@ gp_covid["age_cat"]
 ---
 
 ## Advantages of using labelled data
-One could rejoice in not having to use a codebook any more, just like in *SPSS*. And I think by and large this is true, although just looking at code output for glimpsing at data is somewhat... geeky. 
 
-An advantage is definitely  that you could re-use the labels in figures and plots, some packages do that automatically, such as the [`sjPlot`](https://strengejacke.github.io/sjPlot/) package.
+One could rejoice in not having to use a codebook anymore, just like in *SPSS* (although just looking at code output for glimpsing feels much more... data-geeky). 
 
-Yet, primarily when you exchange your data with colleagues who do not use `R` or when you plan to publish your data (which you always should if that is possible), being able to export data you have manipulated in `R` is great.
+An advantage is definitely that you can potentially re-use the labels in figures and plots, and some `R` packages do that automatically, such as the [`sjPlot`](https://strengejacke.github.io/sjPlot/) package.
 
-**However, be aware of the missing values hell that you may have to enter due to different missing values definitions in Stata and SPSS.**
+In addition, when you exchange your data with colleagues who do not use `R` or when you plan to publish your data (which you always should if that is possible), being able to export data you have manipulated in `R` in different formats is great.
+
+**However, be aware of the missing values hell that you may enter due to different missing value definitions in *Stata* and *SPSS*.**
 
 ---
 
 ## Getting labels
 
-For variables.
+For variables:
 
 ```{r}
 sjlabelled::get_label(gp_covid$age_cat)
 ```
 
-For values.
+For values:
 
 .tinyish[
 ```{r}
@@ -931,7 +924,7 @@ sjlabelled::get_labels(gp_covid$age_cat)
 
 ---
 
-## And setting labels: Variables
+## Setting labels: Variables
 
 ```{r}
 gp_covid$age_cat <- 
@@ -942,7 +935,7 @@ sjlabelled::get_label(gp_covid$age_cat)
 
 ---
 
-## And setting labels: Values
+## Setting labels: Values
 .tinyish[
 ```{r}
 gp_covid$age_cat <- 
@@ -962,25 +955,6 @@ sjlabelled::get_labels(gp_covid$age_cat)
 
 ---
 
-## That's a lot of manual work
-Yeah, this requires some tedious manual work that has to be done, at least by somebody. But that's just how it is, even in *SPSS* or *Stata*. Indeed, we may want to wait until using it in `R` scales a bit more. Integrating basic labelling of variables in a pipe workflow, however, is already straightforward:
-
-```{r}
-gp_data_subset <-
-  gp_covid %>% 
-  dplyr::select(age_cat, sex) %>% 
-  sjlabelled::var_labels(
-    age_cat = "Age in Categories",
-    sex = "Gender in Binary Form"
-  )
-
-sjlabelled::get_label(gp_data_subset)
-```
-
-Ok, but that's already data wrangling, a topic for tomorow.
-
----
-
 class: center, middle
 
 # [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_1_2_2_Flat_Files.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
@@ -990,12 +964,13 @@ class: center, middle
 ---
 
 ## Exporting data
+
 Sometimes our data have to leave `R`, for example, if we....
 - share data with colleagues who do not use `R`
 - want to continue where we left off
   - particularly if data wrangling took a long time
   
-For such purposes we also need a way to export our data.
+For such purposes, we also need a way to export our data.
 
 All of the packages we have discussed in this session also have designated functions for that.
 
@@ -1017,24 +992,40 @@ write_dta(titanic, "titanic_own.dta")
 ---
 
 ## `R`'s native file formats
-If you plan to continue to work with `R` (something we would always recommend `r emo::ji("stuck_out_tongue_winking_eye")`), there are at least two native 'file formats' to choose from. The advantage of using them is that they are compressed files, so that they don't occupy unnecessarily large disk space. Moreover, they are already prepared as you left them and take less time to load (not a big deal in a small data world but relevant for big(ger) data).
 
-`.Rdata`/`.rda` files saving and loading:
+If you plan to continue to work with `R` (something we would always recommend `r emo::ji("stuck_out_tongue_winking_eye")`), there are at least two native 'file formats' to choose from. The advantage of using them is that they are compressed files, so that they don't occupy unnecessarily large disk space. These two formats are `.Rdata`/`.rda` and `.rds`.
+The key difference between them is that `.rds` can only hold one object, whereas `.Rdata`/`.rda` can also be used for storing several objects in one file. A helpful property of 
+
+---
+
+## `.Rdata`/`.rda`
+
+Saving
 
 ```{r, eval = FALSE}
 save(mydata, file = "mydata.RData")
+```
+
+Loading
+```{r eval=FALSE}
 load("mydata.RData")
 ```
 
-`.rds` files saving and loading.
+---
 
+`.rds`
+
+Saving
 ```{r, eval = FALSE}
 saveRDS(mydata, "mydata.rds")
-mydata <- readRDS("mydata.rds")
 ```
 
-
-`saveRDS()` just saves a representation of the object, which means you can name it whatever you want when loading.
+Loading
+```{r eval=FALSE}
+mydata <- readRDS("mydata.rds")
+```
+  
+*Note*: A nice property of `saveRDS()` is that just saves a representation of the object, which means you can name it whatever you want when loading.
 
 ---
 
@@ -1060,22 +1051,23 @@ save.image(file = "my_fancy_workspace.RData")
 
 ## Additional packages
 
-The great benefit of `tidyverse` import functions is the import of the data as tibbles: the data are potentially tidier.
+Besides `readr`, `haven` and `readxl`, there also are some other packages that facilitate importing specific data types as tibbles:
 
-Several other non-tidyverse packages provide similar benefits as they make use of this universal data format:
+- [`sjlabelled`](https://cran.r-project.org/web/packages/sjlabelled/index.html) for labelled data, e.g., from *SPSS* or *Stata*
+
 - [`sf`](https://github.com/r-spatial/sf) for geospatial data
-
-- [`sjlabelled`](https://cran.r-project.org/web/packages/sjlabelled/index.html) to work with labelled data, e.g., from *SPSS* or *Stata*
 
 ---
 
 ## Other packages for data import
 
+For data import (and export) in general, there are even more options, such as... 
+
 - `base` R
 
 - the [`foreign` package](https://cran.r-project.org/web/packages/foreign/index.html) for *SPSS* and *Stata* files
 
-- [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html) or [`fst`](https://www.fstpackage.org/) for large datasets
+- [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html) or [`fst`](https://www.fstpackage.org/) for large data sets
 
 - [`jsonlite`](https://cran.r-project.org/web/packages/jsonlite/index.html) for `.json` files
 
@@ -1083,9 +1075,11 @@ Several other non-tidyverse packages provide similar benefits as they make use o
 
 ---
 
-## Final note on file paths
+## Reminder regarding file paths
 
-There is this simple rule of never using absolute file paths to maintain your code reproducibly and future-proof. We already talked about this in the introduction, so it's just to remind you as this is particularly important for data importing and exporting.
+In general, you should avoid using absolute file paths to maintain your code reproducibly and future-proof. We already talked about this in the introduction, but this is particularly important for importing and exporting data.
+
+As a reminder: Absolute file paths look like this (on different OS):
 
 ```{r eval = FALSE}
 # Windows

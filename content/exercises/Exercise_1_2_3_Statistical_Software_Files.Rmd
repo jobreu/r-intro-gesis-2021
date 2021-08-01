@@ -1,22 +1,20 @@
 ---
 title: 'Exercise 1_2_3: Statistical Software Files'
-author: 'Cute Cat'
+author: 'Johannes Breuer, Stefan Jünger'
 date: 'Introduction to R for Data Analysis'
 ---
 
 ```{r child = "../config/exercises_setup.Rmd"}
 ```
 
-Now we are in the second exercise session. Non-flat files were promised, so please load the *GESIS Panel* COVID-19 survey data.
-
-This first part of the exercises only deals with importing data. Later, in the second part, we will turn to labelling and exporting.
+In this set of exercises, we will work with files from statistical software. The first tasks are about importing data, while the later ones are about labelling and exporting.
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Load the *GESIS Panel* COVID-19 survey data.
+Import the `.sav` version of the data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*.
 ```
 
 ```{block, opts.label = "clues"}
-You can either load the *SPSS* or *Stata* file. In both cases, you need the `haven` package.
+You need the `haven` package for this. The file should be stored in the `data` folder.
 ```
 
 ```{r load_gp, solution = TRUE}
@@ -26,14 +24,14 @@ gp_covid <-
   read_spss("./data/ZA5667_v1-1-0.sav")
 ```
 
-In contrast to the flat files, such as CSV, the variables now have labels.
+Unlike in flat files, such as CSV, the variables now have labels.
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-Print the labels of the first ten variables in the dataset.
+Print the labels of the first ten variables in the data set.
 ```
 
 ```{block, opts.label = "clues"}
-You can print labels with the function `sjlabelled::get_label(your_data)`, but you have to make sure only to print the first ten variables.
+You can use a function from the `sjlabelled` package for this. Remember that you can use [ ] ro subset columns/variables (we only want to print the labels for the first ten variables).
 ```
 
 ```{r print_labels, solution = TRUE, message = FALSE}
@@ -42,45 +40,34 @@ library(sjlabelled)
 get_label(gp_covid[1:10])
 ```
 
-Unfortunately, it's all in German. Imagine you are an education researcher, and you are interested in the variable `education_cat`. So you may want to consider translating the variable into English.
+Unfortunately, it's all in German. Imagine you are an education researcher working on a publication in English, and you are interested in the variable `education_cat`. So you may want to consider translating the variable into English.
 
 ```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
 Change the variable label of `education_cat` from "Bildung, kategorisiert" to "Education, categorized".
 ```
 
 ```{block, opts.label = "clues"}
-There a two ways: You can either use the function `sjlabelled::set_label()` or do it in a pipe with `sjlabelled::var_labels()`.
+You can, again, use a frunction from `sjlabelled` for this.
 ```
 
 ```{r changevarlabel, solution = TRUE, message = FALSE}
-# either
 gp_covid$education_cat <- 
   set_label(
     gp_covid$education_cat, 
     label = "Education, categorized"
   )
 
-# or
-library(dplyr)
-
-gp_covid <- 
-  gp_covid %>% 
-  var_labels(
-    education_cat = "Education, categorized"
-  )
-
-# proof
 get_label(gp_covid$education_cat)
 ```
 
-Your colleague asks you to provide your new data after changing labels and stuff. Unfortunately, she does not use `R` or `SPSS` and asks you to export your data as a *Stata* file.
+Your collaborators ask you to share the data after changing labels and stuff. Unfortunately, they do not use `R` or `SPSS` and, hence, asks you to export your data as a *Stata* file.
 
 ```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
 Export your data as a *Stata* file.
 ```
 
 ```{block, opts.label = "clues"}
-As in the case of importing you, again, need the `haven` package.
+The `haven` package provides a function for writing such files that is called and works in a similar way as the corresponding function for importing data in this particular format.
 ```
 
 ```{r exportstata, solution = TRUE, eval = FALSE}

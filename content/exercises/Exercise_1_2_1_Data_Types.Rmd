@@ -1,6 +1,6 @@
 ---
 title: 'Exercise 1_2_1: Data Types'
-author: 'Cute Cat'
+author: 'Johannes Breuer, Stefan Jünger'
 date: 'Introduction to R for Data Analysis'
 ---
 
@@ -8,11 +8,11 @@ date: 'Introduction to R for Data Analysis'
 ```
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Create a numeric vector with at 6 numbers.
+Create a numeric vector with at least 6 numbers.
 ```
 
 ```{block, opts.label = "clues"}
-To create a vector you would need the `c()` function. 
+To create a vector you need the `c()` function. 
 ```
 
 ```{r first.exercise, solution = TRUE}
@@ -46,14 +46,13 @@ You have to either define the `nrow` or `ncol` option to get the proper layout o
 ```
 
 ```{r third.exercise, solution = TRUE}
-cool_matrix <-
-  matrix(cool_numeric_vector, nrow = 3)
+cool_matrix <- matrix(cool_numeric_vector, nrow = 3)
 
 cool_matrix
 ```
 
 ```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
-Create a list from all the above defined data types.
+Create a list that includes all of the objects you have created in the previous tasks in this set of exercises    .
 ```
 
 ```{block, opts.label = "clues"}
@@ -80,8 +79,7 @@ List elements are accessed with `[[]]`.
 ```
 
 ```{r fifth.exercise, solution = TRUE}
-cool_data_frame <- 
-  as.data.frame(cool_list[[3]])
+cool_data_frame <- as.data.frame(cool_list[[3]])
 ```
 
 ```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
@@ -89,7 +87,7 @@ Add some column names (e.g., "first" and "second") for the two columns of the da
 ```
 
 ```{block, opts.label = "clues"}
-You would need the `names()` function.
+You can use the same function for setting/changing names as for viewing them.
 ```
 
 ```{r sixth.exercise, solution = TRUE}

@@ -63,6 +63,7 @@ By the end of this course, you should be able to produce a report like this one 
 tweet_screenshot("https://twitter.com/hadleywickham/status/589068687669243905",
             theme = "dark")
 ```
+https://twitter.com/hadleywickham/status/589068687669243905
 
 ---
 
@@ -269,11 +270,15 @@ course_content_5
 If you want to know a bit more about the origins and history of `R` as well as the philosophy behind it, the book [*R Programming for Data Science*](https://bookdown.org/rdpeng/rprogdatascience/) by Roger D. Peng provides a [good summary](https://bookdown.org/rdpeng/rprogdatascience/history-and-overview-of-r.html). Alternatively, you can also watch this [*YouTube* video in which David Smith talks about *Twenty Years of R*](https://youtu.be/iq_biXEIx-U).
 
 ---
- 
-```{r r-cd-tweet, echo=FALSE, out.width="70%"}
+class: middle
+
+## O`R`igins 
+
+```{r r-cd-tweet, echo=FALSE, out.width="50%"}
 tweet_screenshot("https://twitter.com/HannahOish/status/1036353875605737472",
             theme = "dark")
 ```
+<small><small>https://twitter.com/HannahOish/status/1036353875605737472</small></small>
 
 ---
 
@@ -970,11 +975,13 @@ woRkshoptools::include_picture("./it_off_on.jpg")
 ]
 
 ---
+class: middle
 
-```{r r-abort-meme, echo=FALSE, out.width="70%"}
+```{r r-abort-meme, echo=FALSE, out.width="60%"}
 tweet_screenshot("https://twitter.com/daranzolin/status/1420220994262749186",
             theme = "dark")
 ```
+<small><small>https://twitter.com/daranzolin/status/1420220994262749186</small></small>
 
 ---
 
@@ -986,7 +993,7 @@ tweet_screenshot("https://twitter.com/daranzolin/status/1420220994262749186",
 - packages not installed or loaded
 - code (chunks) executed in the wrong order
 
-```{r r-break-gif, out.width = "25%", echo = F}
+```{r r-break-gif, out.width = "20%", echo = F}
 woRkshoptools::include_picture("./breakr.gif")
 ```
 .center[
