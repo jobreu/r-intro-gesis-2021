@@ -388,7 +388,7 @@ fancy_data["who"]
 ## Difference between `[]` and `[[]]`
 
 ```{r hadley-tweet, echo=FALSE}
-tweet_embed("https://twitter.com/hadleywickham/status/643381054758363136",
+include_tweet("https://twitter.com/hadleywickham/status/643381054758363136",
             theme = "dark")
 ```
 
