@@ -7,7 +7,7 @@ date: 'Introduction to R for Data Analysis'
 ```{r child = "../config/exercises_setup.Rmd"}
 ```
 
-Plotting data is fun. We also do it for data exploration (see the section on *Exploratory Data Analysis*). Still, at least in this slot of exercise, we just want to familiarize ourselves with some of the graphic facilities in R.
+Plotting data is fun. We also do it for data exploration (see the section on *Exploratory Data Analysis*). In these exercises, however, we just want to familiarize ourselves with some of the graphic facilities in R.
 
 So let's start with a simple task: creating a simple scatter plot. For this purpose, we first load the *GESIS Panel* COVID-19 survey data.
 

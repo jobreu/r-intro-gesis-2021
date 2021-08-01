@@ -30,7 +30,7 @@ In general:
 - `R` is fun, and so is creating plots in `R`
 
 - Almost every plot type is supported in `R`
-- either in your standard installation or in through additional packages
+- either in your standard installation or through additional packages
 
 - A large number of exports formats are supported
 - `.png`, `.jpg`, `.tiff`, `.svg`, `.bmp`, `.pdf`, `.eps`, etc.
@@ -151,7 +151,6 @@ plot(
 ```
 ]
 
-
 ---
 
 ## Adding stuff to the plot: titles & labels
@@ -220,14 +219,6 @@ axis(
 
 ---
 
-class: center, middle
-
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_1_A_Simple_Plot.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
-
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_1_A_Simple_Plot.html)
-
----
-
 ## Record your plot
 Adding more and more elements to your plot also means that the code you have to write gets more and more. But what can we do when we want to re-use the same plot and dynamically add some stuff? We can record the plot!
 
@@ -259,7 +250,7 @@ my_scatterplot <- recordPlot()
 
 ---
 
-## Now apply it to the previous plot
+## Extending a recorded plot plot
 
 .tinyish[
 .pull-left[
@@ -290,7 +281,7 @@ axis(
 
 ---
 
-## If you're happy, just update your recording
+## Update the plot recording
 
 .tinyish[
 .pull-left[
@@ -323,7 +314,7 @@ my_scatterplot <- recordPlot()
 
 ---
 
-## Where to go from here in `Base R`'s graphics?
+## Where to go from here with `base R` graphics?
 
 .pull-left[
 Using similar procedures, we can add more and more stuff to our plot or edit its elements:
@@ -335,7 +326,7 @@ Using similar procedures, we can add more and more stuff to our plot or edit its
 ]
 
 .pull-right[
-We surely also apply different *plot types*, such as
+We can also create different *plot types*, such as
 - histograms
 - barplots
 - boxplots
@@ -364,7 +355,7 @@ boxplot(
 
 ---
 
-## My attempt on Trump's plot
+## My attempt at reproducing Trump's plot
 
 .pull-left[
 ```{r trump-plot, eval = FALSE}
@@ -390,10 +381,18 @@ barplot(
 
 ---
 
-## One last detail: the `par()` and `dev.off()` function
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_1_A_Simple_Plot.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_1_A_Simple_Plot.html)
+
+---
+
+## The `par()` and `dev.off()` functions for plots
 `par()` stands for graphical parameters and is called before the actual plotting function. It prepares the graphics device in `R`. The most commonly used options are for "telling" the device that 2, 3, 4, or `x` plots have to be printed.
 
-We have used the option `mfrow` before by telling it how many rows (the first value in the vector) and columns (the second value in the vector) we aim to plot. 
+We can, e.g., use `mfrow` for specifying how many rows (the first value in the vector) and columns (the second value in the vector) we aim to plot. 
 
 ```{r eval = FALSE}
 par(mfrow = c(2, 2))
@@ -407,9 +406,9 @@ dev.off()
 
 ---
 
-class: middle
+## Exporting plots
 
-**It's nice that `R` provides such pleasant plotting opportunities. However, to include them in our papers, we need to export them. As said in the beginning, numerous export formats are available in `R`.**
+It's nice that `R` provides such pleasant plotting opportunities. However, to include them in our papers, we need to export them. As said in the beginning, numerous export formats are available in `R`.
 
 ---
 
@@ -421,7 +420,7 @@ woRkshoptools::include_picture("saveGraphic.PNG")
 
 ---
 
-## Saving graphics via a command
+## Saving plots via a command
 Alternatively, you can also export plots with the commands `png()`, `pdf()` or `jpeg()`, for example. For this purpose, you first have to wrap the plot call between one of those functions and a `dev.off()`call.
 
 ```{r, eval = FALSE}
@@ -442,8 +441,6 @@ plot(gp_covid$age_cat)
 dev.off()
 ```
 
-It's that easy.
-
 ---
 
 class: center, middle
@@ -455,12 +452,12 @@ class: center, middle
 
 ---
 
-## My personal note on `base R` plotting
+## A personal note on `base R` plotting
 Hopefully, you have gotten the feeling that the `base R` base techniques for plotting already are well-suited for your daily data exploration needs.
 
 But to be honest: I do not use all the other functions that often. The syntax is sometimes cumbersome with all the `par()`  or `dev.off()` calls, and manipulating parameters simply feels somewhat "outdated".
 
-Now, we will learn more modern techniques using `ggplot2`. Yet, we still believe that it is worthwhile to become comfortable with `base R` plotting since `ggplot2`, e.g., may sometimes be "too much" for simple data exploration.
+In the following, we will turn towards more modern techniques using the `ggplot2` package. Yet, we still believe that it is worthwhile to become comfortable with `base R` plotting since `ggplot2`, e.g., may sometimes be "too much" for simple quick data exploration.
 
 **As so often, in the end, it's also a matter of taste.**
 
@@ -588,11 +585,9 @@ plot_call +
 ---
 
 ## Data requirements
-You can use one single data frame to create a plot in `ggplot2`.
-- everything on the plot is just data
-- creates a smooth workflow from data wrangling to the final presentation of the results
+You can use one single data frame to create a plot in `ggplot2`. This creates a smooth workflow from data wrangling to the final presentation of the results.
 
-```{r data_science_pic, out.width = "70%", echo = FALSE}
+```{r data_science_pic, out.width = "65%", echo = FALSE}
 woRkshoptools::include_picture("data-science_man.png")
 ```
 
@@ -605,7 +600,7 @@ However, this makes it difficult to add extra features to your plot.
 ---
 
 ## Why the long format? `r emo::ji("horse")`
-`ggplot2` prefers data in the long data format (**NB**: of course, only if this is possible and makes sense for the dataset at hand)
+`ggplot2` prefers data in long format (**NB**: of course, only if this is possible and makes sense for the data set at hand)
 
 .pull-left[
 We may want to get used to it as this format has some benefits:
@@ -687,23 +682,10 @@ We do not want to give a lecture on the theory behind data visualization (if you
 
 Creating plots is all about practice... and 'borrowing' code from others.
 
-.column-left-half[
-```{r pseudo, eval = FALSE, echo = TRUE}
-please +
-  no +
-  more +
-  pseudo +
-  code +
-  man
-```
-]
-
-.column-right-half[
 Three components are important:
 - Plot initiation and data input
 - aesthetics definition
 - so-called geoms
-]
 
 ---
 
@@ -809,13 +791,15 @@ ggplot(data = gp_covid) +
 class: center, middle
 
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_3_lotting_Repeats.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_3_Plotting_Repeats.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_3_lotting_Repeats.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_3_Plotting_Repeats.html)
 
 ---
 
 ## Going further: Working with grouping variables
+
+For creating grouped plots, we need grouping variables...
 
 ```{r left-right}
 gp_covid <-
@@ -888,7 +872,7 @@ The legend is drawn automatically, that's handy!
 
 ---
 
-## Using another palette
+## Using another color palette
 
 .pull-left[
 ```{r ggplot_group_dark2, eval = FALSE}
@@ -916,11 +900,11 @@ ggplot(
 ---
 
 ## Difference between `color` and `fill`
-When you work with `ggplot2`, at least after some time, you will be faced with two components of the plot or `geom` associated with colors: `color` and `fill`.
+Notably, there are two components of the plot or `geom` associated with colors: `color` and `fill`.
 
 Generally, `color` refers to the geometry borders, such as a line. `fill` refers to a geometry area, such as a polygon.
 
-Have this difference in mind when you use `scale_color_brewer` or `scale_fill_brewer` in your plots. Manipulating these colors and their corresponding legends in an elaborate plot can get really tedious, to be honest. 
+Have this difference in mind when you use `scale_color_brewer` or `scale_fill_brewer` in your plots. Manipulating these colors and their corresponding legends in an elaborate plot can get a little tricky. 
 
 ---
 
@@ -1048,10 +1032,10 @@ ggplot(
 
 ---
 
-## Another remark on plotting options
+## A note on plotting options
 
 .pull-left[
-Working with combined aesthetics and different data inputs can become cumbersome.
+Admittedly, working with combined aesthetics and different data inputs can become challenging.
 
 Particularly, plotting similar aesthetics which interfere with the automatic procedures can create conflicts.
 
@@ -1074,7 +1058,7 @@ woRkshoptools::include_picture("800px-The_Scream.jpg")
 ---
 
 ## `ggplot` plots are 'simple' objects
-In contrast to standard `R` plots, `ggplot2` are standard objects like any other object in `R` (they are lists). So there is no graphics device involved from which we have recorded our plot to re-use it later. We can just use it directly.
+In contrast to standard `R` plots, `ggplot2` outputs are standard objects like any other object in `R` (they are lists). So there is no graphics device involved from which we have to record our plot to re-use it later. We can just use it directly.
 
 ```{r eval = FALSE}
 my_fancy_plot <- 
@@ -1092,9 +1076,9 @@ Additionally, there is also no need to call `dev.off()`
 ---
 
 ## It makes combining plots easy
-As of today, there are now a lot of packages that help to combine `ggplot2`s fairly easily. For example, the [`cowplot` package](https://cran.r-project.org/web/packages/cowplot/index.html) provides a really flexible framework. I have used `cowplot` to create the map in the previous session.
+As of today, there are now a lot of packages that help to combine `ggplot2`s fairly easily. For example, the [`cowplot` package](https://cran.r-project.org/web/packages/cowplot/index.html) provides a really flexible framework.
 
-Yet, fiddling with this package can become quite complicated. One of my favorite packages at the moment is the [`patchwork` package](https://cran.r-project.org/web/packages/patchwork/index.html) because of its easy to use syntax. It's really, really easy.
+Yet, fiddling with this package can become quite complicated. A very easy-to-use package for combining `ggplot`s is [`patchwork` package](https://cran.r-project.org/web/packages/patchwork/index.html).
 
 ---
 
@@ -1142,7 +1126,7 @@ my_barplot / my_boxplot
 
 ---
 
-## combine them with base R graphics
+## Combining with `base R` graphics
 .pull-left[
 ```{r combine_base, eval = FALSE}
 (my_barplot | 
@@ -1166,7 +1150,7 @@ You can also annotate plots with titles, subtitles, captions, and tags.
 
 You can nest plots and introduce more complex layouts.
 
-I'd recommend, if you're interested, to check out the [`patchwork` repository on *GitHub*](https://github.com/thomasp85/patchwork) since everything is really well-documented there.
+If you're interested in this, you should check out the [`patchwork` repository on *GitHub*](https://github.com/thomasp85/patchwork) as everything is really well-documented there.
 
 ---
 
@@ -1192,11 +1176,9 @@ ggsave("nice_plot.tiff", nice_plot, dpi = 300)
 
 ---
 
-class: middle
+## Visual exploratory data analysis
 
-## Now, what about visualizing explorative statistics?
-
-Here are a few examples.
+In the session on *Exploratory Data Analysis* (EDA), we have said that visualization should be part of EDA. We can use `ggplot2` for this, but there also are many packages out there that offer helpful visualization functions. We will look at two of those, `visdat` (for visualizing missing data patterns) and `GGAlly` (for visualizing correlations) in the following. Many of these packages build on `ggplot2` and their output can, hence, be further customized or extended using `ggplot2` or its extension packages.
 
 ---
 
@@ -1206,7 +1188,7 @@ Here are a few examples.
 ```{r missing-plot, eval = FALSE}
 library(visdat)
 
-vis_miss(gp_covid[,1:20])
+vis_miss(gp_covid[,3:20])
 ```
 ]
 
@@ -1217,7 +1199,7 @@ vis_miss(gp_covid[,1:20])
 
 ---
 
-## Fancier barplots I (Fancier statistics)
+## Fancier barplots: Relative frequencies
 
 .pull-left[
 ```{r fancy_barplot_i, eval = FALSE}
@@ -1249,7 +1231,7 @@ gp_covid %>%
 
 ---
 
-## Fancier barplots II (Fancier labels)
+## Fancier barplots: Percentages & formatting
 
 .pull-left[
 ```{r fancy_barplot_ii, eval = FALSE}
@@ -1271,8 +1253,10 @@ gp_covid %>%
   ggplot(aes(x = choice_of_party, 
              fill = choice_of_party)) + 
   geom_bar(aes(y = (..count..)/sum(..count..))) +
-  scale_y_continuous(labels=scales::percent) +
-  ylab("Relative Frequencies")
+  scale_y_continuous(labels = percent,
+                     expand = expansion(mult = c(0, 0.1))) +
+  ylab("Relative Frequencies") +
+  xlab("")
 ```
 ]
 
@@ -1321,12 +1305,12 @@ gp_covid %>%
 
 - [BBC Visual and Data Journalism cookbook for R graphics](https://bbc.github.io/rcookbook/#how_to_create_bbc_style_graphics)
 
-- [ggplot2 extensions](http://www.ggplot2-exts.org/gallery/)
+- [List of `ggplot2` extensions](https://exts.ggplot2.tidyverse.org/)
 
 ---
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_4_Ggood_Plots.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
+# [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_3_2_4_GGood_Plots.html) time `r emo::ji("weight_lifting_woman")``r emo::ji("muscle")``r emo::ji("running_man")``r emo::ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_4_Ggood_Plots.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_3_2_4_GGood_Plots.html)

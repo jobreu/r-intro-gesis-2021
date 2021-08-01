@@ -7,7 +7,7 @@ date: 'Introduction to R for Data Analysis'
 ```{r child = "../config/exercises_setup.Rmd"}
 ```
 
-As a service, here's the data loading routine again:
+In case you need it, here's the data loading routine again:
 
 ```{r loadgpcovid, message=FALSE, eval=TRUE}
 library(dplyr)
@@ -20,9 +20,9 @@ gp_covid <-
   sjlabelled::set_na(na = c(-1:-99, 97:98))
 ```
 
-As we will discuss in more detail in the session on *Exploratory Data Analysis*, data exploration is not only about creating numbers and summary statistics. Sometimes a good plot can reveal more insights than a whole data frame filled with numbers (especially to the human eye). In this exercise, we use what we've just learned about plots with `ggplot2`. This time we are going to use the [*Gapminder*](https://www.gapminder.org/) data on GDP per capita.
+As we have discussed in the session on *Exploratory Data Analysis*, data exploration is not only about creating numbers and summary statistics. Sometimes a good plot can reveal more insights than a whole data frame filled with numbers (especially to the human eye). In this exercise, we use what we've just learned about plots with `ggplot2`. We will also repeat some of the content from the sessions on data wrangling in the following exercises (as this is typically part of a pipeline for data visualization).
 
-Hence, we we need to first load the *Gapminder* GDP data from the CSV file and convert it to long format (as in the data wrangling session).
+This time we are going to use the [*Gapminder*](https://www.gapminder.org/) data on GDP per capita again. Hence, we we need to first load the *Gapminder* GDP data from the `CSV` file and convert it to long format.
 
 ```{r data_file}
 library(dplyr)
@@ -38,14 +38,14 @@ gapminder_ggplot_input <-
   ungroup()
 ```
 
-Our aim is to analyze how the GDP has developed over time. The nice thing about plots is that we can use the whole range of years and still identify differences between various periods. Therefore, our plot of choice is a line plot to visualize the data as a time series.
+Our aim is to analyze how the GDP has developed over time. The nice thing about plots is that we can use the whole range of years and still identify differences between various periods. Our plot of choice for this is a line plot to visualize the data as a time series.
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Plot the *Gapminder* GDP per capita data as a line plot to display a time series.
+Using `ggplot2`, plot the *Gapminder* GDP per capita data as a line plot to display a time series. One important note here: In the aesthetics definition for this plot you should define a grouping variable `group = 1`. Otherwise, `ggplot` assumes that you want to plot one line for each year.
 ```
 
 ```{block, opts.label = "clues"}
-Instead of `geom_point` as in the slides, the name of the geom we need is `geom_line`. In addition, in the aesthetics definition `aes()` you should define a grouping variable `group = 1`. Otherwise, `ggplot` assumes that you want to plot one line for each year.
+The name of the geom we need is `geom_line`.
 ```
 
 ```{r line_plot_solution, solution = TRUE}
@@ -102,14 +102,14 @@ ggplot(
   geom_line()
 ```
 
-Now we can see some visual differences between the different periods. One last thing, however, is that there are way too many labels on the x-axis. Maybe a more sensible axis labeling approach would be to create axis breaks for every ten years steps. **However, this is an advanced exercise as we did not talk about manipulating axes before. If you're not feeling adventurous just jump to the next exercise which is also optional but probably more exciting.**
+Now we can see some visual differences between the different periods. One last thing, however, is that there are way too many labels on the x-axis. Maybe a more sensible axis labeling approach would be to create axis breaks for ten-year-steps. **NB: The next one is an advanced exercise as we did not talk about manipulating axes before. If you're not feeling adventurous you can just skip this one.**
 
 ```{block, box.title = "Bonus", box.body = list(fill = "white"), box.icon = "fa-star"}
 Create some prettier, i.e., more sensible breaks for the x-axis.
 ```
 
 ```{block, opts.label = "clues"}
-You can modify the x-axis with `scale_x_discrete()` and its breaks with the option `breaks = breaks_vector`.
+You can modify the x-axis with `scale_x_discrete()` and its breaks with the option `breaks = breaks_vector`. You can check the help file (`?scale_discrete`) for some more information. A helpful additional function to use here is `seq()` from `base R`. 
 ```
 
 ```{r line_plot_breaks_solution, solution = TRUE}

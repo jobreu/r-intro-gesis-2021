@@ -240,7 +240,7 @@ A quick and easy way to check some summary statistics for your dataset is the `b
 summary(corona_survey$left_right)
 ```
 
-as well as whole dataframes:
+as well as whole data frames:
 ```{r summary-many, eval = F}
 summary(corona_survey[, 2:19])
 ```
@@ -381,7 +381,7 @@ corona_survey %>%
 
 ## `dplyr::group_by()`
 
-The `dplyr` function `group_by()` creates dataframes (tibbles) that are grouped by one or more variables. This can, e.g., be used to produce grouped summary statistics. As we have seen for the `rowwise()` function in the session on advanced data wrangling, we can end/undo the grouping via the `ungroup()` function.
+The `dplyr` function `group_by()` creates data frames (tibbles) that are grouped by one or more variables. This can, e.g., be used to produce grouped summary statistics. As we have seen for the `rowwise()` function in the session on advanced data wrangling, we can end/undo the grouping via the `ungroup()` function.
 
 ```{r group-by, eval=FALSE}
 corona_survey %>% 
@@ -536,7 +536,7 @@ party_stats
 
 ## Frequencies and proportions with `janitor::tabyl()`
 
-A nice thing about `tabyl()` is that is produces a dataframe which we can, e.g., use for plotting or creating tables (which we will discuss later on).
+A nice thing about `tabyl()` is that is produces a data frame which we can, e.g., use for plotting or creating tables (which we will discuss later on).
 
 ```{r tabyl-class}
 class(party_stats)
@@ -590,7 +590,7 @@ While there is an ever-growing list of `R` packages for creating tables with man
 
 ## Summary tables with `stargazer`
 
-If we, e.g., want to create a summary statistics table as text output (e.g., for printing in the `R` console), we can use `stargazer` for that. **NB**: As the main `stargazer()` function does not work with tibbles, we need to convert our data to a regular dataframe. 
+If we, e.g., want to create a summary statistics table as text output (e.g., for printing in the `R` console), we can use `stargazer` for that. **NB**: As the main `stargazer()` function does not work with tibbles, we need to convert our data to a regular data frame. 
 
 ```{r stargazer-text, eval=FALSE}
 library(stargazer)
