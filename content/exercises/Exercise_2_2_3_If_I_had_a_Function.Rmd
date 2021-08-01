@@ -16,7 +16,7 @@ where $x$ is each input value, $\bar{x}$ is the sample mean value and $S$ the sa
 ```
 
 ```{block, opts.label = "clues"}
-`R`'s standard deviation function is `sd()`. Don't forget to use the option `na.rm = TRUE` and be careful when setting the brackets around the formula.
+The `base R` function for computing the standard deviation function is `sd()`. Don't forget to use the option `na.rm = TRUE` and be careful when setting the brackets around the formula.
 ```
 
 ```{r first-exercise, solution = TRUE}
@@ -25,7 +25,7 @@ standardize <- function (x) {
 }
 ```
 
-Please run the following code create a vector with 30 randomly selected values.
+As a preparation for the next task, please run the following code create a vector with 30 randomly selected values.
 
 ```{r vector}
 vector <- sample(1:100, 30)

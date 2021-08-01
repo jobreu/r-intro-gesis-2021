@@ -17,43 +17,31 @@ gp_covid <-
 ```
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Create a new character string (!) variable based on the `age_cat` variable that indicates younger people (values 0 to 9) and the elderly (value of 10). 
+Create a new binary variable called `married` in the `gp_covid` dataframe that has the value 1 if the individual is married and 0 if not. 
 ```
 
 ```{block, opts.label = "clues"}
-You need the `case_when()` function for that purpose. Consider using a `tidyselect` helper such as `between()`
+As there are no missing values in the variable, you can simply use `ifelse()` for this.
 ```
 
 ```{r first-exercise, solution = TRUE}
-gp_covid <- 
-  gp_covid %>% 
-  mutate(
-    elderly = 
-      case_when(
-        between(age_cat, 0, 9) ~ "young folks",
-        age_cat == 10 ~ "elderly"
-      )
-  )
+gp_covid <- gp_covid %>% 
+  mutate(married = ifelse(marstat == 1, 1, 0))
 ```
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-Repeat the previous task with the differentation between married and unmarried people using the `marstat` variable.
+Let's create another new variable. This time, it should be a character variable named `age_3cat` that has the following unique values representing the respective age categories: "up to 40 years", "41 to 60 years" and "older than 60 years".
 ```
 
 ```{block, opts.label = "clues"}
-Your variable should have 4 distinct values. You can concatenate logical operations using the `&` operator.
+You can use the `between()` helper function in combination with the `dplyr` function for conditional variable creation/transformation. The required existing variable is called `age_cat`. As a side note: In reality, you would probably would want to have such a variable as an ordered factor, but for the sake of simplicity, we'll stick with character variable here.
 ```
 
 ```{r second-exercise, solution = TRUE}
-gp_covid <- 
-  gp_covid %>% 
-  mutate(
-    elderly_married = 
-      case_when(
-        between(age_cat, 0, 9) & marstat == 1 ~ "young folks, unmarried",
-        between(age_cat, 0, 9) & marstat == 2 ~ "young folks, married",
-        age_cat == 10 & marstat == 1 ~ "elderly, unmarried",
-        age_cat == 10 & marstat == 2 ~ "elderly, married"
-      )
-  )
+gp_covid <- gp_covid %>% 
+  mutate(age_3cat = case_when(
+    between(age_cat, 1, 4) ~ "up to 40 years",
+    between(age_cat, 5, 7) ~ "41 to 60 years",
+    age_cat > 7 ~ "older than 60 years"
+    ))
 ```

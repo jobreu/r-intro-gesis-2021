@@ -20,11 +20,11 @@ standardized_vector <-
 
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Loop through each element of the vector and add the number `pi` using a `for()`-loop.
+Using a `for()`-loop, loop through each element of the vector, add the number `pi`, and print the result.
 ```
 
 ```{block, opts.label = "clues"}
-There's a pre-defined value in R for `pi`. Just type `pi` and you'll receive 3.141593. Also, you need to wrap everything within the `print()` function.
+There's a pre-defined value in R for `pi`. Just type `pi` and you'll receive 3.141593. You need to wrap what the function does within the `print()` function.
 ```
 
 ```{r first-exercise, solution = TRUE}
@@ -34,7 +34,7 @@ for (number in standardized_vector) {
 ```
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-Repeat the previous exercise but this time the results should be printed all at once in a vector. You would need the `sapply()` function for that.
+Repeat the previous exercise, but this time the results should be printed all at once in a vector. Use the `sapply()` function here.
 ```
 
 ```{block, opts.label = "clues"}
@@ -48,11 +48,11 @@ sapply(standardized_vector, function (number) {
 ```
 
 ```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
-Now, we want to have the same output as a list. What's your approach on doing this?
+Now, we want to have the same output as a list.
 ```
 
 ```{block, opts.label = "clues"}
-You can either use `lapply()` or `purrr::map`. 
+You can either use `lapply()` or `map()` from the `purrr` package. 
 ```
 
 ```{r third-exercise, solution = TRUE}
@@ -64,6 +64,5 @@ lapply(standardized_vector, function (number) {
 
 standardized_vector %>% 
   map(~.x + pi)
-
 
 ```

@@ -64,7 +64,7 @@ gp_covid <- gp_covid %>%
 ```
 
 ```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
-After recoding a set of values as `NA` for one variable, let's now do the same for the whole `gp_covid` dataframe. This time, however, we do not want to recode 98 as `NA` as it is a valid value for the `id` variable.
+After recoding a set of values as `NA` for one variable, let's now do the same for the whole `gp_covid` data frame. This time, however, we do not want to recode 98 as `NA` as it is a valid value for the `id` variable.
 ```
 
 ```{block, opts.label = "clues"}

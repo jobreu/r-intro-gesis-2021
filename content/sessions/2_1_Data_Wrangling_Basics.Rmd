@@ -302,16 +302,16 @@ If you need to make your data tidy or change it from wide to long format or vice
 
 The `tidyverse` examples in the following will make use of functions from the [`dplyr` package](https://dplyr.tidyverse.org/):
 - `dplyr` functions are verbs that signal an action  
-- first argument = a dataframe  
-- the output normally also is a dataframe (tibble) 
-- columns (= variables in a tidy dataframe) can be referenced without quotation marks (non-standard evaluation)
+- first argument = a data frame  
+- the output normally also is a data frame (tibble) 
+- columns (= variables in a tidy data frame) can be referenced without quotation marks (non-standard evaluation)
 - actions (verbs) can be applied to columns (variables) and rows (cases/observations)
 
 ---
 
 ## First look `r ji("eyes")`
 
-The `dplyr` package provides a function for getting a first good look at your data, that is especially helpful when working with data sets that contain many columns/variables. The function `glimpse()` prints a dataframe/tibble in a way that represents columns as rows and rows as columns and also provides some additional information about the dataframe and its columns.
+The `dplyr` package provides a function for getting a first good look at your data, that is especially helpful when working with data sets that contain many columns/variables. The function `glimpse()` prints a data frame/tibble in a way that represents columns as rows and rows as columns and also provides some additional information about the data frame and its columns.
 
 ```{r glimpse, eval=FALSE}
 gp_covid %>% 
@@ -333,7 +333,7 @@ class: middle
 
 ## Selecting variables
 
-We might want to reduce our dataframe (or create a new one) to only include a subset of specific variables. Say, for example, we want to select only the variables that measure the risk of becoming infected with or spreading the Corona virus from our full data set. There are two options for doing this with `base R`:
+We might want to reduce our data frame (or create a new one) to only include a subset of specific variables. Say, for example, we want to select only the variables that measure the risk of becoming infected with or spreading the Corona virus from our full data set. There are two options for doing this with `base R`:
 
 Option 1
 .small[
@@ -552,7 +552,7 @@ gp_covid_risk %>%
   names()
 ```
 
-*Note*: The [`janitor` package](https://sfirke.github.io/janitor/) (which is `tidyverse`-oriented) can be used to facilitate several common data cleaning tasks. Among other things, it contains the function `clean_names()` that takes a dataframe and creates column names that "are unique and consist only of the _ character, numbers, and letters" (from the help file for this function), with the default being `r ji("snake")` snake_case (but support for many other types of cases). 
+*Note*: The [`janitor` package](https://sfirke.github.io/janitor/) (which is `tidyverse`-oriented) can be used to facilitate several common data cleaning tasks. Among other things, it contains the function `clean_names()` that takes a data frame and creates column names that "are unique and consist only of the _ character, numbers, and letters" (from the help file for this function), with the default being `r ji("snake")` snake_case (but support for many other types of cases). 
 
 ---
 
@@ -577,7 +577,7 @@ head(gp_covid_risk)
 
 ## Moving columns
 
-Although the positions of columns in a dataframe do not matter for analyses or plotting (unless you want to select columns using their numerical index), you might want to change them. For this purpose, `dplyr` provides the `relocate()` function.
+Although the positions of columns in a data frame do not matter for analyses or plotting (unless you want to select columns using their numerical index), you might want to change them. For this purpose, `dplyr` provides the `relocate()` function.
 
 ```{r relocate}
 gp_covid_risk <- gp_covid_risk %>% 
@@ -797,7 +797,7 @@ head(gp_covid[, 6:13])
 
 ## (Re-)Arranging the order of rows
 
-Of course, it is also possible to sort a dataframe in descending order of a variable.
+Of course, it is also possible to sort a data frame in descending order of a variable.
 
 ```{r base-sort-1-var-desc}
 gp_covid <- gp_covid[order(desc(gp_covid$age_cat)),]
@@ -809,7 +809,7 @@ head(gp_covid[, 6:13])
 
 ## (Re-)Arranging the order of rows
 
-You can also sort your dataframe by more than one variable.
+You can also sort your data frame by more than one variable.
 
 ```{r base-sort-mult}
 gp_covid <- gp_covid[order(gp_covid$age_cat, gp_covid$education_cat),]
@@ -1075,7 +1075,7 @@ Using the functions `replace_with_na_at()` and `replace_with_na_if()`, we can al
 
 ## `set_na()` from `sjlabelled`
 
-Another easy-to-use option for recoding values to `NA` (for individual variables of full dataframes) is the function `set_na()` from the `sjlabelled` package. We can, e.g., use it the same way we have used the `naniar` function `replace_with_na_all()` in the previous example.
+Another easy-to-use option for recoding values to `NA` (for individual variables of full data frames) is the function `set_na()` from the `sjlabelled` package. We can, e.g., use it the same way we have used the `naniar` function `replace_with_na_all()` in the previous example.
 
 ```{r set-na}
 library(sjlabelled)

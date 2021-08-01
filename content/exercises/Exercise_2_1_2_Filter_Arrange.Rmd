@@ -61,7 +61,7 @@ gp_covid_middle_aged <- gp_covid %>%
 ```
 
 ```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
-Let's briefly turn back to `base R` for this task: Sort the `gp_covid` data set in descending order of the `household` variable. You can overwrite the original `gp_covid` object for this task. Have a look at the resulting dataframe to check if your code worked.
+Let's briefly turn back to `base R` for this task: Sort the `gp_covid` data set in descending order of the `household` variable. You can overwrite the original `gp_covid` object for this task. Have a look at the resulting data frame to check if your code worked.
 ```
 
 ```{block, opts.label = "clues"}
