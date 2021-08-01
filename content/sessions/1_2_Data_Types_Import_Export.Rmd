@@ -328,7 +328,7 @@ class: middle
 
 ## Accessing elements by index
 
-Generally, there the logic of `[index_number]` is used in `R` to access only a subset of information in an object, no matter if we have vectors or data frames.
+Generally, the logic of `[index_number]` is used in `R` to access only a subset of information in an object, no matter if we have vectors or data frames.
 
 Say, we want to extract the second element of our `character_vector` object, we could do that like this:
 

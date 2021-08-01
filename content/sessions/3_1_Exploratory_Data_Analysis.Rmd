@@ -83,6 +83,8 @@ gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
 ```
 
 ```{r select-rename}
+library(tidyverse)
+
 corona_survey <- gp_covid %>% 
   select(id,
          sex:education_cat,
@@ -234,7 +236,7 @@ As such, we can use summarizing functions of
 
 ## Summary statistics: `summary()`
 
-A quick and easy way to check some summary statistics for your dataset is the `base R` function `summary()` which can be applied to individual variables...
+A quick and easy way to check some summary statistics for your data set is the `base R` function `summary()` which can be applied to individual variables...
 
 ```{r summary}
 summary(corona_survey$left_right)
@@ -546,7 +548,7 @@ class(party_stats)
 
 ## Frequencies and proportions with `dplyr`
 
-We can also use `group_by()` and `summarize()` to get frequencies and proportions for variables in our dataset.
+We can also use `group_by()` and `summarize()` to get frequencies and proportions for variables in our data set.
 
 ```{r freqprop-dplyr}
 corona_survey %>% 
@@ -814,7 +816,7 @@ Again, as with the crosstabs examples, there are many different options for calc
 
 ## Correlations with `base R`
 
-The `base R` function `cor()` computes the correlation coefficient(s) between two or more variables. This function can be used to calculate *Pearson's r*, *Kendall's tau*, and *Spearman's rho*. We also need to specify how we want to deal with missing values (e.g., use pairwise complete observations). For example, let's look at the correlations between the trust variables in our dataset:
+The `base R` function `cor()` computes the correlation coefficient(s) between two or more variables. This function can be used to calculate *Pearson's r*, *Kendall's tau*, and *Spearman's rho*. We also need to specify how we want to deal with missing values (e.g., use pairwise complete observations). For example, let's look at the correlations between the trust variables in our data set:
 
 .small[
 ```{r corr-base}
@@ -925,7 +927,7 @@ class: center, middle
 
 ## Guilty by ~~association~~ correlation
 
-While correlation coefficients are useful for exploring relationships between variables, they can also be misleading. For example, if we do correlation analysis and we encounter a (Pearson's) correlation coefficient close to 0, we often think of relationships as pictured below.
+While correlation coefficients are useful for exploring relationships between variables, they can also be misleading. For example, if we do correlation analysis and encounter a (Pearson's) correlation coefficient close to 0, we often think of relationships as pictured below.
 
 ```{r dino-plot-1, out.width = "45%", echo = F}
 library(datasauRus)
@@ -941,7 +943,7 @@ datasaurus_dozen %>%
 
 ## Guilty by ~~association~~ correlation
 
-This dataset has **the same correlation coefficient (Pearson's r of -0.06)** as the one on the previous slide:
+This data set has **the same correlation coefficient (Pearson's r of -0.06)** as the one on the previous slide:
 
 ```{r dino-plot-2, out.width = "50%", echo = F}
 datasaurus_dozen %>% 
@@ -1034,7 +1036,7 @@ Two things that can influence summary statistics as well as univariate and bivar
 
 ## Missing data
 
-In the *Data Wrangling Basics* session we have already discussed how we can define specific values as missings (`NA`) and how we can recode `NA` into something else. As we have seen in that session, the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* dataset contains quite a few codes for different types of missing data. However, when we collect data ourselves or if we (re-)use datasets that are not as well-documented as the *GESIS Panel* data, we may need to explore potential patterns of missingness to see if there may be identifiable reasons why data for certain variables and/or observations are missing.
+In the *Data Wrangling Basics* session we have already discussed how we can define specific values as missings (`NA`) and how we can recode `NA` into something else. As we have seen in that session, the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* data set contains quite a few codes for different types of missing data. However, when we collect data ourselves or if we (re-)use data sets that are not as well-documented as the *GESIS Panel* data, we may need to explore potential patterns of missingness to see if there may be identifiable reasons why data for certain variables and/or observations are missing.
 
 ---
 

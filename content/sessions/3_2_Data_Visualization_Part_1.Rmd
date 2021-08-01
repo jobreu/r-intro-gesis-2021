@@ -66,13 +66,11 @@ There's more that we won't cover:
 
 ---
 
-## Graphics in `R`
-Since the early days, graphics are a first-class citizen in `R`.
+## Data for this session
 
-A standard `R` installation doesn't require any additional packages to create graphics. It's part of the `graphics` package.
+As before, we will use the data from the from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*.
 
-
-```{r load_gp_covid, include = FALSE}
+```{r load_gp_covid}
 gp_covid <- 
   haven::read_sav(
     "./data/ZA5667_v1-1-0.sav"
@@ -88,6 +86,14 @@ gp_covid <-
   ) %>% 
   ungroup()
 ```
+
+---
+
+## Graphics in `R`
+
+Since the early days, graphics are a first-class citizen in `R`.
+
+A standard `R` installation doesn't require any additional packages for creating graphics. The `graphics` package is already included for that.
 
 .pull-left[
 ```{r graphics_barplot, eval = FALSE}

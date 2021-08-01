@@ -565,7 +565,7 @@ class: center, middle
 
 ## Handling regression results
 
-While it is (still) common practice to run regressions, search for 'significant' p-values, and paste the results into a table without interpreting them substantially, this may not be the best thing to do. We will (briefly) discuss how to create nice regression tables later on, but before that, we will briefly talk about how we can apply some other techniques to gain more substantial insights into our data using regression.
+While it is (still) common practice to run regressions, search for 'significant' p-values, and paste the results into a table without interpreting them substantially, this may not be the best thing to do. We will (briefly) discuss how to create nice regression tables later on, but before that, we will briefly talk about how we can apply some other techniques to gain some more substantial insights into our data using regression.
 
 To do that, we first need to look into how to work with a readily estimated regression object in `R`. This is also meant to show some of the mechanics of what is actually happening in the background when a regression is run in `R`.
 
@@ -635,7 +635,7 @@ class:middle
 
 ## (Simple) model predictions
 
-It is also quite straightforward to do simple predictions from an estimated model using the `predict()` function in `R`. We can feed the `predict()` function with our own data to figure out what our model actually predicts when something changes (in the example below that is the age category). This can provide additional insights into our models. *Note*: For the following code to work, we need to change the `sex` variable to numeric and then fit our simple linear model again, using that as a predictor.
+It is also quite straightforward to produce simple predictions from an estimated model using the `predict()` function in `R`. We can feed the `predict()` function with our own data to figure out what our model actually predicts when something changes (in the example below that is the age category). This can provide additional insights into our models. *Note*: For the following code to work, we need to change the `sex` variable to numeric and then fit our simple linear model again, using that as a predictor.
 
 .small[
 ```{r predict}
@@ -844,7 +844,7 @@ class: center, middle
 ## tidy models with `broom`
 
 .pull-left[
-We have already entered the area of reporting statistical results. We will have a separate session on reporting on with `R Markdown` tomorrow. One thing to note at this point is that more and more developers in `R` were unsatisfied with the diverse output some of the standard regression procedures provide. The outputs may be helpful to look at, but they're usually not great for further processing. For that purpose, we need dataframes/tibbles.
+We have already entered the area of reporting statistical results. We will have a separate session on reporting on with `R Markdown` tomorrow. One thing to note at this point is that more and more developers in `R` were unsatisfied with the diverse output some of the standard regression procedures provide. The outputs may be helpful to look at, but they're usually not great for further processing. For that purpose, we need data frames/tibbles.
 ]
 
 .pull-right[

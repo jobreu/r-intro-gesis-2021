@@ -15,7 +15,7 @@ layout: true
 
 ---
 
-## Course schedule - Day 1
+## Recap: Course schedule - Day 1
 
 ```{r schedule-1, echo = F}
 course_content_1
@@ -23,7 +23,7 @@ course_content_1
 
 ---
 
-## Course schedule - Day 2
+## Recap: Course schedule - Day 2
 
 ```{r schedule-2, echo = F}
 course_content_2
@@ -31,7 +31,7 @@ course_content_2
 
 ---
 
-## Course schedule - Day 3
+## Recap: Course schedule - Day 3
 
 ```{r schedule-3, echo = F}
 course_content_3
@@ -39,7 +39,7 @@ course_content_3
 
 ---
 
-## Course schedule - Day 4
+## Recap: Course schedule - Day 4
 
 ```{r schedule-4, echo = F}
 course_content_4
@@ -47,7 +47,7 @@ course_content_4
 
 ---
 
-## Course schedule - Day 5
+## Recap: Course schedule - Day 5
 
 ```{r schedule-5, echo = F}
 course_content_5
@@ -57,29 +57,31 @@ course_content_5
 
 ## Where to go from here?
 
-Hopefully, after this week, you feel prepared to do your next steps in `R` alone.
+Hopefully, after this week, you feel prepared to do your next steps in `R`.
 
-Our recommendations for the future:
+Some recommendations for continuing your jou`R`ney:
 
 - Keep up working with `R`!
 - If time permits, do stuff you usually do in `SPSS` or `Stata` in `R`, even when it's harder
 - Try to do at least one research task solely in `R` (one analysis, a whole paper, a report, etc.)
-- Search for solutions on the internet
-  - there's way more than for `SPSS` or `Stata`
+- Look for tutorials and guides online
+  - trust us, there's way more (good & free) online material for `R` than there is, e.g., for `SPSS` or `Stata`
 
 ---
 
 ## Working with other data types
 
-Both Johannes and Stefan use different data types in our daily work.
-- digital behavioral data (Johannes)
-- georeferenced/geospatial data (Stefan)
+Both Johannes and Stefan use different data types in their daily work:
+- digital trace data (Johannes)<sup>*</sup>
+- georeferenced/geospatial data (Stefan)<sup>**</sup>
 
-**`R` is data agnostic! Thus, `R` can serve you as a fancy data science tool to extract tweets from Twitter but also as a full-blown Geographic Information System (GIS)**
+**Remember that `R` is data-agnostic! It can serve as a fancy data science tool for extracting social media data but also as a full-blown Geographic Information System (GIS)**
 
 
-.footnote[* https://github.com/jobreu/twitter-linking-workshop-2021]
-.footnote[** https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R]
+.footnote[
+[*] See, e.g., https://github.com/jobreu/twitter-linking-workshop-2021]
+.footnote[
+[**] See, e.g., https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R]
 
 ---
 
@@ -122,10 +124,10 @@ Example from: https://riatelab.github.io/mapsf/
 
 ## 'Web development' using `R`
 
-These days, a lot of `R` packages provides tools originally developed for the web. For example:
+These days, a lot of `R` packages provides tool originally developed for the web. For example:
 - [bookdown](https://cran.r-project.org/web/packages/bookdown/index.html) enables you to publish your book written in `R Markdown` online
 - [pkgdown](https://cran.r-project.org/web/packages/pkgdown/index.html) does the same for your own `R` package
-- [blogdown](https://cran.r-project.org/web/packages/blogdown/index.html) is more general and helps you with creating websites (see below)
+- [blogdown](https://cran.r-project.org/web/packages/blogdown/index.html) is more general and helps you with creating websites (example to follow)
 
 ---
 
@@ -145,7 +147,7 @@ https://shiny.rstudio.com/
 
 ---
 
-## Creating your own homepage
+## Creating your own homepage with `R`
 
 .pull-left[
 ```{r home-johannes, echo = FALSE}
@@ -169,4 +171,4 @@ All slides were created with the `R` package [`xaringan`](https://github.com/yih
 
 Please make sure to properly cite all data that you use for your research (archives usually provide suggested citations). Also make sure to cite the free and open-source software (FOSS) that you use, such as `R` and the packages for it. To know how to do that, you can use the function `citation(packagename)` in `R`.
 
-We thank the GESIS Summer School 2021 organizers for inviting us and all of you for participating!
+We thank the *GESIS Training* team for taking good care of the organization of this course (and the whole Summer School) and all of you for participating!

@@ -43,7 +43,7 @@ gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
 
 ## Quickly define missing values
 
-In the previous session, we learned how to define missing values. Here we will use the `set_na()` function from the `sjlabelled` package.
+In the previous session, we discussed how to define missing values. Here we will use the `set_na()` function from the `sjlabelled` package.
 
 ```{r set-missings}
 library(sjlabelled)
@@ -52,6 +52,8 @@ gp_covid <-
   gp_covid %>%
   set_na(na = c(-99, -77, -33, 97, 98))
 ```
+
+*Note*: This is a bit of a quick-and-dirty approach as 97 and 98 are valid values in the `id` variable (however, we will not explicitly use that in this session).
 
 ---
 
