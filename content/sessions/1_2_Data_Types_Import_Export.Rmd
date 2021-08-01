@@ -633,7 +633,7 @@ https://xkcd.com/2116/
 
 ---
 
-## Importing a CSV file using `Base R`
+## Importing a CSV file using `base R`
 
 ```{r loadtitanic, eval = FALSE}
 titanic <- read.csv("./data/titanic.csv")
@@ -641,7 +641,7 @@ titanic <- read.csv("./data/titanic.csv")
 titanic
 ```
 
-.small[]
+.tinyish[
 ```{r loadtitanic-print, echo = FALSE}
 titanic <- read.csv("./data/titanic.csv")
 
@@ -660,6 +660,7 @@ titanic <- read_csv("./data/titanic.csv")
 
 ---
 class: middle
+
 .tinyish[
 ```{r readr-example-output, echo = TRUE}
 titanic
@@ -701,9 +702,16 @@ gp_covid <-
 
 class: middle
 
-```{r read-stata-example_output, echo = TRUE}
+
+```{r read-stata-example_output, eval = FALSE}
 gp_covid
 ```
+
+.tinyish[
+```{r read-stata-example_output-print, echo = FALSE}
+gp_covid
+```
+]
 
 ---
 
@@ -1013,7 +1021,7 @@ load("mydata.RData")
 
 ---
 
-`.rds`
+## `.rds`
 
 Saving
 ```{r, eval = FALSE}
