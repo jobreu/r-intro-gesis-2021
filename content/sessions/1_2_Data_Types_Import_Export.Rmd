@@ -388,7 +388,7 @@ fancy_data["who"]
 ## Difference between `[]` and `[[]]`
 
 ```{r hadley-tweet, echo=FALSE}
-include_tweet("https://twitter.com/hadleywickham/status/643381054758363136",
+tweet_screenshot("https://twitter.com/hadleywickham/status/643381054758363136",
             theme = "dark")
 ```
 
@@ -396,7 +396,7 @@ include_tweet("https://twitter.com/hadleywickham/status/643381054758363136",
 
 ## Dataframe check 1, 2, 1, 2!
 
-Even before checking the codebook for a dataset (if there is one) it always helps to have a quick look at the data. The most high-level information you can get is about the object type and its dimensions.
+Even before checking the codebook for a data set (if there is one) it always helps to have a quick look at the data. The most high-level information you can get is about the object type and its dimensions.
 
 .small[
 ```{r class-dim}
