@@ -60,7 +60,7 @@ By the end of this course, you should be able to produce a report like this one 
 ## Learning by coding
 
 ```{r hadley-tweet, echo=FALSE}
-tweet_embed("https://twitter.com/hadleywickham/status/589068687669243905",
+tweet_screenshot("https://twitter.com/hadleywickham/status/589068687669243905",
             theme = "dark")
 ```
 
@@ -270,8 +270,8 @@ If you want to know a bit more about the origins and history of `R` as well as t
 
 ---
  
-```{r r-cd-tweet, echo=FALSE}
-tweet_embed("https://twitter.com/HannahOish/status/1036353875605737472",
+```{r r-cd-tweet, echo=FALSE, out.width="70%"}
+tweet_screenshot("https://twitter.com/HannahOish/status/1036353875605737472",
             theme = "dark")
 ```
 
@@ -971,8 +971,8 @@ woRkshoptools::include_picture("./it_off_on.jpg")
 
 ---
 
-```{r r-abort-meme, echo=FALSE}
-tweet_embed("https://twitter.com/daranzolin/status/1420220994262749186",
+```{r r-abort-meme, echo=FALSE, out.width="70%"}
+tweet_screenshot("https://twitter.com/daranzolin/status/1420220994262749186",
             theme = "dark")
 ```
 
