@@ -16,7 +16,7 @@ layout: true
 
 In some cases, you may need to combine different data sets (e.g., if you have seperate data sets from waves of a longitudinal survey study or data on the same subjects from different sources). 
 
-The simplest case is that the dataframes you want to combine either have the same cases/rows in the same order but different variables/columns, or the same columns/variables (with the same names) but different cases/rows.
+The simplest case is that the data frames you want to combine either have the same cases/rows in the same order but different variables/columns, or the same columns/variables (with the same names) but different cases/rows.
 
 In those cases, you can use the `base R` functions `rbind()` to add/combine rows or `cbind()` to add/combine columns, or, better yet, `bind_rows()` or `bind_cols()` from `dplyr`.
 
