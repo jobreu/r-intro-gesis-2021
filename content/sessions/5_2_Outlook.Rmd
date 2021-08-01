@@ -57,6 +57,16 @@ course_content_5
 
 ## Where to go from here?
 
+Hopefully, after this week, you feel prepared to do your next steps in `R` alone.
+
+Our recommendations for the future:
+
+- Keep up working with `R`!
+- If time permits, do stuff you usually do in `SPSS` or `Stata` in `R`, even when it's harder
+- Try to do at least one research task solely in `R` (one analysis, a whole paper, a report, etc.)
+- Search for solutions on the internet
+  - there's way more than for `SPSS` or `Stata`
+
 ---
 
 ## Working with other data types
@@ -65,20 +75,73 @@ Both Johannes and Stefan use different data types in our daily work.
 - digital behavioral data (Johannes)
 - georeferenced/geospatial data (Stefan)
 
-**`R` is data agnostic! Thus, `R` can serve you as a fancy data science tool to extract tweets from Twitter^ but also as a full-blown Geographic Information System (GIS)^2**
+**`R` is data agnostic! Thus, `R` can serve you as a fancy data science tool to extract tweets from Twitter but also as a full-blown Geographic Information System (GIS)**
 
-.small[
-^1 https://github.com/jobreu/twitter-linking-workshop-2021
-^2 https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R
+
+.footnote[* https://github.com/jobreu/twitter-linking-workshop-2021]
+.footnote[** https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R]
+
+---
+
+## Geospatial data
+
+.pull-left[
+```{r mapsf, eval = FALSE}
+library(mapsf)
+
+mtq <- mf_get_mtq()
+
+mf_map(x = mtq)
+mf_map(x = mtq, var = "POP", type = "prop")
+mf_layout(
+  title = "Population in Martinique", 
+  credits = "T. Giraud; Sources: INSEE & IGN, 2018"
+)
+```
 ]
+
+.pull-right[
+```{r mapsf-print, echo = FALSE}
+library(mapsf)
+
+mtq <- mf_get_mtq()
+
+mf_map(x = mtq)
+mf_map(x = mtq, var = "POP", type = "prop")
+mf_layout(
+  title = "Population in Martinique", 
+  credits = "T. Giraud; Sources: INSEE & IGN, 2018"
+)
+```
+]
+
+Example from: https://riatelab.github.io/mapsf/
+
 
 ---
 
 ## 'Web development' using `R`
 
+These days, a lot of `R` packages provides tools originally developed for the web. For example:
+- [bookdown](https://cran.r-project.org/web/packages/bookdown/index.html) enables you to publish your book written in `R Markdown` online
+- [pkgdown](https://cran.r-project.org/web/packages/pkgdown/index.html) does the same for your own `R` package
+- [blogdown](https://cran.r-project.org/web/packages/blogdown/index.html) is more general and helps you with creating websites (see below)
+
 ---
 
 ## Shiny apps
+
+> Shiny is an R package that makes it easy to build interactive web apps straight from R. You can host standalone apps on a webpage or embed them in R Markdown documents or build dashboards. You can also extend your Shiny apps with CSS themes, htmlwidgets, and JavaScript actions.
+
+https://shiny.rstudio.com/
+
+---
+
+## Example 1:
+
+---
+
+## Example 2:
 
 ---
 
@@ -106,4 +169,4 @@ All slides were created with the `R` package [`xaringan`](https://github.com/yih
 
 Please make sure to properly cite all data that you use for your research (archives usually provide suggested citations). Also make sure to cite the free and open-source software (FOSS) that you use, such as `R` and the packages for it. To know how to do that, you can use the function `citation(packagename)` in `R`.
 
-We thank the ESRA 2021 organizers (especially Marieke Haan) for inviting us, Hidde van Beek for the support during the workshop, and all of you for participating!
+We thank the GESIS Summer School 2021 organizers for inviting us and all of you for participating!
