@@ -64,11 +64,11 @@ installed.packages()
 ```
 
 ```{block, box.title = "6", box.body = list(fill = "white"), box.icon = "fa-star"}
-As a final exercise, add some comments to your script.
+As a final exercise, add some comments to your script and save it (in the `my_scripts` folder).
 ```
 
 ```{block, opts.label = "clues"}
-Comments in `R` start with #. Ideally, these should explain what the code you have written does.
+Comments in `R` start with #. Ideally, these should explain what the code you have written does. You can simply save the `R` script file via the *RStudio* GUI.
 ```
 
 ```{r sixth-exercise, solution = TRUE, eval = FALSE}
