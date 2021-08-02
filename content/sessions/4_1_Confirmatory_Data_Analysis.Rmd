@@ -551,7 +551,7 @@ compare_performance(simple_linear_model_logistic, simple_linear_model_probit,
 
 ## Other regression variants
 
-While `glm()` already provides quite a few estimators and link functions, depending on the distribution of your dependent variable, you may need more specialized regression models. Two interesting options in that regard are the [`MASS` package](https://cran.r-project.org/web/packages/MASS/index.html) for negative binomial regression or the [`pscl` package](https://cran.r-project.org/web/packages/pscl/index.html) for zero-inflated binomial regression or hurdle models.
+While `glm()` already provides quite a few estimators and link functions, depending on the distribution of your dependent variable, you may need more specialized regression models. A few interesting options for that, e.g, include are the [`MASS` package](https://cran.r-project.org/web/packages/MASS/index.html) for negative binomial regression, the [`pscl` package](https://cran.r-project.org/web/packages/pscl/index.html) for zero-inflated binomial regression and hurdle models, or the [`mcp` package](https://lindeloev.github.io/mcp/) for regression with multiple change points.
 
 ---
 
