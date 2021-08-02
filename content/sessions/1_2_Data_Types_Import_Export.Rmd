@@ -500,7 +500,7 @@ class: center, middle
 
 ## GESIS Panel Data on the Coronavirus Outbreak
 .left-column[
-```{r echo = FALSE}
+```{r echo = FALSE} 
 woRkshoptools::include_picture("./gesis_panel_logo_web.jpg")
 ```
 ]
@@ -510,6 +510,16 @@ For most of the examples and exercises in this course we will use the [Public Us
 
 The *GESIS Panel* website provides [detailed documentation](https://www.gesis.org/gesis-panel/documentation), including a [cheatsheet](https://www.gesis.org/fileadmin/upload/GESIS_Panel/Cheatsheet/gesis_panel_cheatsheet.pdf).
 ]
+
+---
+
+class: middle
+
+```{r techniker, out.width = "50%", echo = FALSE}
+woRkshoptools::include_picture("csm_Philotuer_7235f410e8.jpg")
+```
+
+https://www.campus-mainz.net/fileadmin/_processed_/9/5/csm_Philotuer_7235f410e8.jpg
 
 ---
 
