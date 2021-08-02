@@ -100,7 +100,7 @@ At first glance, a *character* is a letter somewhere between a-z. *String* in th
 
 ## Factors
 
-If you're a *Stata* (or *SPSS*) user, you may already be  familiar with factors. Factors are data types that assume that their values are not continuous, e.g., as in ordinal or nominal data.
+If you're a *Stata* (or *SPSS*) user, you may already be  familiar with factors. Factors are data types that assume that their values are not continuous, e.g., as in [ordinal](https://en.wikipedia.org/wiki/Level_of_measurement#Ordinal_scale) or [nominal](https://en.wikipedia.org/wiki/Level_of_measurement#Nominal_level) data.
 
 ```{r factor}
 factor(1.1)
@@ -189,7 +189,7 @@ rbind(numeric_vector, character_vector)
 ```
 
 .small[
-*Note*: The numeric values are coerced into strings here.
+*Note*: The numeric values are [coerced](https://www.oreilly.com/library/view/r-in-a/9781449358204/ch05s08.html) into strings here.
 ]
 
 ---
@@ -479,7 +479,7 @@ names(fancy_data)
 ...and we can also change names with it.
 
 ```{r changing-names}
-names(fancy_data) <- c("name", "salary_2018", "salary_2019")
+names(fancy_data) <- c("name", "age", "salary_2018", "salary_2019")
 
 names(fancy_data)
 ```
@@ -510,16 +510,6 @@ For most of the examples and exercises in this course we will use the [Public Us
 
 The *GESIS Panel* website provides [detailed documentation](https://www.gesis.org/gesis-panel/documentation), including a [cheatsheet](https://www.gesis.org/fileadmin/upload/GESIS_Panel/Cheatsheet/gesis_panel_cheatsheet.pdf).
 ]
-
----
-
-class: middle
-
-```{r techniker, out.width = "50%", echo = FALSE}
-woRkshoptools::include_picture("csm_Philotuer_7235f410e8.jpg")
-```
-
-https://www.campus-mainz.net/fileadmin/_processed_/9/5/csm_Philotuer_7235f410e8.jpg
 
 ---
 
@@ -1010,7 +1000,7 @@ write_dta(titanic, "titanic_own.dta")
 ## `R`'s native file formats
 
 If you plan to continue to work with `R` (something we would always recommend `r emo::ji("stuck_out_tongue_winking_eye")`), there are at least two native 'file formats' to choose from. The advantage of using them is that they are compressed files, so that they don't occupy unnecessarily large disk space. These two formats are `.Rdata`/`.rda` and `.rds`.
-The key difference between them is that `.rds` can only hold one object, whereas `.Rdata`/`.rda` can also be used for storing several objects in one file. A helpful property of 
+The key difference between them is that `.rds` can only hold one object, whereas `.Rdata`/`.rda` can also be used for storing several objects in one file.
 
 ---
 
