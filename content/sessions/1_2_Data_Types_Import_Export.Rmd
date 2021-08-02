@@ -338,7 +338,7 @@ character_vector[2]
 
 ---
 
-# More complicated cases: matrices
+## More complicated cases: matrices
 
 Matrices can have more dimensions, often you want information from a specific row and column.
 
@@ -399,7 +399,7 @@ But also this way:
 fancy_data["who"]
 ```
 ]
-
+ 
 ---
 
 ## Difference between `[]` and `[[]]`
@@ -468,7 +468,7 @@ woRkshoptools::include_picture("./rstudio_view.png")
 
 ---
 
-## Viewing and chaning names
+## Viewing and changing names
 
 We can print all names of an object using the `names()` function...
 
@@ -691,27 +691,25 @@ unicorns
 
 ## *Stata* files with `haven`
 
-```{r read-stata-example-display}
+```{r read-stata-example-display, eval = FALSE}
 library(haven)
 
 gp_covid <- 
   read_stata("./data/ZA5667_v1-1-0_Stata14.dta")
+
+gp_covid
 ```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
 
 ---
 
 class: middle
 
 
-```{r read-stata-example_output, eval = FALSE}
-gp_covid
+```{r ref.label = "read-stata-example-display", echo = FALSE}
 ```
 
-.tinyish[
-```{r read-stata-example_output-print, echo = FALSE}
-gp_covid
-```
-]
 
 ---
 
@@ -731,7 +729,7 @@ The package also offers capabilities for handling *SPSS*-defined missing values 
 
 These were just some very first examples of applying functions for data import from the different packages. There are many more...
 
-pull-left[
+.pull-left[
 `readr`
 - `read_csv()`
 - `read_tsv()`
@@ -741,7 +739,7 @@ pull-left[
 - `read_log()`
 ]
 
-pull-right[
+.pull-right[
 `haven`
 - `read_sas()`
 - `read_spss()`
