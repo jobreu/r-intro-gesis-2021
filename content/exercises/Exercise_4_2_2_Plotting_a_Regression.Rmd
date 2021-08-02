@@ -7,7 +7,9 @@ date: 'Introduction to R for Data Analysis'
 ```{r child = "../config/exercises_setup.Rmd"}
 ```
 
-```{r load-gp-covid, include = FALSE}
+You can continue to work with the analyses you did in the previous set of exercises. For the examples we are going to use, we need to first load and wrangle the data. **NB** You do not need to run this code, if you want to continue with/from the analyses you did in the previous exercises (which is what we would recommend).
+
+```{r load-gp-covid}
 library(haven)
 library(dplyr)
 library(sjlabelled)
@@ -49,16 +51,19 @@ gp_covid <-
   )
 ```
 
-
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Re-use your analysis and run an interaction model between your IV and the other covariate. Plot the interaction as a coefficient plot.
+Re-use your analysis from the previous set of exercises and run an interaction model between your IV and the other covariate. Plot the interaction as a coefficient plot.
 ```
 
 ```{block, opts.label = "clues"}
-For the coefficient plot, you can stick to `easystats`. 
+For the coefficient plot, you can use the `easystats` packages we have used in the lecture. 
 ```
 
 ```{r first-exercise, solution = TRUE}
+library(parameters)
+library(performance)
+library(see)
+
 linear_model_interaction <-
   lm(
     curfew_yes_no ~ age_cat * education_cat,
@@ -70,17 +75,19 @@ model_parameters(linear_model_interaction) %>%
 ```
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-The plot might be quite vivid and colorful. This one's rather an open task: Try to make it more dim and more greyish or apply just another theme.
+Imagine that you want to use the plot in a publication. Color figures usually cost extra. So, to save some money, try to make let the plot "turn grey".
 ```
 
 ```{block, opts.label = "clues"}
-Remember, the plots are base on `ggplot2`. You could choose from one of `ggplot2`'s built-in themes here: https://ggplot2.tidyverse.org/reference/ggtheme.html. In another step, you could adjust the scale's colour, e.g., with `scale_colour_grey()`. Be creative. 
+Remember that the `easytats` plots are based on `ggplot2`. You could choose from one of `ggplot2`'s built-in themes from this list: https://ggplot2.tidyverse.org/reference/ggtheme.html. In another step, you could adjust the color of the scale, e.g., with `scale_colour_grey()`. Be creative. 
 ```
 
 ```{r second-exercise, solution = TRUE}
 model_parameters(linear_model_interaction) %>% 
   plot() +
-  scale_colour_grey(start = 0, end = .5, guide = "none") +
+  scale_colour_grey(start = 0,
+                    end = .5,
+                    guide = "none") +
   theme_minimal()
 ```
 

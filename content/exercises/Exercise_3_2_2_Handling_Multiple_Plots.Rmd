@@ -17,11 +17,11 @@ gp_covid <-
   read_sav(
     "./data/ZA5667_v1-1-0.sav"
   ) %>% 
-  sjlabelled::set_na(na = c(-1:-99, 97))
+  sjlabelled::set_na(na = c(-1:-99, 97, 98))
 ```
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Plot 4 bar plots of 4 variables of your choice in two rows and two columns.
+Plot 4 bar plots of 4 variables of your choice from the data set in two rows and two columns.
 ```
 
 ```{block, opts.label = "clues"}
@@ -44,7 +44,7 @@ barplot(tab_4)
 That's interesting. One may wonder what the median is in each of these distributions. You know what's perfect for visualizing this statistic? Boxplots!
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-Use the same plotting approach, but change the barplot to a boxplot using `boxplot()`.
+Use the same plotting approach, but change the barplot to a boxplot.
 ```
 
 ```{block, opts.label = "clues"}
@@ -64,7 +64,7 @@ Store the boxplots from the previous exercises combined in one `png` image.
 ```
 
 ```{block, opts.label = "clues"}
-The function for storing `base R` graphics as `png` is `png()` with the filename as argument.
+The name of the function is the same as the file format we want for out output (with the required argument of a file path).
 ```
 
 ```{r png, solution = TRUE}
@@ -77,7 +77,7 @@ boxplot(gp_covid$hzcy004a)
 dev.off()
 ```
 
-Before we later start with the other exercises, you may want to consider to clean your graphics device with `dev.off()`
+Before we later start with the other exercises, you should clean your graphics device with `dev.off()`
 
 ```{r cleandevice , message=FALSE}
 dev.off()

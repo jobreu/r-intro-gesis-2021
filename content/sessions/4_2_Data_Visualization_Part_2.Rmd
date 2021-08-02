@@ -13,7 +13,59 @@ layout: true
 ```{r child = "../config/sessions_setup.Rmd"}
 ```
 
-```{r load-gp-covid, include = FALSE}
+---
+
+## Content of this session
+
+.pull-left[
+**What we will do**
+- Visual checks of model assumptions
+- Plotting coefficients
+- Plotting predictions
+- Plotting multiple models
+]
+
+.pull-right[
+**What we won't do**
+- Again, no crazy models
+- No Bayesian statistics
+]
+
+---
+
+## Packages in this session
+
+.pull-left[
+We will, again, use some packages from the `easystats` collection
+- `parameters`
+- `performance`
+- **`see`**
+]
+
+.pull-right[
+```{r easystats-pic, echo = FALSE}
+woRkshoptools::include_picture("logo_wall.png")
+```
+]
+
+.pull-left[
+While the `see` package is straightforward to use, it has some limitations. From time to time we will, hence, also switch to the `sjPlot` package.
+]
+
+.pull-right[
+```{r sjPlot-pic, echo = FALSE, out.width = "40%"}
+woRkshoptools::include_picture("sjplot_logo.png")
+```
+]
+
+---
+
+## Data for this session
+
+As in the previous sessions, we will use the data from the from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*.
+
+.small[
+```{r load-gp-covid}
 gp_covid <- 
   haven::read_sav(
     "./data/ZA5667_v1-1-0.sav"
@@ -40,59 +92,15 @@ gp_covid <-
   ) %>% 
   filter(pol_leaning_cat != "NA")
 ```
-
----
-
-## Content of this session
-
-.pull-left[
-**What we will do**
-- Visual checks of model assumptions
-- Plotting coefficients
-- Plotting predictions
-- Plotting multiple models
-]
-
-.pull-right[
-**What we won't do**
-- Again, no crazy models
-- No bayesian statistics
-]
-
----
-
-## Packages in this sessions
-
-.pull-left[
-We will again rely on packages from the `easystats` collection
-- `paramters`
-- `performance`
-- **`see`**
-]
-
-.pull-right[
-```{r easystats-pic, echo = FALSE}
-woRkshoptools::include_picture("logo_wall.png")
-```
-]
-
-.pull-left[
-While it's straightforward to use, it still has some limitations. From time to time we will therefore also switch to the `sjPlot` package
-]
-
-.pull-right[
-```{r sjPlot-pic, echo = FALSE, out.width = "40%"}
-woRkshoptools::include_picture("sjplot_logo.png")
-```
 ]
 
 ---
 
 ## Fictional research question
 
-In this session, we will investigate if older people have higher levels of trust in societies' institutions. We will also have a look if politically right-leaning people tend to have lower levels of trust. What might be interesting then is how these two variables interact with each other.
+In this session, we will investigate if older people have higher levels of trust in institutions when it comes to dealing with the COVID-19 pandemic. We will also assess whether politically right-leaning people tend to have lower levels of trust. We are also interested in how these two variables interact with each other.
 
-**This 'research' is purely based on ad-hoc hyptheses.**
+**Of course, this 'research' is purely based on ad-hoc hypotheses.**
 
 ---
 
@@ -117,7 +125,7 @@ model_parameters(linear_model)
 
 ## Quick inspection using `base R`
 
-In this session, we won't show `base R` operations. But you could use `base R` for some basic model inspections too!
+In this session, use `base R` plots, but this is to quickly illustrate that you could use them for some basic model checks, too.
 
 .pull-left[
 ```{r lm_summary_plot, eval = FALSE}
@@ -135,7 +143,7 @@ plot(linear_model)
 
 ## Using `easystats`
 
-`easystats` provides some really nice features to inspect the model fit. Here's a simple check for normality of the residuals. It is a combination of using a function from the `performance` package and then using `see` to plot it.
+`easystats` provides some really nice features for inspecting model fit. Here's a simple check for normality of the residuals. It is a combination of using a function from the `performance` package and then using `see` to plot it.
 
 .pull-left[
 ```{r easystats-performance, eval = FALSE}
@@ -174,7 +182,7 @@ check_normality(linear_model) %>%
 
 ## Heteroscedasticity (`easystats`)
 
-Something that is always a bit of an issue in regression analysis is heteroscedasticity. Again, it's straightforward to use.
+Something that is always a bit of an issue in regression analysis is heteroscedasticity. Again, it's straightforward to check for this using `performance` and `see`.
 
 .pull-left[
 ```{r easystats-hetero, eval = FALSE}
@@ -194,7 +202,7 @@ check_heteroscedasticity(
 
 ## Check outliers (`easystats`)
 
-And the same applies to outlier analysis.
+The same applies for outlier analysis.
 
 .pull-left[
 ```{r check-outliers, eval = FALSE}
@@ -212,7 +220,7 @@ check_outliers(linear_model) %>%
 
 ## There is more
 
-In the collection of `easystats` packages, there are [way more procedures]((https://easystats.github.io/see/articles/performance.html)) you can apply to your models. To replicate the summary of `base R` you could use this command:
+In the collection of `easystats` packages, there are [way more procedures](https://easystats.github.io/see/articles/performance.html) you can apply to check your models. To replicate the summary plot from `base R` with some nicer formatting, we can use the following function from the `performance` package:
 
 .pull-left[
 ```{r check-estimates, eval = FALSE}
@@ -237,15 +245,15 @@ class: center, middle
 
 ## Getting to the substantive part
 
-After checking the model assumptions, and pretending everything's fine (it's not...), we will deal with the substantive part of our fictional research question. The traditional way of doing that it printing some regression tables and checking the individual coefficients. That's fine but plotting is also nice. We will now turn to
+After checking the model assumptions, and pretending everything's fine (it's not...), we will deal with the substantive part of our fictional research question. The traditional way of doing that it printing some regression tables and checking the individual coefficients. That's fine but plotting is also nice. For that purpose, we will now turn to...
 - Coefficient Plots / Forest Plots
 - Prediction Plots 
 
 ---
 
-## Coefficient plot (`easystats`)
+## Coefficient plot (`parameters`)
 
-`easystats` provides a really, really easy method of creating a coefficient plot in one to two lines.
+`parameter` provides an easy method for creating a coefficient plot in one to two lines of code.
 
 .pull-left[
 ```{r easystats-coef-plot, eval = FALSE}
@@ -265,7 +273,7 @@ model_parameters(linear_model) %>%
 
 ## Changing labels: it's `ggplot2`-based
 
-All of the plots in `easystats` are based on `ggplot2`. This means, after calling the `easystats` function we can draw additional or manipulate existing plot layers using the usual `+`-structure.
+All of the plots produced by `parameters` and `see` are based on `ggplot2`. This means that, after calling the plotting functions from these packages, we can draw additional or manipulate existing plot layers using the usual `+`-structure.
 
 .pull-left[
 ```{r labels-change, eval = FALSE}
@@ -293,9 +301,9 @@ model_parameters(linear_model) %>%
 
 ---
 
-## Making it more dim and scientific
+## Making it less colorful
 
-Thus, we can easily manipulate the appearance, e.g., by turning to a less colorful theme. 
+Thus, we can easily manipulate the appearance of the plots, e.g., by turning to a less colorful theme. 
 
 .pull-left[
 ```{r labels-change-2, eval = FALSE}
@@ -330,7 +338,7 @@ model_parameters(linear_model) %>%
 Regression coefficients are sometimes a bit hard to read
 - they are based on the scale of the independent variable when unstandardized
 - it is ambigious what they actually mean substantially
-- for example, is a coefficient of .2 or .05 quite substantive or not?
+- for example, is a coefficient of .2 or .05 (practically) meaningful or not?
 
 Predictions are a solution
 - they basically draw the regression line into the scatter plot of the Y and X variables
@@ -340,7 +348,7 @@ Predictions are a solution
 
 ## Predictions (`sjPlot`)
 
-For the purpose of plotting predictions, we will use the `plot_model()` function from the `sjPlot` package. In principle, it would also be possible with `easystats` but I find `sjPlot` easier to work with in this case...
+For the purpose of plotting predictions, we will use the `plot_model()` function from the `sjPlot` package. In principle, it would also be possible with the `easystats` packages, but I find `sjPlot` easier to work with in this case...
 
 .pull-left[
 ```{r predictions, eval = FALSE}
@@ -362,7 +370,9 @@ linear_model %>%
 
 ---
 
-## Again, it's `ggplot2`-based
+## Customizing `sjplot`s
+
+As for the `easytats` packages, the plots produced by `sjplot` are `ggplot2`-based.
 
 .pull-left[
 ```{r predictions-nicer, eval = FALSE}
@@ -385,9 +395,9 @@ linear_model %>%
 
 ---
 
-## Handy when it comes to interaction effects
+## Interaction effects
 
-Let's now turn to the interaction between age and political leaning. Do age right-wing political attitudes moderate the relationship between age and trust?
+Let's now turn to the interaction between age and political leaning. Do right-wing political attitudes moderate the relationship between age and trust?
 
 ```{r interaction-model}
 linear_model_interaction <-
@@ -403,9 +413,9 @@ model_parameters(linear_model_interaction)
 
 ---
 
-## Interaction plot
+## Plotting interaction effects
 
-Particularly, regression parameters of interactions are hard to interpret. Again, `sjPlot` helps.
+Regression parameters for interactions are particulary difficult to interpret. Again, `sjPlot` can help in this regard.
 
 .pull-left[
 ```{r interaction-plot, eval = FALSE}
@@ -437,13 +447,13 @@ class: center, middle
 
 ## Estimating multiple models
 
-Something you may often face in your research is the estimation of multiple models because of
+Something you may often do in your research is estimating multiple models because of
 - changing covariates or dependent variables
 - different model specifications
 
 We can compare models side by side using regression tables, but by now we should know: plotting is better.
 
-Let's create a binary variable using a median splitting approach ([don't try this at home](https://dx.doi.org/10.1198/000313008X366226))
+Let's create a binary variable using a median split ([don't try this at home](http://www.stat.columbia.edu/~gelman/research/published/thirds5.pdf))
 
 ```{r median-split}
 gp_covid <-
@@ -460,7 +470,7 @@ gp_covid <-
 
 ---
 
-## Logistic regressions
+## Logistic regression
 
 We then can run a logistic regression based on the binary variable from the median split.
 
@@ -480,7 +490,7 @@ model_parameters(logistic_model)
 
 ## Linear probability model
 
-Alternatively, something more modern, using a linear regression model that converts to a linear probability model. Its regression coefficients can be interpreted as increases or decreases on a linear probability scale.
+Alternatively, a more modern approach is using a linear regression model that converts to a linear probability model. Its regression coefficients can be interpreted as increases or decreases on a linear probability scale.
 
 ```{r prob-reg}
 linear_probability_model <-
@@ -495,9 +505,9 @@ model_parameters(linear_probability_model)
 
 ---
 
-## Comparing model fits (`easystats`)
+## Comparing model fits (`performance`)
 
-`easystats` gives you a nice spider plot when you compare the performances of each model.
+The `performance` package gives you a nice spider plot when you compare the performance of models visually.
 
 .pull-left[
 ```{r comparing-model-fit, eval = FALSE}
@@ -513,7 +523,7 @@ compare_performance(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-model-fit", echo = FALSE, out.width = "75%"}
+```{r ref.label = "comparing-model-fit", echo = FALSE, out.width = "80%"}
 ```
 ]
 
@@ -521,7 +531,7 @@ compare_performance(
 
 ## Comparing model parameters (`sjPlot`)
 
-To compare the models' regression coefficients, I suggest to once again rely on `sjplot`. This time, instead of using `plot_model()`, we use `plot_models()`.
+To compare coefficients from different regression models, we can also use `sjplot`. This time, instead of using `plot_model()`, we use `plot_models()`.
 
 .pull-left[
 ```{r comparing-parameters, eval = FALSE}
@@ -543,7 +553,7 @@ plot_models(
 
 ## Adjusting it within the function
 
-The nice thing about `sjPlot` is that it provides a lot of options to manipulate the plot in its very own function. For example, to change the legend and axis labels we can use the `m.label` and `axis.labels` argument
+The nice thing about `sjPlot` is that it provides a lot of options for customizing the plot. For example, to change the legend and axis labels we can use the `m.label` and `axis.labels` arguments.
 
 .pull-left[
 ```{r comparing-parameters-adjusted, eval = FALSE}
@@ -571,15 +581,15 @@ plot_models(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-parameters-adjusted", echo = FALSE, out.width = "75%"}
+```{r ref.label = "comparing-parameters-adjusted", echo = FALSE, out.width = "80%"}
 ```
 ]
 
 ---
 
-## But it's still a `ggplot2` object
+## More customization
 
-In the end, it is also based on `ggplot2`. Thus, we can again use `ggplot2` layers to add more stuff to our plot.
+As `sjplot` is also based on `ggplot2` we easily add further layers to our plot, such as a theme.
 
 .pull-left[
 ```{r comparing-parameters-adjusted-bw, eval = FALSE}
@@ -616,13 +626,13 @@ plot_models(
 
 ## Plotting predictions from multiple models
 
-Neither `easystats` nor `sjPlot` provide an easy way to plot predictions from multiple models. For this purpose, we have to dig a bit deeper into the wrangling of the underlying data. Fortunately, what `sjPlot` supports is extracting the data from predicting a model. With these data at hand, we can simply create a data frame comprising predictions from multiple models.
+Neither the `easystats` packages nor `sjPlot` provide an easy way for plotting predictions from multiple models. For this purpose, we have to dig a bit deeper into the wrangling of the underlying data. Fortunately, what `sjPlot` supports is extracting the data from predicting a model. With these data at hand, we can simply create a data frame comprising predictions from multiple models.
 
 ---
 
 ## Extracting the predictions
 
-The procedure to extract the predictions from a model is similar to using the plotting command. But instead of using `plot_model()`, we use `get_model_data()`
+The procedure to extract predictions from a model is similar to using the plotting command. But instead of using `plot_model()`, we use `get_model_data()`.
 
 ```{r extract-linear-predictions}
 linear_predictions <-
@@ -637,9 +647,9 @@ linear_predictions
 
 ---
 
-## Predictions from the other two models
+## More predictions
 
-The same way we can extract the predictions from the logistic regression and the linear probability model.
+We can extract the predictions from the logistic regression and the linear probability model the same way.
 
 .pull-left[
 ```{r extract-logistic-predictions}
@@ -669,9 +679,9 @@ linear_probability_predictions <-
 
 .pull-left[
 We combine the data using simple data wrangling operations. 
-- `bind_rows()` is function to append rows from one dataset to another from `dplyr`
+- `bind_rows()` is a function from `dplyr` for appending rows from one data set to another
   - there's also `rbind()` in `base R`
-- we use `mutate()` to create an indicator to know which row belongs to what model of predictions
+- we use `mutate()` to create an indicator to know which row belongs to what model
 ]
 
 .pull-right[
@@ -702,7 +712,7 @@ all_predictions <-
 
 ## Plotting them with `facet_wrap()`
 
-To create multiple predictions plots with a subplot for each model we use barebones `ggplot2`. Yet, it is not necessarily more complex than using `easystats` or `sjPlot`.
+To create multiple prediction plots with a subplot for each model we use barebones `ggplot2`. Fortunately, this is not more complex than using `easystats` packages or `sjPlot`.
 
 .pull-left[
 ```{r all-in-one, eval = FALSE}
@@ -727,7 +737,7 @@ ggplot(
 
 ## Plotting only the binary models
 
-As the plot is not particularly pretty because of different scales of the dependent variable, we can also base it on filtered version of the predictions data frame.
+As the plot is not particularly pretty because of different scales of the dependent variable, we can also base it on a filtered version of the predictions data frame.
 
 .pull-left[
 ```{r only-two, eval = FALSE}
@@ -754,9 +764,9 @@ only_two
 
 ---
 
-## What about average marginal effects (AME)
+## Average marginal effects (AME)
 
-In the previous session, we also learned from average marginal effects.
+In the previous session, we also (briefly) discussed average marginal effects.
 - parameter estimates based on the 'real' empirical values of all other covariates
 - handy when relationships are non-linear
 - way easier to interpret than usual regression coefficients
@@ -764,9 +774,9 @@ In the previous session, we also learned from average marginal effects.
 
 ---
 
-## The same logic for real AME
+## Extracting AME
 
-We can also use the `margins` package and extract prediction information for our models. While the resulting columns names are different, the `cplot()` function also gives us information about X-values, estimates, and confidence bands.
+We can also use the `margins` package and extract prediction information for our models. While the resulting columns names are different, the `cplot()` function from that package also gives us information about X-values, estimates, and confidence bands.
 
 ```{r margins}
 library(margins)
@@ -790,7 +800,7 @@ linear_probability_model_AME <-
 
 ## Combining AME data
 
-After extracting the information, we simply can combine the two dataset again to get predictions for all included models.
+After extracting the information, we can simply combine the two data sets again to get predictions for all included models.
 
 ```{r combine-data-again}
 all_AME <-
@@ -807,7 +817,7 @@ all_AME <-
 
 ## Plotting predictions based on AME
 
-Plotting them can then be conducted the same way as before. Please not, the different variable names in comparison to the `sjPlot` procedure.
+Plotting them can then be done the same way as before.
 
 .pull-left[
 ```{r only-two-AME, eval = FALSE}
@@ -835,7 +845,7 @@ only_two_AME
 
 ## Combining them with previous predictions
 
-Using the fabolous `patchwork` package, we can even plot the 'simple' predictions together with the AME ones in one plot. Theoretically, this would have been possible with combining the data as well...
+Using the `patchwork` package again, we can even plot the 'simple' predictions together with the AME ones in one plot. *Note*: In principle, this would have been possible with combining the data as well.
 
 .pull-left[
 ```{r patchwork-combining, eval = FALSE}
@@ -863,11 +873,11 @@ library(patchwork)
 
 ## What is more?
 
-Sometimes, to get a plot that is ready for publication, it is still a long way to go. Yet, `easystats` and `sjPlot` help a lot to convert it to a medium walking distance.
+Sometimes getting to a plot that is ready for publication can be a long way to go. Fortunately, the `easystats` packages and `sjPlot` help a lot to convert it to a medium walking distance.
 
-There are also other great packages I sometimes use to accomplish the goal, e.g., creating a coefficient plot, like the faboulos [`dotwhisker`](https://cran.r-project.org/web/packages/dotwhisker/) package.
+There are also other packages that can facilitate the goal of creating publication-ready plots, such as the [`dotwhisker`](https://cran.r-project.org/web/packages/dotwhisker/) package for coefficient plots.
 
-Things can get messy when we have to work with statistical models that are not incorporated into the presented packages. For example, AME models or when you have results received from other statistical software like Stata (see [my code](https://stefanjuenger.github.io/land_use_disadvantages/Land_Use_Disadvantages_Main_Analysis.html) for a [recent paper](https://doi.org/10.1177/00420980211023206))
+Things can get messy if we have to work with statistical models that are not incorporated into the presented packages. For example, AME models or when you want to make use of results produced with other statistical software like *Stata* (for an example, you can have a look at [my code](https://stefanjuenger.github.io/land_use_disadvantages/Land_Use_Disadvantages_Main_Analysis.html) for a [recent paper](https://doi.org/10.1177/00420980211023206)).
 
 ---
 
@@ -881,7 +891,7 @@ class: center, middle
 
 ## Extracurricular activities
 
-
+Explore the data from the *GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany* a bit further and think about some confirmatory analyses you would find interesting for these data. Also think about how you would (want to) visualize your results. If you have the time and motivation, feel free to actually do some of the analyses and visualizations you find interesting, building on the code from today's lectures and exercises.
 
 
 

@@ -55,17 +55,17 @@ Let's re-estimate our model from the previous exercise, just with another depend
 ```
 
 ```{block, opts.label = "clues"}
-If you're again struggeling, what about one of the dependent variables from the original exercises:
+If you're having a hard time finding suitable variables, what about one of the dependent variables from the first set of exercises for this session:
 
-1. hzcy005a
-2. hzcy026a
-3. hzcy072a
+1. hzcy005a (risk of infecting others)
+2. hzcy026a (obeying curfew)
+3. hzcy072a (staying home for childcare)
 
 Be aware that you may have to conduct some recoding.
 ```
 
 ```{r first-exercise, solution = TRUE}
-# I chose hzcy005a.
+# We chose hzcy005a for the following tasks/solutions.
 ```
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
@@ -89,7 +89,7 @@ Now extract the prediction data for your main independent variable for this mode
 ```
 
 ```{block, opts.label = "clues"}
-You may want to use the function `get_model_data()` from the `sjPlot` package. You should set the option `type = "pred"` and define in the `terms` option your independent variable.
+You can use the function `get_model_data()` from the `sjPlot` package. You should set the option `type = "pred"` and provide the name of your independent variable in the `terms` option.
 ```
 
 ```{r third-exercise, solution = TRUE}
@@ -108,9 +108,9 @@ Repeat the previous step for your original model and combine both datasets. The 
 ```
 
 ```{block, opts.label = "clues"}
-- For the combination, you simply have append both datasets rowwise. You can either use the `bind_rows()` function from the `dplyr` package or `rbind()` from `base R`. 
-- Make sure that you add an indicator variable for the model for each of the datasets before or while the combination.
-- You can convert any (well, a lot of...) data object to a `tibble` using `as_tibble()` from the `tibble` package.
+- For combining the data, you simply have append both data sets rowwise. You can either use the `bind_rows()` function from the `dplyr` package or `rbind()` from `base R`. 
+- Make sure that you add an indicator variable for the model for each of the data sets before during the combination.
+- You can convert any (well, a lot of...) data objects to a `tibble` using `as_tibble()` from the `tibble` package.
 ```
 
 ```{r fourth-exercise, solution = TRUE}
@@ -141,13 +141,11 @@ predictions <-
 ```
 
 ```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
-Create a simple faceted (using `facet_wrap()`) `ggplot` with the regression predictions.
+Create a faceted `ggplot` with the regression predictions (without further customizing anything).
 ```
 
 ```{block, opts.label = "clues"}
-- For the combination, you simply have append both datasets rowwise. You can either use the `bind_rows()` function from the `dplyr` package or `rbind()` from `base R`. 
-- Make sure that you add an indicator variable for the model for each of the datasets before or while the combination.
-- You can convert any (well, a lot of...) data object to a `tibble` using `as_tibble()` from the `tibble` package.
+You can use `facet_wrap()` here.
 ```
 
 ```{r fifth-exercise, solution = TRUE}

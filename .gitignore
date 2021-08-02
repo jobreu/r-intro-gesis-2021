@@ -48,5 +48,6 @@ vignettes/*.pdf
 *ZA5667*
 *.rds
 
-# geospatial data
-**/session_specific_data/*
+# index files
+content/sessions/sessions_list.csv
+content/exercises/exercises_list.csv

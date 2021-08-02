@@ -7,7 +7,7 @@ date: 'Introduction to R for Data Analysis'
 ```{r child = "../config/exercises_setup.Rmd"}
 ```
 
-History... Plotting repeats. Let's dive into `ggplot2` and repeat what we've done in `base R` using the "grammar of graphics".
+~~History~~ Plotting repeats. Let's dive into `ggplot2` and repeat what we've done in `base R` using the "grammar of graphics".
 
 Here's the GESIS Panel data again.
 
@@ -45,7 +45,7 @@ Add some jitter to the scatter plot.
 ```
 
 ```{block, opts.label = "clues"}
-In contrast to the `base R` function jitter has not to be added; it just replaces the original `geom` using `geom_jitter()`
+In contrast to the `base R` function jitter does not have to be added; it just replaces the original `geom` using `geom_jitter()`
 ```
 
 ```{r jitter, solution = TRUE}
@@ -73,6 +73,6 @@ ggplot(
 ) +
   geom_violin()
 
-# In contrast to simple boxplots, violin plots also draws densities and helps, 
-# to assess, e.g., whether a variable is normal distributed or not.
+# In contrast to simple boxplots, violin plots show densities and can, e.g.,
+# help to assess whether a variable is normally distributed or not.
 ```

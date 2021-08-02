@@ -178,7 +178,7 @@ There are quite a few packages that offer extension output formats for `R Markdo
 
 ## Getting started with `R Markdown`
 
-When you create a new `R Markdown` document in *RStudio* the new document will include a basic template to which I added a few lines on inline code at the end in the example below.
+When you create a new `R Markdown` document in *RStudio* the new document will include a basic template to which we added a few lines about inline code at the end in the example below.
 
 ```{r, rmarkdown-example, out.width = "55%", echo = F}
 woRkshoptools::include_picture("./rmarkdown_example.png")
@@ -507,7 +507,7 @@ As with almost everything in `R`, there are many options (read: packages) for cr
 
 ## Citations & bibliographies
 
-Through `Pandoc` it is possible to [automatically generate citations and bibliographies in a variety of styles](https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html#Bibliographies). If you use a reference manager, such as the free and open-source [*Zotero*](https://www.zotero.org/), you can generate [`BibTeX`](https://en.wikipedia.org/wiki/BibTeX) files which you need for the [`citr` package](https://github.com/crsh/citr) which provides a handy *RStudio* addin for automatically creating citations and bibliographies in `R Markdown` documents. Another package that can be used for this is [`RefManageR`](https://github.com/ropensci/RefManageR/). 
+Through `Pandoc` it is possible to [automatically generate citations and bibliographies in a variety of styles](https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html#Bibliographies). If you use a reference manager, such as the free and open-source [*Zotero*](https://www.zotero.org/), you can generate [`BibTeX`](https://en.wikipedia.org/wiki/BibTeX) files which you need for the [`citr` package](https://github.com/crsh/citr) which provides a handy *RStudio* addin for automatically inserting citations and bibliographies in `R Markdown` documents. Another package that can be used for this is [`RefManageR`](https://github.com/ropensci/RefManageR/). 
 
 ---
 
@@ -628,11 +628,3 @@ Watch some of the short (~ 10 mins each) [tutorial videos on *YouTube* by Nick F
 Read the really accessible [blog post by Alison Hill](https://alison.rbind.io/blog/2020-12-new-year-new-blogdown/) or watch the [series of *YouTube* videos by Jennifer Sloane](https://www.youtube.com/playlist?list=PLpZT7JPM8_GbPiX4ibrP7ogl7GyEofZMj) and get started building your own personal `R`-powered website using [`blogdown`](https://pkgs.rstudio.com/blogdown/).
 
 Another good option for creating websites with `R Markdown` is [`distill`](https://rstudio.github.io/distill/), which is geared a bit more towards blogging. There are also plenty of tutorials on this online, such as this [blog post by Yury Zablotski](https://yuzar-blog.netlify.app/posts/2020-12-26-how-to-create-a-blog-or-a-website-in-r-with-distill-package/) or this [*YouTube* video tutorial by Lisa Lendway](https://www.youtube.com/watch?v=Fm3bsYCilEU).
-
----
-
-# Acknowledgements `r ji("heart")`
-
-All slides were created with the [`xaringan` package](https://github.com/yihui/xaringan) which builds on [`remark.js`](https://remarkjs.com), [`knitr`](http://yihui.name/knitr), and [`R Markdown`](https://rmarkdown.rstudio.com). The exercises were created with the [`unilur` package](https://github.com/koncina/unilur).
-
-We thank the *GESIS Training* team for taking good care of the organization of this course (and the whole Summer School) and all of you for participating!
