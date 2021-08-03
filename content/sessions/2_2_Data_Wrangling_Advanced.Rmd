@@ -23,9 +23,11 @@ While in the last sessions we focused on the bread-and-butter tasks of the data 
 
 ---
 
+class: middle
+
+
 ## Disclaimer
 
-class: middle
 
 **We will switch between the world of `base R` and the `tidyverse` in this session. While this may be a bit confusing at this, it is a good opportunity for showing these two options and illustrating some of their pros and cons.**
 
