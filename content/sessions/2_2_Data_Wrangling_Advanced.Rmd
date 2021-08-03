@@ -278,28 +278,6 @@ gp_covid %>%
 
 ---
 
-## Conditional transformation based on multiple values: `NA`s
-
-```{r case-when-2-na}
-gp_covid_na <- 
-  gp_covid %>% 
-  mutate(
-    pol_leaning_edu = 
-      case_when(
-        between(political_orientation, 0, 3) & high_education == "high" ~ "left high",
-        between(political_orientation, 4, 7) & high_education == "high" ~ "center high",
-        political_orientation > 7 & high_education == "high" ~ "right high",
-        TRUE ~ NA_character_
-      )
-  )
-
-gp_covid_na %>% 
-  select(political_orientation, high_education, pol_leaning_edu) %>% 
-  sample_n(5)
-```
-
----
-
 ## `dplyr::case_when()`
 
 A few things to note about `case_when()`:
@@ -308,6 +286,29 @@ A few things to note about `case_when()`:
 - when none of the specified conditions are met for an observation, by default, the new variable will have a missing value `NA` for that case
 - if you want some other value in the new variables when the specified conditions are not met, you need to add `TRUE ~ value` as the last argument of the `case_when()` call
 - to explore the full range of options for `case_when()` check out its [online documentation](https://dplyr.tidyverse.org/reference/case_when.html) or run `?case_when()` in `R`/*RStudio*
+
+---
+
+## `dplyr::case_when()` & `NA`s
+
+```{r case-when-2-na}
+gp_covid <- 
+  gp_covid %>% 
+  mutate(
+    pol_leaning_edu_2 = 
+      case_when(
+        between(political_orientation, 0, 3) & high_education == "high" ~ "left high",
+        between(political_orientation, 4, 7) & high_education == "high" ~ "center high",
+        political_orientation > 7 & high_education == "high" ~ "right high",
+        age_cat == 1 ~ NA_character_,
+        TRUE ~ "not so high"
+      )
+  )
+
+table(gp_covid$pol_leaning_edu, useNA = "always")
+table(gp_covid$pol_leaning_edu_2, useNA = "always")
+```
+
 
 ---
 
