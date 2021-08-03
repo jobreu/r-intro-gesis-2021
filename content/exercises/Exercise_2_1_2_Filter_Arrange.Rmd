@@ -1,5 +1,5 @@
 ---
-title: 'Exercise 2_1_2: Filtering & arraning rows'
+title: 'Exercise 2_1_2: Filtering & arranging rows'
 author: 'Johannes Breuer, Stefan Jünger'
 date: 'Introduction to R for Data Analysis'
 ---

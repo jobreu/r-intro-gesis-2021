@@ -82,12 +82,13 @@ gp_covid <-
 
 ## Using the function `across()` with logical conditions
 
-Sometimes we are interested in variables that meet certain conditions. For example, for some analyses, we might want to z-standardize all numeric variables in a data set. Let's create a temporary subset of our data to exemplify this.
+Sometimes we want to transform variables that meet certain conditions. For example, for some analyses, we might want to z-standardize all numeric variables in a data set. Let's create a temporary subset and transform the `id` variable into a character for this example.
 
 ```{r create-tmp-data set}
 gp_covid_tmp <-
   gp_covid %>% 
-  select(id, hzcy044a:hzcy052a)
+  select(id, hzcy044a:hzcy052a) %>% 
+  mutate(id = as.character(id))
 
 gp_covid_tmp %>% 
   sample_n(5)  # randomly sample 5 cases from the df
@@ -494,7 +495,7 @@ class: center, middle
 
 # [Exercise](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_3_If_I_had_a_Function.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/exercises/Exercise_2_2_3_If_I_had_a_Function.html)
+## [Solutions](https://jobreu.github.io/r-intro-gesis-2021/solutions/Exercise_2_2_3_If_I_had_a_Function.html)
 
 ---
 

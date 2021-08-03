@@ -20,7 +20,7 @@ gp_covid <- read_csv2("./data/ZA5667_v1-1-0.csv")
 ```
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
-Before we apply any changes to our data set, let's first catch a glimpse of it (hint hint). 
+Before we apply any changes to our data, let's first pipe them into a function to catch a glimpse (hint hint). 
 ```
 
 ```{block, opts.label = "clues"}
