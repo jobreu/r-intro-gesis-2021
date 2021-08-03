@@ -278,6 +278,28 @@ gp_covid %>%
 
 ---
 
+## Conditional transformation based on multiple values: `NA`s
+
+```{r case-when-2-na}
+gp_covid_na <- 
+  gp_covid %>% 
+  mutate(
+    pol_leaning_edu = 
+      case_when(
+        between(political_orientation, 0, 3) & high_education == "high" ~ "left high",
+        between(political_orientation, 4, 7) & high_education == "high" ~ "center high",
+        political_orientation > 7 & high_education == "high" ~ "right high",
+        TRUE ~ NA_character_
+      )
+  )
+
+gp_covid_na %>% 
+  select(political_orientation, high_education, pol_leaning_edu) %>% 
+  sample_n(5)
+```
+
+---
+
 ## `dplyr::case_when()`
 
 A few things to note about `case_when()`:
