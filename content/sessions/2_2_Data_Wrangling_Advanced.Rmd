@@ -23,16 +23,6 @@ While in the last sessions we focused on the bread-and-butter tasks of the data 
 
 ---
 
-class: middle
-
-
-## Disclaimer
-
-
-**We will switch between the world of `base R` and the `tidyverse` in this session. While this may be a bit confusing at this, it is a good opportunity for showing these two options and illustrating some of their pros and cons.**
-
----
-
 ## Load the data
 
 Again, we will work with `.csv` version of the *Public Use File (PUF) of the GESIS Panel Special Survey on the Coronavirus SARS-CoV-2 Outbreak in Germany*.
