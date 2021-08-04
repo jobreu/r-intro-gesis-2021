@@ -739,7 +739,7 @@ corona_survey %>%
 
 ## Crosstabs with `dplyr`
 
-We can also use functions from `dplyr` in a similar fashion as we have done for a single variable to create crosstabs including proportions.
+We can also use functions from `dplyr` in a similar fashion as we have done for a single variable to create crosstabs including percentages.
 
 ```{r dplyr-crosstabs-prop}
 corona_survey %>% 
@@ -1181,13 +1181,12 @@ While we have covered quite a few packages (that can be used) for EDA in this se
 ## Automated EDA reports
 
 Some of the EDA packages provide functions for generating automated EDA reports, for example:
+- the `dfSummary()` function from the `summarytools` package
 - the `skim()` function from the [`skimr` package](https://docs.ropensci.org/skimr/)
 - the `make_report()` function from the [`dataReporter` package](https://github.com/ekstroem/dataReporter)
 - the `report()` function from the [`explore` package](https://github.com/rolkra/explore)
 
 The function `explore`() from the `explore` package also allows for interactive data exploration.
-
-As we have seen throughout this session, there are quite a few `R` packages (that can be used) for EDA. Some of them provide wrapper functions for generating automated EDA reports. Some of the options for this include:
 
 ---
 
