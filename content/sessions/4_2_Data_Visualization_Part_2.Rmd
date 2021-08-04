@@ -871,6 +871,91 @@ library(patchwork)
 
 ---
 
+## A programmy alternative/extension
+
+Say, we are interested how the relationship between age and trust varies between differnt party supporters. We could estimate such a relationship in form of an interaction effect. But let's just stick with estimating separete models for demonstration.
+
+```{r estimating-multiple-models}
+library(purrr)
+
+gp_covid_parties <-
+  gp_covid %>% 
+  group_by(choice_of_party) %>% 
+  group_split(choice_of_party)
+
+my_models <-
+  gp_covid_parties %>% 
+  purrr::map(
+    ~lm(
+      mean_trust ~ 
+        age_cat + 
+        sex + 
+        education_cat,
+      data = .x
+      )
+  )
+```
+
+---
+
+## Putting all together using `purrr::imap()`
+
+```{r programmy-alternative}
+programmy_AME <- 
+  my_models %>% 
+  imap(
+    ~cplot(
+      .x,
+      dx = "mean_trust",
+      what = "prediction",
+      draw = FALSE,
+      data = gp_covid_parties[[.y]]
+    ) %>% 
+      mutate(
+        choice_of_party = .y
+      )
+  ) %>% 
+  do.call(rbind, .)
+```
+
+---
+
+## Plotting the AMEs
+
+.pull-left[
+```{r programmy-alternative-plot, eval = FALSE}
+programmy_AME %>% 
+  mutate(
+    choice_of_party = 
+      recode_factor(
+        choice_of_party,
+        `1` = "CDU/CSU",
+        `2` = "SPD",
+        `3` = "FDP",
+        `4` = "Linke",
+        `5` = "Gruene",
+        `6` = "AfD",
+        `7` = "Other"
+      )
+  ) %>% 
+  ggplot( 
+    aes(x = xvals, y = yvals)
+  ) +
+  geom_line() +
+  geom_line(aes(y = upper), linetype = "dashed") +
+  geom_line(aes(y = lower), linetype = "dashed") +
+  facet_wrap(~choice_of_party, ncol = 2) +
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r ref.label = "programmy-alternative-plot", echo = FALSE, out.width = "85%"}
+```
+]
+
+---
+
 ## What is more?
 
 Sometimes getting to a plot that is ready for publication can be a long way to go. Fortunately, the `easystats` packages and `sjPlot` help a lot to convert it to a medium walking distance.
