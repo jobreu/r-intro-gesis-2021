@@ -18,8 +18,8 @@ If you have not saved the wrangled data as an `.rds` file yet, you need to go th
 Also, in case you have not done so yet, please install `summarytools` and `psych` as we will need them for the exercises (in addition to `base R` and the `tidyverse` packages). The following code chunk will check if you have these packages installed and install them, if that is not the case.
 
 ```{r pkgs, eval = F}
-if (!require(summaryrtools)) install.packages("summarytools")
-if (!require(summaryrtools)) install.packages("psych")
+if (!require(summarytools)) install.packages("summarytools")
+if (!require(psych)) install.packages("psych")
 ```
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
