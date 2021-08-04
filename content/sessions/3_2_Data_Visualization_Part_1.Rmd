@@ -129,7 +129,7 @@ plot(gp_covid$hzcy001a)
 ```{r basic_scatter, eval = FALSE}
 plot(
   gp_covid$age_cat, 
-  gp_covid$hzcy001a
+  gp_covid$sum_trust
 )
 ```
 ]
@@ -146,7 +146,7 @@ plot(
 ```{r basic_scatter_jittered, eval = FALSE}
 plot(
   jitter(gp_covid$age_cat, 2), 
-  jitter(gp_covid$hzcy001a, 2),
+  jitter(gp_covid$sum_trust, 2),
   pch = 16
 )
 ```
@@ -164,7 +164,7 @@ plot(
 ```{r titles_labels, eval = FALSE}
 plot(
   jitter(gp_covid$age_cat, 2), 
-  jitter(gp_covid$hzcy001a, 2),
+  jitter(gp_covid$sum_trust, 2),
   pch = 16,
   main = 
     "Relationship Age and Subjective Risk of a COVID-19 Infection",
@@ -189,7 +189,7 @@ plot(
 ```{r axis_labels, eval = FALSE}
 plot(
   jitter(gp_covid$age_cat, 2), 
-  jitter(gp_covid$hzcy001a, 2),
+  jitter(gp_covid$sum_trust, 2),
   pch = 16,
   main = 
     "Relationship Age and Risk of Covid-19 Infection",
@@ -233,7 +233,7 @@ Adding more and more elements to your plot also means that the code you have to 
 ```{r record_plot, eval = FALSE}
 plot(
   jitter(gp_covid$age_cat, 2), 
-  jitter(gp_covid$hzcy001a, 2),
+  jitter(gp_covid$sum_trust, 2),
   pch = 16,
   main = 
     "Relationship Age and Subjective Risk of Covid-19 Infection",
@@ -256,7 +256,7 @@ my_scatterplot <- recordPlot()
 
 ---
 
-## Extending a recorded plot plot
+## Extending a recorded plot
 
 .tinyish[
 .pull-left[
@@ -287,7 +287,7 @@ axis(
 
 ---
 
-## Update the plot recording
+## Updating the plot recording
 
 .tinyish[
 .pull-left[
@@ -348,7 +348,7 @@ We can also create different *plot types*, such as
 .pull-left[
 ```{r boxplot, eval = FALSE}
 boxplot(
-  gp_covid$hzcy001a ~
+  gp_covid$sum_trust ~
     as.factor(gp_covid$age_cat)
 )
 ```
@@ -418,7 +418,7 @@ It's nice that `R` provides such pleasant plotting opportunities. However, to in
 
 ---
 
-## Export with *RStudio*
+## Exporting with *RStudio*
 
 ```{r echo = FALSE}
 woRkshoptools::include_picture("saveGraphic.PNG")
@@ -593,15 +593,13 @@ plot_call +
 ## Data requirements
 You can use one single data frame to create a plot in `ggplot2`. This creates a smooth workflow from data wrangling to the final presentation of the results.
 
+<br>
+
 ```{r data_science_pic, out.width = "65%", echo = FALSE}
 woRkshoptools::include_picture("data-science_man.png")
 ```
 
 <small><small>Source: http://r4ds.had.co.nz</small></small>
-
-However, this makes it difficult to add extra features to your plot.
-- There are ways of doing it anyway
-- Yet, it requires thinking about what to plot
 
 ---
 
