@@ -1065,10 +1065,13 @@ woRkshoptools::include_picture("800px-The_Scream.jpg")
 In contrast to standard `R` plots, `ggplot2` outputs are standard objects like any other object in `R` (they are lists). So there is no graphics device involved from which we have to record our plot to re-use it later. We can just use it directly.
 
 ```{r eval = FALSE}
-my_fancy_plot <- 
-  ggplot(data = gapminder_children) +
-  aes(x = year, y = children) +
-  geom_point() 
+my_fancy_plot <-
+  ggplot(
+  aes(
+    x = age_cat, 
+    y = sum_trust
+  ) + 
+  geom_point()
 
 my_fancy_plot <- 
   my_fancy_plot +
@@ -1163,11 +1166,11 @@ Exporting `ggplot2` graphics is fairly easy with the `ggsave()` function. It aut
 
 ```{r eval = FALSE}
 nice_plot <- 
-  qplot(
-    x = gapminder_children$year, 
-    y = gapminder_children$children,
-    geom = c("point", "smooth")
-  )
+  ggplot(
+    gp_covid, 
+    aes(x = age_cat)
+  ) + 
+  geom_bar()
 
 ggsave("nice_plot.png", nice_plot, dpi = 300)
 ```
@@ -1271,10 +1274,71 @@ gp_covid %>%
 
 ---
 
-## Correlation plots
+## Barplots in descriptive statistics
+
+```{r barplot-descriptives, eval = FALSE}
+library(summarytools)
+
+gp_covid %>% 
+  select(education_cat, sum_trust) %>% 
+  dfSummary( 
+    plain.ascii  = FALSE,
+    style        = 'grid',
+    varnumbers = FALSE,
+    valid.col    = FALSE,
+    tmp.img.dir  = "/tmp"
+  ) %>% 
+  print(method = "render")
+```
+
+---
+
+## Barplots in descriptive statistics
+
+.tinyish[
+```{r barplot-descriptives-print, echo = FALSE}
+library(summarytools)
+
+gp_covid %>% 
+  select(education_cat, sum_trust) %>% 
+  dfSummary( 
+    plain.ascii  = FALSE,
+    style        = 'grid',
+    varnumbers = FALSE,
+    valid.col    = FALSE,
+    tmp.img.dir  = "/tmp"
+  ) %>% 
+  print(method = "render")
+```
+]
+
+---
+
+## Correlation plots I
 
 .pull-left[
-```{r correlation-plot, eval = FALSE}
+```{r correlation-plot-i, eval = FALSE}
+library(correlation)
+library(ggraph)
+
+gp_covid %>% 
+  select(hzcy044a:hzcy052a) %>% 
+  correlation() %>% 
+  plot()
+```
+]
+
+.pull-right[
+```{r ref.label = "correlation-plot-i", echo = FALSE}
+```
+]
+
+---
+
+## Correlation plots II
+
+.pull-left[
+```{r correlation-plot-ii, eval = FALSE}
 library(GGally)
 
 gp_covid %>% 
@@ -1287,7 +1351,7 @@ gp_covid %>%
 ]
 
 .pull-right[
-```{r ref.label = "correlation-plot", echo = FALSE}
+```{r ref.label = "correlation-plot-ii", echo = FALSE}
 ```
 ]
 
