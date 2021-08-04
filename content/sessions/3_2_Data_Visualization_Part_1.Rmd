@@ -97,7 +97,7 @@ A standard `R` installation doesn't require any additional packages for creating
 
 .pull-left[
 ```{r graphics_barplot, eval = FALSE}
-barplot(table(gp_covid$hzcy001a))
+barplot(table(gp_covid$sum_trust))
 ```
 ]
 
@@ -113,7 +113,7 @@ The most basic function to plot in R is `plot()`.
 
 .pull-left[
 ```{r basic_plot, eval = FALSE}
-plot(gp_covid$hzcy001a)
+plot(gp_covid$sum_trust)
 ```
 ]
 
@@ -430,19 +430,19 @@ woRkshoptools::include_picture("saveGraphic.PNG")
 Alternatively, you can also export plots with the commands `png()`, `pdf()` or `jpeg()`, for example. For this purpose, you first have to wrap the plot call between one of those functions and a `dev.off()`call.
 
 ```{r, eval = FALSE}
-png("Histogram.png")
+png("Plot.png")
 plot(gp_covid$age_cat)
 dev.off()
 ```
 
 ```{r, eval = FALSE}
-pdf("Histogram.pdf")
+pdf("Plot.pdf")
 plot(gp_covid$age_cat)
 dev.off()
 ```
 
 ```{r, eval = FALSE}
-jpeg("Histogram.jpeg")
+jpeg("Plot.jpeg")
 plot(gp_covid$age_cat)
 dev.off()
 ```
