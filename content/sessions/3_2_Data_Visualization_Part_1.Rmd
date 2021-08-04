@@ -164,7 +164,7 @@ plot(
 ```{r titles_labels, eval = FALSE}
 plot(
   jitter(gp_covid$age_cat, 2), 
-  jitter(gp_covid$sum_trust, 2),
+  jitter(gp_covid$hzcy001a, 2),
   pch = 16,
   main = 
     "Relationship Age and Subjective Risk of a COVID-19 Infection",
@@ -189,7 +189,7 @@ plot(
 ```{r axis_labels, eval = FALSE}
 plot(
   jitter(gp_covid$age_cat, 2), 
-  jitter(gp_covid$sum_trust, 2),
+  jitter(gp_covid$hzcy001a, 2),
   pch = 16,
   main = 
     "Relationship Age and Risk of Covid-19 Infection",
