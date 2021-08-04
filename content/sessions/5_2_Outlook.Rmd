@@ -72,20 +72,42 @@ Some recommendations for continuing your jou`R`ney:
 ## Working with other data types
 
 Both Johannes and Stefan use different data types in their daily work:
-- digital trace data (Johannes)<sup>*</sup>
+- digital trace data (Johannes) <sup>*</sup>
 - georeferenced/geospatial data (Stefan)<sup>**</sup>
 
 **Remember that `R` is data-agnostic! It can serve as a fancy data science tool for extracting social media data but also as a full-blown Geographic Information System (GIS)**
 
 
 .footnote[
-[*] See, e.g., https://github.com/jobreu/twitter-linking-workshop-2021]
-.footnote[
-[**] See, e.g., https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R]
+<sup>*</sup> see, e.g., https://github.com/jobreu/twitter-linking-workshop-2021
+
+<sup>**</sup> see, e.g., https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R
+]
 
 ---
 
-## Geospatial data
+## What Are Geospatial Data?
+
+.pull-left[
+Data with a direct spatial reference $\rightarrow$ **geo-coordinates**
+- Information about geometries
+- Optional: Content in relation to the geometries
+
+Can be projected jointly in one single space
+- Allows data linking and extraction of substantial information
+]
+
+.pull-right[
+```{r pic-geometries-1, echo = FALSE, out.width = "85%"}
+woRkshoptools::include_picture("fig_geometries.png")
+```
+
+.tinyisher[Sources: OpenStreetMap / GEOFABRIK (2018), City of Cologne (2014), and the Statistical Offices of the Federation and the Länder (2016) / Jünger, 2019]
+]
+
+---
+
+## Mapping is so easy nowadays
 
 .pull-left[
 ```{r mapsf, eval = FALSE}
@@ -119,6 +141,25 @@ mf_layout(
 
 Example from: https://riatelab.github.io/mapsf/
 
+---
+
+## Interactive Mapping!
+
+.pull-left[
+```{r mapview, eval = FALSE}
+library(mapview)
+
+mapview(mtq["POP"])
+```
+]
+
+.pull-right[
+```{r mapview-print, echo = FALSE, eval = FALSE}
+library(mapview)
+
+mapview(mtq["POP"])
+```
+]
 
 ---
 
@@ -139,11 +180,19 @@ https://shiny.rstudio.com/
 
 ---
 
-## Example 1:
+class: middle
+
+## Example 1: Movie Explorer
+
+.center[https://shiny.rstudio.com/gallery/movie-explorer.html]
 
 ---
 
-## Example 2:
+class: middle
+
+## Example 2: CRAN explorer
+
+.center[https://gallery.shinyapps.io/cran-explorer/]
 
 ---
 
@@ -162,6 +211,36 @@ woRkshoptools::include_picture("homepage_stefan.png")
 ```
 .center[.small[https://stefanjuenger.github.io/]]
 ]
+
+.center[Powered by  [`blogdown`](https://cran.r-project.org/web/packages/blogdown/index.html) &[ Hugo Academic](https://academic-demo.netlify.app/)]
+
+---
+
+## Writing your own `R` packages
+
+.pull-left[
+At a certain point (not now!), you may want to consider writing your own `R` package
+- useful for creating reproducible code
+- great for distributing your work to others
+- for example, we created an [`R` package](https://stefanjuenger.github.io/woRkshoptools/) to facilitate working on our workshop materials
+]
+
+.pull-right[
+```{r r-packages, echo = FALSE}
+woRkshoptools::include_picture("r_packages.jpg")
+```
+[Read the book here!](https://r-pkgs.org/)
+]
+
+---
+
+class: middle
+
+## It's straightforward in `RStudio`
+
+```{r new-package, echo = FALSE, out.width = "75%"}
+woRkshoptools::include_picture("new_package.png")
+```
 
 ---
 
