@@ -316,7 +316,7 @@ mapview(mtq["POP"])
 
 ## 'Web development' using `R`
 
-These days, a lot of `R` packages provides tool originally developed for the web. For example:
+These days, a lot of `R` packages provide tools originally developed for the web. For example:
 - [bookdown](https://cran.r-project.org/web/packages/bookdown/index.html) enables you to publish books written in `R Markdown` online
 - [pkgdown](https://cran.r-project.org/web/packages/pkgdown/index.html) does the same for your own `R` packages
 - [blogdown](https://cran.r-project.org/web/packages/blogdown/index.html) is more general and helps you with creating websites (examples to follow)
