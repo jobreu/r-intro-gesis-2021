@@ -185,6 +185,22 @@ model_parameters(mlm) %>%
 
 ---
 
+## ...or `sjPlot` for predictions
+
+.pull-left[
+```{r plot-mlm-sjplot, eval = FALSE}
+library(sjPlot)
+plot_model(mlm, type = "pred")
+```
+]
+
+.pull-right[
+```{r ref.label = "plot-mlm-sjplot", echo = FALSE, out.width = "95%"}
+```
+]
+
+---
+
 ## Working with other data types
 
 Both Johannes and Stefan use different data types in their daily work:
