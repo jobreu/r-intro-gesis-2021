@@ -66,6 +66,122 @@ Some recommendations for continuing your jou`R`ney:
 - Try to do at least one research task solely in `R` (one analysis, a whole paper, a report, etc.)
 - Look for tutorials and guides online
   - trust us, there's way more (good & free) online material for `R` than there is, e.g., for `SPSS` or `Stata`
+  
+---
+
+## You voted for: Multilevel models
+
+Multilevel/Hierarchical or Mixed Regression Models (let's stick with MLM) have been quite popular for some time. They allow the incorporation of
+- random intercepts
+- random slopes
+
+Simply put: regression coefficients that vary across groups.
+
+---
+
+## MLM in `R`
+
+Of course, you can estimate such models in `R` as well. There are packages for that:
+- [`lme4`](https://cran.r-project.org/web/packages/lme4/index.html) may the most popular one
+  - provides functions to estimate linear models (`lmer()`) or generalized linear models (`glmer()`)
+- ...
+- but there are others, e.g., for ordinal responses like the `clmm2()` function from the [`ordinal`](https://cran.r-project.org/web/packages/ordinal/index.html) package
+
+---
+
+## Toy example
+
+Let's start with loading the data and creating fictional clusters.
+
+```{r read-gp}
+# load data
+gp_covid <- readRDS("./data/corona_survey.rds")
+
+# simulate clusters
+gp_covid <-
+  gp_covid %>% 
+  mutate(
+    clusters = sample(1:50, n(), replace = TRUE)
+  )
+
+table(gp_covid$clusters)
+```
+
+---
+
+## Re-running models from the course as MLM: random intercept
+
+```{r run-mlm}
+library(lme4)
+
+mlm <-
+  lmer(
+    risk_self ~ 1 + left_right + (1 | clusters),
+    data = gp_covid
+    )
+```
+
+---
+
+## Standard Output
+
+.small[
+```{r mlm-summary}
+summary(mlm)
+```
+]
+
+---
+
+## Output using the `parameters` package
+
+.small[
+```{r mlm-parameters}
+library(parameters)
+
+model_parameters(mlm)
+```
+]
+
+---
+
+## Adding a random slope
+
+```{r run-mlm-rs}
+library(lme4)
+
+mlm_2 <-
+  lmer(
+    risk_self ~ 1 + left_right + (1 + left_right | clusters),
+    data = gp_covid
+    )
+```
+
+---
+
+## Output using the `parameters` package
+
+.small[
+```{r mlm-parameters-2}
+model_parameters(mlm_2)
+```
+]
+
+---
+
+## btw: You can also plot MLM with `easystats`
+
+.pull-left[
+```{r plot-mlm, eval = FALSE}
+model_parameters(mlm) %>% 
+  plot()
+```
+]
+
+.pull-right[
+```{r ref.label = "plot-mlm", echo = FALSE, out.width = "95%"}
+```
+]
 
 ---
 
