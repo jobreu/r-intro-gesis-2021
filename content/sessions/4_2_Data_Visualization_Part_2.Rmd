@@ -174,7 +174,7 @@ check_normality(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "easystats-qq", echo = FALSE, out.width = "75%"}
+```{r ref.label = "easystats-qq", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -194,7 +194,7 @@ check_heteroscedasticity(
 ]
 
 .pull-right[
-```{r ref.label = "easystats-hetero", echo = FALSE, out.width = "75%"}
+```{r ref.label = "easystats-hetero", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -212,7 +212,7 @@ check_outliers(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "check-outliers", echo = FALSE, out.width = "85%"}
+```{r ref.label = "check-outliers", echo = FALSE, out.width = "90%"}
 ```
 ]
 
@@ -229,7 +229,7 @@ check_model(linear_model)
 ]
 
 .pull-right[
-```{r ref.label = "check-estimates", echo = FALSE, out.width = "75%"}
+```{r ref.label = "check-estimates", echo = FALSE, out.width = "80%"}
 ```
 ]
 
@@ -265,7 +265,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "easystats-coef-plot", echo = FALSE, out.width = "85%"}
+```{r ref.label = "easystats-coef-plot", echo = FALSE, out.width = "95%"}
 ```
 ]
 
@@ -295,7 +295,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "labels-change", echo = FALSE, out.width = "85%"}
+```{r ref.label = "labels-change", echo = FALSE, out.width = "90%"}
 ```
 ]
 
@@ -327,7 +327,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "labels-change-2", echo = FALSE, out.width = "85%"}
+```{r ref.label = "labels-change-2", echo = FALSE, out.width = "95%"}
 ```
 ]
 
@@ -364,7 +364,7 @@ linear_model %>%
 ]
 
 .pull-right[
-```{r ref.label = "predictions", echo = FALSE, out.width = "85%"}
+```{r ref.label = "predictions", echo = FALSE, out.width = "90%"}
 ```
 ]
 
@@ -389,7 +389,7 @@ linear_model %>%
 ]
 
 .pull-right[
-```{r ref.label = "predictions-nicer", echo = FALSE, out.width = "85%"}
+```{r ref.label = "predictions-nicer", echo = FALSE, out.width = "95%"}
 ```
 ]
 
@@ -431,13 +431,15 @@ linear_model_interaction %>%
 ]
 
 .pull-right[
-```{r ref.label = "interaction-plot", echo = FALSE, out.width = "85%"}
+```{r ref.label = "interaction-plot", echo = FALSE, out.width = "95%"}
 ```
 ]
 
 ---
 
 ## Sidenote: colors again
+
+Here's an example of the different color types in `ggplot2` (`color` and `fill`) and how you can manipulate them.
 
 .pull-left[
 ```{r interaction-plot-colors, eval = FALSE}
@@ -461,7 +463,7 @@ linear_model_interaction %>%
 ]
 
 .pull-right[
-```{r ref.label = "interaction-plot-colors", echo = FALSE, out.width = "85%"}
+```{r ref.label = "interaction-plot-colors", echo = FALSE, out.width = "95%"}
 ```
 ]
 
@@ -553,7 +555,7 @@ compare_performance(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-model-fit", echo = FALSE, out.width = "80%"}
+```{r ref.label = "comparing-model-fit", echo = FALSE, out.width = "90%"}
 ```
 ]
 
@@ -611,7 +613,7 @@ plot_models(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-parameters-adjusted", echo = FALSE, out.width = "85%"}
+```{r ref.label = "comparing-parameters-adjusted", echo = FALSE, out.width = "95%"}
 ```
 ]
 
@@ -759,7 +761,7 @@ ggplot(
 ]
 
 .pull-right[
-```{r ref.label = "all-in-one", echo = FALSE, out.width = "80%"}
+```{r ref.label = "all-in-one", echo = FALSE, out.width = "90%"}
 ```
 ]
 
@@ -788,7 +790,7 @@ only_two
 ]
 
 .pull-right[
-```{r ref.label = "only-two", echo = FALSE, out.width = "85%"}
+```{r ref.label = "only-two", echo = FALSE, out.width = "90%"}
 ```
 ]
 
@@ -867,7 +869,7 @@ only_two_AME
 ]
 
 .pull-right[
-```{r ref.label = "only-two-AME", echo = FALSE, out.width = "85%"}
+```{r ref.label = "only-two-AME", echo = FALSE, out.width = "90%"}
 ```
 ]
 
@@ -980,7 +982,7 @@ programmy_AME %>%
 ]
 
 .pull-right[
-```{r ref.label = "programmy-alternative-plot", echo = FALSE, out.width = "90%"}
+```{r ref.label = "programmy-alternative-plot", echo = FALSE, out.width = "95%"}
 ```
 ]
 
