@@ -125,7 +125,7 @@ model_parameters(linear_model)
 
 ## Quick inspection using `base R`
 
-In this session, use `base R` plots, but this is to quickly illustrate that you could use them for some basic model checks, too.
+In this session, we use `base R` plots again, but only to quickly illustrate that you could use them for some basic model checks, too.
 
 .pull-left[
 ```{r lm_summary_plot, eval = FALSE}
@@ -143,7 +143,7 @@ plot(linear_model)
 
 ## Using `easystats`
 
-`easystats` provides some really nice features for inspecting model fit. Here's a simple check for normality of the residuals. It is a combination of using a function from the `performance` package and then using `see` to plot it.
+`easystats` provides some nice features for inspecting model fit. Here's a simple check for normality of the residuals. It is a combination of using a function from the `performance` package and then using `see` to plot it.
 
 .pull-left[
 ```{r easystats-performance, eval = FALSE}
@@ -301,7 +301,7 @@ model_parameters(linear_model) %>%
 
 ---
 
-## Making it less colorful
+## Paint it black! `r ji("black_heart")`
 
 Thus, we can easily manipulate the appearance of the plots, e.g., by turning to a less colorful theme. 
 
@@ -905,7 +905,7 @@ library(patchwork)
 
 ## A programmy alternative/extension
 
-Say, we are interested how the relationship between age and trust varies between differnt party supporters. We could estimate such a relationship in form of an interaction effect. But let's just stick with estimating separete models for demonstration.
+Say, e.g., we are interested in how the relationship between age and trust varies between different party supporters. We could estimate such a relationship in form of an interaction effect. But let's just stick with estimating separate models for demonstration.
 
 ```{r estimating-multiple-models}
 library(purrr)
