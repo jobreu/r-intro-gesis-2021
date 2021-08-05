@@ -24,7 +24,7 @@ Let's start with a very simple analysis: Compute a t-test to compare of the mean
 ```
 
 ```{block, opts.label = "clues"}
-For the t-test you can use a `base R` function named after the test we want to perform here.
+For the t-test you can use a `base R` function named after this test.
 ```
 
 ```{r first-exercise, solution = TRUE}
@@ -36,7 +36,7 @@ After we have seen that there seems to be a significant difference, we now want 
 ```
 
 ```{block, opts.label = "clues"}
-For getting Cohen's d, you can use a function from the `effectsize` package.
+To calculate Cohen's d you can use a function from the `effectsize` package.
 ```
 
 ```{r second-exercise, solution = TRUE}
@@ -46,7 +46,7 @@ cohens_d(sum_measures ~ sex, data = corona_survey)
 ```
 
 ```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
-Next, use a `base R` function to run an ANOVA to test the relationshop between the perceived risk of someone from one's close social surroundings getting infected with the Corona virus and age.
+Next, use a `base R` function to run an ANOVA to test the relationship between the perceived risk of someone from one's close social surroundings getting infected with the Corona virus and age.
 ```
 
 ```{block, opts.label = "clues"}

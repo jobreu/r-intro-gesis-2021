@@ -237,6 +237,16 @@ anova
 
 ---
 
+## Testing multiple groups with an ANOVA
+
+To get some more detailed information, you need to use the `summary()` function we have already seen in the EDA session on the resulting `anova` object.
+
+```{r anova-summary}
+summary(anova)
+```
+
+---
+
 ## Testing ANOVA assumptions
 
 If you conduct any actual analyses, you should test the assumptions for conducting an ANOVA. We sort of gloss over that that here, but you can easily find many tutorials on this online (such as [this one](https://www.datanovia.com/en/lessons/ancova-in-r/#assumptions), for example). One assumption check that is commonly performed in the context of ANOVA is [Levene's Test for Homogeneity of Variance](https://en.wikipedia.org/wiki/Levene%27s_test). Several packages offer functions for that, including [`car`](https://cran.r-project.org/web/packages/car/index.html) or [`rstatix`](https://rpkgs.datanovia.com/rstatix/index.html), the latter of which is also designed to work nicely with pipes.
@@ -246,16 +256,6 @@ library(rstatix)
 
 corona_survey %>% 
   levene_test(risk_self ~ age_cat)
-```
-
----
-
-## Testing multiple groups with an ANOVA
-
-To get some more detailed information, you need to use the `summary()` function we have already seen in the EDA session on the resulting `anova` object.
-
-```{r anova-summary}
-summary(anova)
 ```
 
 ---
@@ -411,6 +411,30 @@ contrasts(corona_survey$age_cat_num)
 
 ---
 
+## Changing the reference category for a categorical predictor
+
+If you want to change the refence category for a categorical predictor, you can use the `base R` function `relevel()` within the regression formula.
+
+```{r ref-cat, eval=FALSE}
+lm_relevel <-  lm(risk_self ~ relevel(age_cat_num, ref = "10") + sex + left_right,
+                           data = corona_survey)
+
+summary(lm_relevel)
+
+```
+
+.right[`r emo::ji("left_arrow_curving_right")`]
+
+---
+
+class: middle
+.small[
+```{r ref.label = "ref-cat", echo = FALSE}
+```
+]
+
+---
+
 ## Different coding example: Effect coding
 
 How to include a factor variable in a regression model can be changed in `R`. For a full overview of different options, you can, e.g., have a look at this [tutorial](https://stats.idre.ucla.edu/r/library/r-library-contrast-coding-systems-for-categorical-variables).
@@ -551,7 +575,7 @@ compare_performance(simple_linear_model_logistic, simple_linear_model_probit,
 
 ## Other regression variants
 
-While `glm()` already provides quite a few estimators and link functions, depending on the distribution of your dependent variable, you may need more specialized regression models. A few interesting options for that, e.g, include are the [`MASS` package](https://cran.r-project.org/web/packages/MASS/index.html) for negative binomial regression, the [`pscl` package](https://cran.r-project.org/web/packages/pscl/index.html) for zero-inflated binomial regression and hurdle models, or the [`mcp` package](https://lindeloev.github.io/mcp/) for regression with multiple change points.
+While `glm()` already provides quite a few estimators and link functions, depending on the distribution of your dependent variable, you may need more specialized regression models. A few interesting options for that, e.g, include are the [`MASS` package](https://cran.r-project.org/web/packages/MASS/index.html) for negative binomial regression, the [`pscl` package](https://cran.r-project.org/web/packages/pscl/index.html) for zero-inflated (negative) binomial regression and hurdle models, or the [`mcp` package](https://lindeloev.github.io/mcp/) for regression with multiple change points.
 
 ---
 

@@ -55,6 +55,15 @@ course_content_5
 
 ---
 
+## Our jou`R`ney this week (hopefully)
+
+```{r mindblowing, echo = FALSE, out.width = "85%"}
+woRkshoptools::include_picture("r_pkgs_mindblowing.png")
+```
+.footnote[[Source](https://res.cloudinary.com/syknapptic/image/upload/v1521320144/tidyverse_meme_oceake.png)]
+
+---
+
 ## Where to go from here?
 
 Hopefully, after this week, you feel prepared to do your next steps in `R`.
@@ -82,10 +91,10 @@ Simply put: regression coefficients that vary across groups.
 ## MLM in `R`
 
 Of course, you can estimate such models in `R` as well. There are packages for that:
-- [`lme4`](https://cran.r-project.org/web/packages/lme4/index.html) may the most popular one
+- [`lme4`](https://cran.r-project.org/web/packages/lme4/index.html) is probably the most popular one
   - provides functions to estimate linear models (`lmer()`) or generalized linear models (`glmer()`)
 - ...
-- but there are others, e.g., for ordinal responses like the `clmm2()` function from the [`ordinal`](https://cran.r-project.org/web/packages/ordinal/index.html) package
+- but there are other options, e.g., for ordinal responses, such as the `clmm2()` function from the [`ordinal`](https://cran.r-project.org/web/packages/ordinal/index.html) package
 
 ---
 
@@ -195,10 +204,20 @@ Both Johannes and Stefan use different data types in their daily work:
 
 
 .footnote[
-<sup>*</sup> see, e.g., https://github.com/jobreu/twitter-linking-workshop-2021
+<sup>*</sup> see, e.g., https://github.com/jobreu/twitter-linking-workshop-2021 or https://github.com/jobreu/youtube-workshop-gesis-2021
 
-<sup>**</sup> see, e.g., https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R
+<sup>**</sup> see, e.g., https://github.com/StefanJuenger/gesis-workshop-geospatial-techniques-R or https://github.com/StefanJuenger/esra-workshop-first-steps-R-GIS
 ]
+
+---
+
+## Working with text data in `R`
+
+As with almost everything else, there are many great resources for working with text data in `R`. Two good options (and starting points) are:
+- the [`tidytext` package](https://juliasilge.github.io/tidytext/) and the "accompanying" book [*Text Mining with R: A Tidy Approach*](https://www.tidytextmining.com/) by Julia Silge & David Robinson
+- the [`quanteda` package](https://quanteda.io/) and its accompanying [tutorials](https://tutorials.quanteda.io/)
+
+- a nice and free self-paced online course is [*Text mining in R for the social sciences and digital humanities*](https://tm4ss.github.io/docs/index.html) by Andreas Niekler and Gregor Wiedemann
 
 ---
 
@@ -282,9 +301,9 @@ mapview(mtq["POP"])
 ## 'Web development' using `R`
 
 These days, a lot of `R` packages provides tool originally developed for the web. For example:
-- [bookdown](https://cran.r-project.org/web/packages/bookdown/index.html) enables you to publish your book written in `R Markdown` online
-- [pkgdown](https://cran.r-project.org/web/packages/pkgdown/index.html) does the same for your own `R` package
-- [blogdown](https://cran.r-project.org/web/packages/blogdown/index.html) is more general and helps you with creating websites (example to follow)
+- [bookdown](https://cran.r-project.org/web/packages/bookdown/index.html) enables you to publish books written in `R Markdown` online
+- [pkgdown](https://cran.r-project.org/web/packages/pkgdown/index.html) does the same for your own `R` packages
+- [blogdown](https://cran.r-project.org/web/packages/blogdown/index.html) is more general and helps you with creating websites (examples to follow)
 
 ---
 

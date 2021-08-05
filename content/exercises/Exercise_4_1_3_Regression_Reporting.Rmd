@@ -7,7 +7,7 @@ date: 'Introduction to R for Data Analysis'
 ```{r child = "../config/exercises_setup.Rmd"}
 ```
 
-After running a few regression analyses in the previous exercises, we will now explore some options for reporting the results.
+After running a few regression analyses in the previous exercises, we will now explore some options for reporting their results.
 
 If necessary, load the data first....
 
@@ -23,14 +23,14 @@ if (!require(summaryrtools)) install.packages("report")
 if (!require(summaryrtools)) install.packages("broom")
 ```
 
-Before we can report anything, we, of course, first need to run a regression analyses (again)...
+Before we can report anything, we, of course, first need to run a regression analysis (again)...
 
 ```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
 Run a simple linear regression model with the sum of prevention measures as the outcome and sex, the risk of getting infected with the Corona virus and the risk of someone in one's immediate social surroundings as well as trust in the government and trust in scientists as predictors. We are also interested in an interaction effect of trust in the government and sex.
 ```
 
 ```{block, opts.label = "clues"}
-Remember that you can include interaction effects in a formula in `R` using `*`. If you want to, you can have a look at the results via `summary()`
+Remember that you can include interaction effects in a formula in `R` using `*`. If you want to, you can have a look at the results via `summary()`.
 ```
 
 ```{r first-exercise, solution = TRUE}
@@ -41,7 +41,7 @@ summary(reg_model)
 ```
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-Using `base R` print only the coefficients from the model.
+Using `base R`, print only the coefficients from the model.
 ```
 
 ```{block, opts.label = "clues"}
@@ -83,7 +83,7 @@ stargazer(reg_model,
 ```
 
 ```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
-For producing custom tables and plots, we also want to store the key parameters of our model in a tidy tibble.
+To produce custom tables and plots, we also want to store the key parameters of our model in a tidy tibble.
 ```
 
 ```{block, opts.label = "clues"}
