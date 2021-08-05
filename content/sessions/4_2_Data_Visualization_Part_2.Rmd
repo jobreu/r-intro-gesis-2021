@@ -212,7 +212,7 @@ check_outliers(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "check-outliers", echo = FALSE, out.width = "75%"}
+```{r ref.label = "check-outliers", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -265,7 +265,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "easystats-coef-plot", echo = FALSE, out.width = "75%"}
+```{r ref.label = "easystats-coef-plot", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -295,7 +295,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "labels-change", echo = FALSE, out.width = "75%"}
+```{r ref.label = "labels-change", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -327,7 +327,7 @@ model_parameters(linear_model) %>%
 ]
 
 .pull-right[
-```{r ref.label = "labels-change-2", echo = FALSE, out.width = "75%"}
+```{r ref.label = "labels-change-2", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -364,7 +364,7 @@ linear_model %>%
 ]
 
 .pull-right[
-```{r ref.label = "predictions", echo = FALSE, out.width = "75%"}
+```{r ref.label = "predictions", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -389,7 +389,7 @@ linear_model %>%
 ]
 
 .pull-right[
-```{r ref.label = "predictions-nicer", echo = FALSE, out.width = "75%"}
+```{r ref.label = "predictions-nicer", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -415,7 +415,7 @@ model_parameters(linear_model_interaction)
 
 ## Plotting interaction effects
 
-Regression parameters for interactions are particulary difficult to interpret. Again, `sjPlot` can help in this regard.
+Regression parameters for interactions are particular difficult to interpret. Again, `sjPlot` can help in this regard.
 
 .pull-left[
 ```{r interaction-plot, eval = FALSE}
@@ -425,13 +425,43 @@ linear_model_interaction %>%
   ) +
   xlab("Age") +
   ylab("Trust") +
-  ggtitle("Linear Model") +
+  ggtitle("Interaction Model") +
   theme_bw()
 ```
 ]
 
 .pull-right[
-```{r ref.label = "interaction-plot", echo = FALSE, out.width = "75%"}
+```{r ref.label = "interaction-plot", echo = FALSE, out.width = "85%"}
+```
+]
+
+---
+
+## Sidenote: colors again
+
+.pull-left[
+```{r interaction-plot-colors, eval = FALSE}
+linear_model_interaction %>% 
+  plot_model(
+    type = "int"
+  ) +
+  xlab("Age") +
+  ylab("Trust") +
+  ggtitle("Interaction Model") +
+  theme_bw() +
+  scale_color_manual(
+    values = c("red", "blue", "black"),
+    labels = c("Center", "Lefties", "Rigthies"),
+    name = "Political Leaning"
+  ) +
+  scale_fill_manual(
+    values = rep("grey", 3)
+  )
+```
+]
+
+.pull-right[
+```{r ref.label = "interaction-plot-colors", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -545,7 +575,7 @@ plot_models(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-parameters", echo = FALSE, out.width = "75%"}
+```{r ref.label = "comparing-parameters", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -581,7 +611,7 @@ plot_models(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-parameters-adjusted", echo = FALSE, out.width = "80%"}
+```{r ref.label = "comparing-parameters-adjusted", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -618,7 +648,7 @@ plot_models(
 ]
 
 .pull-right[
-```{r ref.label = "comparing-parameters-adjusted-bw", echo = FALSE, out.width = "75%"}
+```{r ref.label = "comparing-parameters-adjusted-bw", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -729,7 +759,7 @@ ggplot(
 ]
 
 .pull-right[
-```{r ref.label = "all-in-one", echo = FALSE, out.width = "75%"}
+```{r ref.label = "all-in-one", echo = FALSE, out.width = "80%"}
 ```
 ]
 
@@ -758,7 +788,7 @@ only_two
 ]
 
 .pull-right[
-```{r ref.label = "only-two", echo = FALSE, out.width = "75%"}
+```{r ref.label = "only-two", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -837,7 +867,7 @@ only_two_AME
 ]
 
 .pull-right[
-```{r ref.label = "only-two-AME", echo = FALSE, out.width = "75%"}
+```{r ref.label = "only-two-AME", echo = FALSE, out.width = "85%"}
 ```
 ]
 
@@ -865,7 +895,7 @@ library(patchwork)
 ]
 
 .pull-right[
-```{r ref.label = "patchwork-combining", echo = FALSE, out.width = "75%"}
+```{r ref.label = "patchwork-combining", echo = FALSE, out.width = "80%"}
 ```
 ]
 
@@ -950,7 +980,7 @@ programmy_AME %>%
 ]
 
 .pull-right[
-```{r ref.label = "programmy-alternative-plot", echo = FALSE, out.width = "85%"}
+```{r ref.label = "programmy-alternative-plot", echo = FALSE, out.width = "90%"}
 ```
 ]
 
