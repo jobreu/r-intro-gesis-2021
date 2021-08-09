@@ -226,7 +226,7 @@ model_parameters(mlm_2)
 
 ---
 
-## btw: You can also plot MLM with `easystats`
+## btw: You can also plot MLM with the `parameters` package   
 
 .pull-left[
 ```{r plot-mlm, eval = FALSE}
@@ -258,11 +258,11 @@ plot_model(mlm, type = "pred")
 
 ---
 
-class: middle
+class: middle, center
 
 ## You voted for: merging data
 
-Please refer to the [Appendix slides](https://jobreu.github.io/r-intro-gesis-2021/slides/2_3_Appendix_Relational_Data.html) of the second workshop day.
+Please refer to the [Appendix slides](https://jobreu.github.io/r-intro-gesis-2021/slides/2_3_Appendix_Relational_Data.html) for the second workshop day.
 
 ---
 
@@ -455,6 +455,6 @@ woRkshoptools::include_picture("new_package.png")
 
 All slides were created with the `R` package [`xaringan`](https://github.com/yihui/xaringan) which builds on [`remark.js`](https://remarkjs.com), [`knitr`](http://yihui.name/knitr), and [`RMarkdown`](https://rmarkdown.rstudio.com). The exercises were created with the [`unilur` package](https://github.com/koncina/unilur).  
 
-Please make sure to properly cite all data that you use for your research (archives usually provide suggested citations). Also make sure to cite the free and open-source software (FOSS) that you use, such as `R` and the packages for it. To know how to do that, you can use the function `citation(packagename)` in `R`.
+Please make sure to properly cite all data that you use for your research (archives usually provide suggested citations). Also make sure to cite the free and open-source software (FOSS) that you use, such as `R` and the packages for it. To find out how to properly cite an `R` package you can use the function `citation(packagename)` in `R`.
 
 We thank the *GESIS Training* team for taking good care of the organization of this course (and the whole Summer School) and all of you for participating!

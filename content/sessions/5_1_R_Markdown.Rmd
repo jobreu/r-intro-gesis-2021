@@ -482,7 +482,7 @@ woRkshoptools::include_picture("./rmarkdown_wizards.png")
 ---
 ## Workflow
 
-When you use `R Markdown` to create documents it makes sense to adopt a [project-based workflow using *RStudio* projects]((https://rstats.wtf/project-oriented-workflow.html) to "have everything in one place" which facilitates sharing and increases reproducibility (for yourself and others).
+When you use `R Markdown` to create documents it makes sense to adopt a [project-based workflow using *RStudio* projects](https://rstats.wtf/project-oriented-workflow.html) to "have everything in one place" which facilitates sharing and increases reproducibility (for yourself and others).
 
 ```{r, rmarkdown-repro-cartoon, out.width = "70%", echo = F}
 woRkshoptools::include_picture("./reproducibility_court.png")
